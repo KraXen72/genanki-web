@@ -151,14 +151,14 @@ function App() {
       <main class="mx-auto max-w-6xl px-4 py-7 sm:px-8 sm:py-14">
         <div class="mb-9">
           <div class="flex items-start justify-between gap-4">
-            <h1 class="mb-4 text-4xl font-normal tracking-[-0.055em] sm:text-5xl">
+            <h1 class="mb-4 text-4xl font-medium tracking-[-0.055em] sm:text-5xl">
               <span class="text-primary">genanki</span>{' '}
               <span class="text-base-content dark:text-[#fffcf0]">web</span>
             </h1>
             <ThemePicker />
           </div>
           <p class="max-w-3xl text-base leading-relaxed text-base-content/80">
-            Have your LLM make the cards in TOML, then use this to generate an Anki deck{' '}
+            Create Anki flashcards with ease! Have your LLM make the cards (e.g. auto translations & example sentences) in TOML, then use this to generate a consistent Anki deck{' '}
             <code class="rounded bg-base-300/60 px-1.5 py-0.5 text-primary">.apkg</code>
           </p>
         </div>

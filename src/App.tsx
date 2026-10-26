@@ -205,7 +205,7 @@ function App() {
           <footer class="footer md:col-start-2 gap-5 border-t border-base-content/15 pt-6 text-[15px] leading-relaxed text-base-content/75">
             <aside class="max-w-4xl gap-2">
               <p>
-                Import the downloaded package in Anki or AnkiDroid. Russian TTS requires AnkiDroid{' '}
+                Uses the <code>genanki</code> python library in Pyodide WASM. Import the downloaded package in Anki or AnkiDroid. Russian TTS requires AnkiDroid{' '}
                 <code>2.17+</code> and a Russian voice.
               </p>
               <p>

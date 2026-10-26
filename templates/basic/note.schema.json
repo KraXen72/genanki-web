@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "examples": [
+        "study:photosynthesis"
+      ]
+    },
+    "question": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "examples": [
+        "What powers photosynthesis?"
+      ]
+    },
+    "answer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "examples": [
+        "Sunlight."
+      ]
+    }
+  },
+  "required": [
+    "question",
+    "answer"
+  ],
+  "additionalProperties": false
+}

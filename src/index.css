@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "daisyui" {
   themes: false;
@@ -6,7 +6,7 @@
 
 /* Flexoki Light */
 @plugin "daisyui/theme" {
-  name: "flexoki-light";
+  name: 'flexoki-light';
   default: true;
   prefersdark: false;
   color-scheme: light;
@@ -36,7 +36,7 @@
   --color-base-300: var(--flexoki-ui);
   --color-base-content: var(--flexoki-tx);
 
-  --color-primary: var(--flexoki-blue);
+  --color-primary: var(--flexoki-cyan);
   --color-primary-content: var(--flexoki-bg);
 
   --color-secondary: var(--flexoki-purple);
@@ -72,7 +72,7 @@
 
 /* Flexoki Dark */
 @plugin "daisyui/theme" {
-  name: "flexoki-dark";
+  name: 'flexoki-dark';
   default: false;
   prefersdark: true;
   color-scheme: dark;
@@ -102,7 +102,7 @@
   --color-base-300: var(--flexoki-ui);
   --color-base-content: var(--flexoki-tx);
 
-  --color-primary: var(--flexoki-blue);
+  --color-primary: var(--flexoki-cyan);
   --color-primary-content: var(--flexoki-bg);
 
   --color-secondary: var(--flexoki-purple);
@@ -139,8 +139,44 @@
 /* Make Tailwind's dark:* utilities follow the Flexoki dark theme */
 @custom-variant dark (&:where([data-theme="flexoki-dark"], [data-theme="flexoki-dark"] *));
 
-
 @plugin "@iconify/tailwind4" {
-	prefix: iconify;
-    prefixes: lucide;
+  prefix: iconify;
+  prefixes: lucide;
+}
+@layer base {
+  body {
+    @apply m-0 bg-base-100 text-base-content text-[15px];
+  }
+  :root {
+    font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+    font-weight: normal;
+  }
+}
+
+/* “Topography” by Steve Schoger / Hero Patterns, CC BY 4.0; see docs/third-party-notices.md. */
+body {
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url('./assets/topography.svg');
+  background-size: 600px 600px;
+  opacity: 0.14;
+  mask-image: radial-gradient(ellipse at 80% 0%, black, transparent 75%);
+}
+
+@layer components {
+  .btn {
+    @apply justify-start;
+    min-height: 44px;
+    height: auto;
+    padding-block: 9px;
+  }
 }

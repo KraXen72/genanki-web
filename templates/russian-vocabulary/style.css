@@ -1,0 +1,10 @@
+.card { font-family: Arial, sans-serif; font-size: 22px; text-align: center; font-style: normal; line-height: 1.5; }
+.category, .translation { color: #777; }
+.category { font-size: 17px; margin-bottom: 12px; }
+.word { font-size: 32px; margin-bottom: 20px; }
+.meanings { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; text-align: left; max-width: 640px; margin: 20px auto; }
+.meanings .SlovakMeanings { grid-column: 1; }
+.meanings .EnglishGlosses { grid-column: 2; color: #777; }
+.meanings.reverse { grid-template-columns: 1fr; }
+.example { margin: 20px auto; max-width: 720px; }
+hr { border: 0; border-top: 1px solid #777; margin: 18px 0; }

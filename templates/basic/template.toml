@@ -1,0 +1,29 @@
+format_version = 1
+key = "basic"
+input_version = 1
+name = "Question & answer"
+schema = "input.schema.json"
+prompt = "prompt.md"
+css = "style.css"
+[model]
+id = 1759797712
+name = "Question & answer · v1"
+[destination]
+policy = "fixed"
+deck = "Study::Questions"
+[[fields]]
+name = "ID"
+path = "id"
+format = "text"
+[[fields]]
+name = "Question"
+path = "question"
+format = "lines"
+[[fields]]
+name = "Answer"
+path = "answer"
+format = "lines"
+[[cards]]
+name = "Question → Answer"
+front = "cards/front.html"
+back = "cards/answer.html"

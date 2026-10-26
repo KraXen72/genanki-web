@@ -1,0 +1,93 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "examples": [
+        "ru:книга:general"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+      "examples": [
+        "podstatné meno; ženský rod"
+      ]
+    },
+    "word": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+      "examples": [
+        "кни́га"
+      ]
+    },
+    "meanings": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "properties": {
+          "sk": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+            "examples": [
+              "kniha"
+            ]
+          },
+          "en": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+            "examples": [
+              "book"
+            ]
+          },
+          "sentence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+            "examples": [
+              "Э́то моя́ кни́га."
+            ]
+          },
+          "translation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+            "examples": [
+              "Toto je moja kniha."
+            ]
+          }
+        },
+        "required": [
+          "sk",
+          "en"
+        ],
+        "additionalProperties": false,
+        "dependencies": {
+          "sentence": [
+            "translation"
+          ],
+          "translation": [
+            "sentence"
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "category",
+    "word",
+    "meanings"
+  ],
+  "additionalProperties": false
+}

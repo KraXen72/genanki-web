@@ -1,0 +1,71 @@
+format_version = 1
+key = "russian-vocabulary"
+input_version = 1
+name = "Russian vocabulary"
+schema = "input.schema.json"
+prompt = "prompt.md"
+css = "style.css"
+
+[model]
+id = 1759797711
+name = "Russian vocabulary · v1"
+
+[destination]
+policy = "shared-source"
+deck = "Ruština::Vocabulary"
+
+[[fields]]
+name = "ID"
+path = "id"
+format = "text"
+[[fields]]
+name = "Category"
+path = "category"
+format = "text"
+[[fields]]
+name = "Word"
+path = "word"
+format = "text"
+[[fields]]
+name = "SlovakMeanings"
+path = "meanings"
+format = "list"
+item_path = "sk"
+[[fields]]
+name = "EnglishGlosses"
+path = "meanings"
+format = "list"
+item_path = "en"
+[[fields]]
+name = "Sentence1"
+path = "meanings.0.sentence"
+format = "text"
+[[fields]]
+name = "Translation1"
+path = "meanings.0.translation"
+format = "text"
+[[fields]]
+name = "Sentence2"
+path = "meanings.1.sentence"
+format = "text"
+[[fields]]
+name = "Translation2"
+path = "meanings.1.translation"
+format = "text"
+[[fields]]
+name = "Sentence3"
+path = "meanings.2.sentence"
+format = "text"
+[[fields]]
+name = "Translation3"
+path = "meanings.2.translation"
+format = "text"
+
+[[cards]]
+name = "Russian → Slovak"
+front = "cards/forward.html"
+back = "cards/answer.html"
+[[cards]]
+name = "Slovak → Russian"
+front = "cards/reverse.html"
+back = "cards/answer.html"

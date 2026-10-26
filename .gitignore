@@ -28,3 +28,8 @@ gitignore
 Thumbs.db
 
 _artifacts/
+
+/public/runtime/
+/test-results/
+/playwright-report/
+/.playwright-cli/

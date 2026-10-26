@@ -1,0 +1,115 @@
+{
+  "type": "object",
+  "properties": {
+    "packKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000
+              },
+              "qfmt": {
+                "type": "string"
+              },
+              "afmt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "qfmt",
+              "afmt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "css": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "fields",
+        "cards",
+        "css"
+      ],
+      "additionalProperties": false
+    },
+    "deck": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "fields"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "packKey",
+    "model",
+    "deck",
+    "notes"
+  ],
+  "additionalProperties": false,
+  "title": "ExportPayload"
+}

@@ -1,0 +1,1 @@
+Create concise question-and-answer study notes. Each question should test one clear fact and be answerable without the surrounding conversation. Keep answers accurate and short. Use plain text, with newlines where useful. Use stable topic IDs such as study:photosynthesis; preserve the ID on corrections. The optional source records the supplied lesson or topic.

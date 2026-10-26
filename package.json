@@ -1,27 +1,45 @@
 {
-  "name": "vite-template-solid",
+  "name": "genanki-web",
   "version": "0.0.0",
-  "description": "",
+  "description": "Local browser-based Anki package builder",
   "type": "module",
   "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
+    "start": "node scripts/prepare-runtime.mjs && vite",
+    "dev": "node scripts/prepare-runtime.mjs && vite",
+    "build": "pnpm schemas:generate && node scripts/prepare-runtime.mjs && pnpm typecheck && vite build",
+    "serve": "vite preview",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.worker.json",
+    "types:generate": "node scripts/generate-types.mjs",
+    "test": "node scripts/prepare-runtime.mjs && vitest run",
+    "test:e2e": "playwright test",
+    "runtime:prepare": "node scripts/prepare-runtime.mjs",
+    "schemas:generate": "node scripts/build-pack-schemas.mjs && node scripts/generate-types.mjs",
+    "format": "prettier --write src tests scripts *.ts *.json",
+    "format:check": "prettier --check src tests scripts *.ts *.json"
   },
   "license": "MIT",
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.147",
     "@iconify/tailwind4": "^1.2.3",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/vite": "^4.1.13",
+    "@types/node": "^26.6.5",
+    "json-schema-to-typescript": "^16.0.0",
+    "prettier": "^3.9.10",
+    "pyodide": "314.0.7",
     "solid-devtools": "^0.34.3",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vite": "^7.1.4",
-    "vite-plugin-solid": "^2.11.8"
+    "vite-plugin-solid": "^2.11.8",
+    "vitest": "^5.0.5"
   },
   "dependencies": {
+    "ajv": "^8.20.0",
     "daisyui": "^5.7.50",
+    "fflate": "^0.8.3",
+    "smol-toml": "^1.9.1",
     "solid-js": "^1.9.9"
-  }
+  },
+  "packageManager": "pnpm@10.34.9"
 }

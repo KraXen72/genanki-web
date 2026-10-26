@@ -1,5 +1,11 @@
 @import 'tailwindcss';
 
+@theme {
+  --font-mono:
+    Consolas, 'Noto Sans Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Liberation Mono',
+    'Courier New', monospace;
+}
+
 @plugin "daisyui" {
   themes: false;
 }

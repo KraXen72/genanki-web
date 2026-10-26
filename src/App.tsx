@@ -213,7 +213,7 @@ function App() {
               </p>
             </aside>
             <aside>
-              <p class="text-base-content/65" data-testid="build-info">
+              <p class="font-mono text-base-content/65" data-testid="build-info">
                 build {__BUILD_INFO__.commit} · genanki {__BUILD_INFO__.genanki} ·{' '}
                 {__BUILD_INFO__.timestamp}
               </p>

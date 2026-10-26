@@ -1,1 +1,146 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: false;
+}
+
+/* Flexoki Light */
+@plugin "daisyui/theme" {
+  name: "flexoki-light";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  /* Flexoki palette */
+  --flexoki-bg: #fffcf0;
+  --flexoki-bg-2: #f2f0e5;
+  --flexoki-ui: #e6e4d9;
+  --flexoki-ui-2: #dad8ce;
+  --flexoki-ui-3: #cecdc3;
+  --flexoki-tx-3: #b7b5ac;
+  --flexoki-tx-2: #6f6e69;
+  --flexoki-tx: #100f0f;
+
+  --flexoki-red: #af3029;
+  --flexoki-orange: #bc5215;
+  --flexoki-yellow: #ad8301;
+  --flexoki-green: #66800b;
+  --flexoki-cyan: #24837b;
+  --flexoki-blue: #205ea6;
+  --flexoki-purple: #5e409d;
+  --flexoki-magenta: #a02f6f;
+
+  /* daisyUI */
+  --color-base-100: var(--flexoki-bg);
+  --color-base-200: var(--flexoki-bg-2);
+  --color-base-300: var(--flexoki-ui);
+  --color-base-content: var(--flexoki-tx);
+
+  --color-primary: var(--flexoki-blue);
+  --color-primary-content: var(--flexoki-bg);
+
+  --color-secondary: var(--flexoki-purple);
+  --color-secondary-content: var(--flexoki-bg);
+
+  --color-accent: var(--flexoki-orange);
+  --color-accent-content: var(--flexoki-bg);
+
+  --color-neutral: var(--flexoki-ui-3);
+  --color-neutral-content: var(--flexoki-tx);
+
+  --color-info: var(--flexoki-cyan);
+  --color-info-content: var(--flexoki-bg);
+
+  --color-success: var(--flexoki-green);
+  --color-success-content: var(--flexoki-bg);
+
+  --color-warning: var(--flexoki-yellow);
+  --color-warning-content: var(--flexoki-tx);
+
+  --color-error: var(--flexoki-red);
+  --color-error-content: var(--flexoki-bg);
+
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Flexoki Dark */
+@plugin "daisyui/theme" {
+  name: "flexoki-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+
+  /* Flexoki palette */
+  --flexoki-bg: #100f0f;
+  --flexoki-bg-2: #1c1b1a;
+  --flexoki-ui: #282726;
+  --flexoki-ui-2: #343331;
+  --flexoki-ui-3: #403e3c;
+  --flexoki-tx-3: #575653;
+  --flexoki-tx-2: #878580;
+  --flexoki-tx: #cecdc3;
+
+  --flexoki-red: #d14d41;
+  --flexoki-orange: #da702c;
+  --flexoki-yellow: #d0a215;
+  --flexoki-green: #879a39;
+  --flexoki-cyan: #3aa99f;
+  --flexoki-blue: #4385be;
+  --flexoki-purple: #8b7ec8;
+  --flexoki-magenta: #ce5d97;
+
+  /* daisyUI */
+  --color-base-100: var(--flexoki-bg);
+  --color-base-200: var(--flexoki-bg-2);
+  --color-base-300: var(--flexoki-ui);
+  --color-base-content: var(--flexoki-tx);
+
+  --color-primary: var(--flexoki-blue);
+  --color-primary-content: var(--flexoki-bg);
+
+  --color-secondary: var(--flexoki-purple);
+  --color-secondary-content: var(--flexoki-bg);
+
+  --color-accent: var(--flexoki-orange);
+  --color-accent-content: var(--flexoki-bg);
+
+  --color-neutral: var(--flexoki-ui-3);
+  --color-neutral-content: var(--flexoki-tx);
+
+  --color-info: var(--flexoki-cyan);
+  --color-info-content: var(--flexoki-bg);
+
+  --color-success: var(--flexoki-green);
+  --color-success-content: var(--flexoki-bg);
+
+  --color-warning: var(--flexoki-yellow);
+  --color-warning-content: var(--flexoki-bg);
+
+  --color-error: var(--flexoki-red);
+  --color-error-content: var(--flexoki-bg);
+
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Make Tailwind's dark:* utilities follow the Flexoki dark theme */
+@custom-variant dark (&:where([data-theme="flexoki-dark"], [data-theme="flexoki-dark"] *));
+
+
+@plugin "@iconify/tailwind4" {
+	prefix: iconify;
+    prefixes: lucide;
+}

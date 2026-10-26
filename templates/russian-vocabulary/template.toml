@@ -8,7 +8,7 @@ css = "style.css"
 
 [model]
 id = 1759797711
-name = "Russian vocabulary · v1"
+name = "Russian vocabulary v1"
 
 [destination]
 policy = "shared-source"

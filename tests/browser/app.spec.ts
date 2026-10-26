@@ -106,7 +106,7 @@ test('copies the selected schema-derived prompt and offers a clipboard fallback'
   await page.getByLabel('Note type').selectOption('basic');
   await page.getByRole('button', { name: 'Copy LLM prompt' }).click();
   const copied = await page.evaluate(() => (window as any).copiedPrompt as string);
-  expect(copied).toContain('QUEUE PROTOCOL');
+  expect(copied).toContain('## Queue');
   expect(copied).toContain('question');
   expect(copied).toMatch(/template = "basic"/);
   expect(copied).toMatch(/```$/);
@@ -312,7 +312,7 @@ test('shows the shared queue prompt in an accessible modal and links its source'
   const dialog = page.getByRole('dialog', { name: 'Queue prompt' });
   await expect(dialog).toBeVisible();
   await expect(dialog).toContainText('Included in every copied prompt.');
-  await expect(dialog).toContainText('QUEUE PROTOCOL');
+  await expect(dialog).toContainText('## Queue');
   expect(await dialog.evaluate((element) => element instanceof HTMLDialogElement)).toBe(true);
   const codeBlock = dialog.locator('pre');
   await expect(codeBlock).toHaveClass(/font-mono/);

@@ -251,7 +251,7 @@ export async function compileBatch(
 
   return {
     payload,
-    filename: `${filenamePart(pack.manifest.name, 'template')}__${filenamePart(source, 'source')}.apkg`,
+    filename: `${filenamePart(source, 'source')}__${filenamePart(pack.manifest.name, 'template')}.apkg`,
     cardCount: compiledNotes.length * pack.cards.length,
     duplicates,
     warnings: duplicateContentWarnings(notes),

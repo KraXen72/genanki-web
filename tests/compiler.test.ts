@@ -84,7 +84,7 @@ it.each([
   const result = await compile(document);
   expect(result.payload.deck.name).toBe(`Ruština::Vocabulary::${destination}`);
   expect(result.filename).toBe(
-    `russian_vocabulary__${destination.toLowerCase().replaceAll(' ', '_')}.apkg`,
+    `${destination.toLowerCase().replaceAll(' ', '_')}__russian_vocabulary.apkg`,
   );
 });
 
@@ -92,14 +92,14 @@ it.each([
   {
     template: 'Russian vocabulary',
     source: 'YouTube - ЕГОР ШКРЕД - Smashing Rooms',
-    filename: 'russian_vocabulary__youtube_-_egor_shkred_-_smashing_rooms.apkg',
+    filename: 'youtube_-_egor_shkred_-_smashing_rooms__russian_vocabulary.apkg',
   },
   {
     template: 'Ruská slovná zásoba',
     source: '  Čítanie / кни́га: урок 1?  ',
-    filename: 'ruska_slovna_zasoba__citanie_kniga_urok_1.apkg',
+    filename: 'citanie_kniga_urok_1__ruska_slovna_zasoba.apkg',
   },
-  { template: '📚', source: '🎬', filename: 'template__source.apkg' },
+  { template: '📚', source: '🎬', filename: 'source__template.apkg' },
 ])('names downloads $filename', async ({ template, source, filename }) => {
   const document = example();
   document.notes[0].source = source;

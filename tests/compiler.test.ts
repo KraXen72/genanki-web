@@ -83,6 +83,30 @@ it.each([
   // smol-toml correctly omits undefined object properties.
   const result = await compile(document);
   expect(result.payload.deck.name).toBe(`Ruština::Vocabulary::${destination}`);
+  expect(result.filename).toBe(
+    `russian_vocabulary__${destination.toLowerCase().replaceAll(' ', '_')}.apkg`,
+  );
+});
+
+it.each([
+  {
+    template: 'Russian vocabulary',
+    source: 'YouTube - ЕГОР ШКРЕД - Smashing Rooms',
+    filename: 'russian_vocabulary__youtube_-_egor_shkred_-_smashing_rooms.apkg',
+  },
+  {
+    template: 'Ruská slovná zásoba',
+    source: '  Čítanie / кни́га: урок 1?  ',
+    filename: 'ruska_slovna_zasoba__citanie_kniga_urok_1.apkg',
+  },
+  { template: '📚', source: '🎬', filename: 'template__source.apkg' },
+])('names downloads $filename', async ({ template, source, filename }) => {
+  const document = example();
+  document.notes[0].source = source;
+  const pack = { ...russian, manifest: { ...russian.manifest, name: template } };
+  const result = await compileBatch(stringify(document), [pack]);
+
+  expect(result.filename).toBe(filename);
 });
 
 it('uses stable positive safe deck IDs and distinct full paths', async () => {

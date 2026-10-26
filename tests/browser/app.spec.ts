@@ -47,6 +47,10 @@ test('exports locally, downloads verified packages, retries, and clears on reloa
   });
   await expect(page.getByRole('alert')).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Download .apkg' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Download .apkg' })).toHaveAttribute(
+    'download',
+    'russian_vocabulary__lesson_1.apkg',
+  );
   const firstDownload = page.waitForEvent('download');
   await page.getByRole('link', { name: 'Download .apkg' }).click();
   await (await firstDownload).saveAs(testInfo.outputPath('first.apkg'));

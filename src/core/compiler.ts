@@ -1,4 +1,5 @@
 import { parse } from 'smol-toml';
+import transliterate from '@sindresorhus/transliterate';
 import envelopeSchema from '../../schemas/envelope.schema.json';
 import type { ExportPayload } from './export.generated';
 import type { Pack } from './packs';
@@ -17,6 +18,7 @@ type FieldMapping = Pack['manifest']['fields'][number];
 
 export interface Compilation {
   payload: ExportPayload;
+  filename: string;
   cardCount: number;
   duplicates: number;
   warnings: string[];
@@ -137,7 +139,25 @@ function duplicateContentWarnings(notes: InputNote[]): string[] {
   return warnings;
 }
 
-function resolveDeckName(pack: Pack, notes: InputNote[]): string {
+function resolveSource(notes: InputNote[]): string {
+  const sources = notes.map((note) => {
+    return typeof note.source === 'string' ? note.source.normalize('NFC').trim() : '';
+  });
+  const allShareSource = sources[0] && sources.every((source) => source === sources[0]);
+
+  return allShareSource ? sources[0] : 'Mix';
+}
+
+function filenamePart(text: string, fallback: string): string {
+  return (
+    transliterate(text)
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '_')
+      .replace(/^[_-]+|[_-]+$/g, '') || fallback
+  );
+}
+
+function resolveDeckName(pack: Pack, source: string): string {
   const { policy, deck } = pack.manifest.destination;
   const baseDeck = deck
     .split('::')
@@ -145,13 +165,7 @@ function resolveDeckName(pack: Pack, notes: InputNote[]): string {
     .join('::');
   if (policy === 'fixed') return baseDeck;
 
-  const sources = notes.map((note) => {
-    return typeof note.source === 'string' ? note.source.normalize('NFC').trim() : '';
-  });
-  const allShareSource = sources[0] && sources.every((source) => source === sources[0]);
-  const destination = allShareSource ? sources[0] : 'Mix';
-
-  return `${baseDeck}::${destination}`;
+  return `${baseDeck}::${source}`;
 }
 
 /** Hashes the normalized full deck path into a positive 52-bit, JS-safe Anki ID. */
@@ -214,7 +228,8 @@ export async function compileBatch(
   checkText(document);
 
   const { notes, duplicates } = deduplicateNotes(document.notes as InputNote[]);
-  const deckName = resolveDeckName(pack, notes);
+  const source = resolveSource(notes);
+  const deckName = resolveDeckName(pack, source);
   const model = pack.manifest.model;
   const compiledNotes = notes.map((note) => ({
     id: note.id as string,
@@ -236,6 +251,7 @@ export async function compileBatch(
 
   return {
     payload,
+    filename: `${filenamePart(pack.manifest.name, 'template')}__${filenamePart(source, 'source')}.apkg`,
     cardCount: compiledNotes.length * pack.cards.length,
     duplicates,
     warnings: duplicateContentWarnings(notes),

@@ -122,7 +122,7 @@ function App() {
       const blob = new Blob([output.bytes], { type: 'application/octet-stream' });
       setDownload({
         url: URL.createObjectURL(blob),
-        name: `${result.payload.packKey}.apkg`,
+        name: result.filename,
         size: output.bytes.byteLength,
         seconds: (output.elapsedMs / 1000).toFixed(1),
       });

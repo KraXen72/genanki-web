@@ -159,7 +159,7 @@ function App() {
           </div>
           <p class="max-w-3xl text-base leading-relaxed text-base-content/80">
             Have your LLM make the cards in TOML, then use this to generate an Anki deck{' '}
-            <code class="rounded bg-base-300/60 px-1.5 py-0.5 text-[15px] text-primary">.apkg</code>
+            <code class="rounded bg-base-300/60 px-1.5 py-0.5 text-primary">.apkg</code>
           </p>
         </div>
         <div class="grid items-start gap-7 md:grid-cols-[260px_minmax(0,1fr)] md:gap-x-10 md:gap-y-6 lg:gap-x-14">
@@ -205,8 +205,8 @@ function App() {
           <footer class="footer md:col-start-2 gap-5 border-t border-base-content/15 pt-6 text-[15px] leading-relaxed text-base-content/75">
             <aside class="max-w-4xl gap-2">
               <p>
-                Import the downloaded package in Anki or AnkiDroid. Russian TTS requires AnkiDroid
-                2.17+ and a Russian voice.
+                Import the downloaded package in Anki or AnkiDroid. Russian TTS requires AnkiDroid{' '}
+                <code>2.17+</code> and a Russian voice.
               </p>
               <p>
                 Stable IDs support updates; Anki import options and local edits affect reimports.

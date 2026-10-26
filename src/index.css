@@ -150,6 +150,19 @@
   prefixes: lucide;
 }
 @layer base {
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  code,
+  kbd,
+  samp {
+    font-size: inherit;
+  }
+
   body {
     @apply m-0 bg-base-100 text-base-content text-[15px];
   }

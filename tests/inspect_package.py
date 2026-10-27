@@ -40,11 +40,14 @@ def inspect(path):
             assert stored_model == model_id
             assert modified > 0
             fields = fields.split('\x1f')
-            assert len(fields) == 11
+            assert len(fields) == 15
             assert fields[0] == 'ru:книга:general'
             assert fields[2] == 'кни́га'
-            assert fields[5:7] == ['Э́то моя́ кни́га.', 'Toto je moja kniha.']
-            assert fields[7:] == ['', '', '', '']
+            assert fields[3] in {'kniha', 'knižka'}
+            assert fields[4:9] == ['book', '', '', '', '']
+            assert '<' not in fields[3]
+            assert fields[9:11] == ['Э́то моя́ кни́га.', 'Toto je moja kniha.']
+            assert fields[11:] == ['', '', '', '']
             cards = connection.execute('SELECT ord, did FROM cards WHERE nid=? ORDER BY ord', (note_id,)).fetchall()
             assert [card[0] for card in cards] == [0, 1]
             assert cards[0][1] == cards[1][1]

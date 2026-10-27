@@ -7,8 +7,8 @@ prompt = "prompt.md"
 css = "style.css"
 
 [model]
-id = 1759797711
-name = "Russian vocabulary v1"
+id = 1759797712
+name = "Russian vocabulary v2"
 
 [destination]
 policy = "shared-source"
@@ -27,15 +27,29 @@ name = "Word"
 path = "word"
 format = "text"
 [[fields]]
-name = "SlovakMeanings"
-path = "meanings"
-format = "list"
-item_path = "sk"
+name = "SlovakMeaning1"
+path = "meanings.0.sk"
+format = "text"
 [[fields]]
-name = "EnglishGlosses"
-path = "meanings"
-format = "list"
-item_path = "en"
+name = "EnglishGloss1"
+path = "meanings.0.en"
+format = "text"
+[[fields]]
+name = "SlovakMeaning2"
+path = "meanings.1.sk"
+format = "text"
+[[fields]]
+name = "EnglishGloss2"
+path = "meanings.1.en"
+format = "text"
+[[fields]]
+name = "SlovakMeaning3"
+path = "meanings.2.sk"
+format = "text"
+[[fields]]
+name = "EnglishGloss3"
+path = "meanings.2.en"
+format = "text"
 [[fields]]
 name = "Sentence1"
 path = "meanings.0.sentence"

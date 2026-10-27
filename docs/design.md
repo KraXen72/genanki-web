@@ -167,7 +167,8 @@ Prefer JSON if deeply nested structures become common or machine-to-machine stru
 Preserve this exact field order:
 
 ```text
-ID, Category, Word, SlovakMeanings, EnglishGlosses,
+ID, Category, Word, SlovakMeaning1, EnglishGloss1,
+SlovakMeaning2, EnglishGloss2, SlovakMeaning3, EnglishGloss3,
 Sentence1, Translation1, Sentence2, Translation2,
 Sentence3, Translation3
 ```
@@ -177,7 +178,8 @@ Sentence3, Translation3
 - Slovak → Russian question: category, Slovak meanings, divider, Slovak example translations. Include no Russian, English glosses, or TTS.
 - Both answers: category, Russian dictionary form and TTS, paired Slovak/English meanings in a left-aligned CSS Grid, then matched Russian/Slovak example blocks with TTS on Russian sentences.
 - Both backs use the complete answer template directly, without `{{FrontSide}}`.
-- Field mappings generate indexed grid items for `SlovakMeanings` and `EnglishGlosses`; card CSS places corresponding items in the same row. The reverse question displays only the Slovak items. No card JavaScript is necessary for alignment.
+- Meaning fields use plain text mappings; all layout HTML lives in the card templates. Each conditional Slovak/English pair occupies one grid row. The reverse question displays only the Slovak fields. No card JavaScript is necessary for alignment.
+- The output uses the new `Russian vocabulary v2` model (ID `1759797712`), leaving existing v1 note types unchanged. The TOML input contract remains version 1; no existing-note migration is included.
 - Empty optional sentence pairs remain empty. Each optional example's entire divider/content/translation block is inside its `SentenceN` conditional.
 - Escape Russian input as text; preserve combining stress marks and ё. Use upright, ordinary print fonts, no italics or transliteration.
 - The card stylesheet does not set primary foreground/background colors on `.card` or `body`. Secondary text may use `#777`. The web application's own Flexoki theme is separate from exported card CSS.

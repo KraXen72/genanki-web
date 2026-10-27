@@ -27,8 +27,12 @@ it.each([1, 2, 3])('compiles %i paired meanings in exact field/card order', asyn
     'ID',
     'Category',
     'Word',
-    'SlovakMeanings',
-    'EnglishGlosses',
+    'SlovakMeaning1',
+    'EnglishGloss1',
+    'SlovakMeaning2',
+    'EnglishGloss2',
+    'SlovakMeaning3',
+    'EnglishGloss3',
     'Sentence1',
     'Translation1',
     'Sentence2',
@@ -36,9 +40,19 @@ it.each([1, 2, 3])('compiles %i paired meanings in exact field/card order', asyn
     'Sentence3',
     'Translation3',
   ]);
-  expect(result.payload.notes[0].fields).toHaveLength(11);
-  expect(result.payload.notes[0].fields[3]).toContain(`grid-row: ${count}`);
-  expect(result.payload.notes[0].fields[4]).toContain(`English ${count}`);
+  expect(result.payload.model.id).toBe(1759797712);
+  expect(result.payload.model.name).toBe('Russian vocabulary v2');
+  expect(result.payload.notes[0].fields).toEqual([
+    document.notes[0].id,
+    document.notes[0].category,
+    document.notes[0].word,
+    ...Array.from({ length: 3 }, (_, index) =>
+      index < count ? [`Slovak ${index + 1}`, `English ${index + 1}`] : ['', ''],
+    ).flat(),
+    ...Array.from({ length: 3 }, (_, index) =>
+      index < count ? [`Ру́сский ${index + 1}`, `Translation ${index + 1}`] : ['', ''],
+    ).flat(),
+  ]);
   expect(result.cardCount).toBe(2);
   expect(result.payload.model.cards.map((card) => card.name)).toEqual([
     'Russian → Slovak',
@@ -53,7 +67,21 @@ it('keeps optional pairs empty, combining stress and ё unchanged', async () => 
   delete document.notes[0].meanings[0].translation;
   const result = await compile(document);
   expect(result.payload.notes[0].fields[2]).toBe('всё ещё́');
-  expect(result.payload.notes[0].fields.slice(5)).toEqual(['', '', '', '', '', '']);
+  expect(result.payload.notes[0].fields.slice(9)).toEqual(['', '', '', '', '', '']);
+});
+
+it('keeps meaning fields editable as escaped text without layout markup', async () => {
+  const document = example();
+  document.notes[0].meanings = [{ sk: 'kniha & text', en: 'a "book"' }];
+  const result = await compile(document);
+  expect(result.payload.notes[0].fields.slice(3, 9)).toEqual([
+    'kniha &amp; text',
+    'a &quot;book&quot;',
+    '',
+    '',
+    '',
+    '',
+  ]);
 });
 
 it('escapes text once and only changes newlines for lines mappings', async () => {
@@ -263,7 +291,7 @@ describe.each(packs)('schema-derived prompt for $manifest.key', (pack) => {
 it('packages Russian templates unchanged with native TTS and conditional examples', () => {
   const [forward, reverse] = russian.cards;
   expect(forward.qfmt).toContain('{{tts ru_RU:Word}}');
-  expect(reverse.qfmt).not.toMatch(/\{\{(?:Word|EnglishGlosses|tts)/);
+  expect(reverse.qfmt).not.toMatch(/\{\{(?:Word|EnglishGloss\d|tts)/);
   expect(forward.afmt).toBe(reverse.afmt);
   expect(forward.afmt).not.toContain('{{FrontSide}}');
   for (const card of russian.cards) {
@@ -287,5 +315,12 @@ it('checks the size of escaped fields rather than just source character counts',
     sk: '&'.repeat(4000),
     en: 'gloss',
   }));
-  await expect(compile(document)).rejects.toThrow('32 KiB');
+  const pack = {
+    ...russian,
+    manifest: {
+      ...russian.manifest,
+      fields: [{ name: 'Meanings', path: 'meanings', format: 'list' as const, item_path: 'sk' }],
+    },
+  };
+  await expect(compileBatch(stringify(document), [pack])).rejects.toThrow('32 KiB');
 });

@@ -4,7 +4,7 @@ import { starterFiles, starterZip } from './starter';
 
 const sections = [
   ['quick-start', 'Quick start'],
-  ['manifest', 'Manifest'],
+  ['manifest', 'Template settings'],
   ['schema', 'Input schema'],
   ['fields', 'Field mappings'],
   ['cards', 'Cards & styling'],
@@ -134,8 +134,8 @@ export function TemplateDocs() {
             Make your own template
           </h1>
           <p class="mt-4 max-w-2xl text-base leading-relaxed text-base-content/80">
-            A template pack defines what an LLM writes and how that becomes Anki cards. It is a
-            folder of TOML, JSON, Markdown, HTML, and CSS. No app code required.
+            A template pack tells the LLM what to write and Anki how to show it. Start with the
+            example below.
           </p>
         </header>
         <div class="grid items-start gap-9 md:grid-cols-[180px_minmax(0,1fr)] md:gap-12">
@@ -156,9 +156,9 @@ export function TemplateDocs() {
           <article class="docs-content min-w-0">
             <Section id="quick-start" title="Start with a working pack">
               <p>
-                Download this two-way vocabulary template. Unzip it, edit the files, then ZIP the
-                folder again and choose <strong>Import template ZIP</strong> in the app. Files may
-                sit at the ZIP root or inside one folder. Imports last until the tab is reloaded.
+                Download and unzip the starter. Edit its files, ZIP the folder again, then choose
+                <strong>Import template ZIP</strong> in the app. Reloading the tab removes imported
+                templates.
               </p>
               <button class="btn btn-primary my-4" onClick={downloadStarter}>
                 <span class="iconify lucide--download size-5" aria-hidden="true" />
@@ -168,23 +168,20 @@ export function TemplateDocs() {
                 {downloadError()}
               </p>
               <p>
-                Import the unchanged starter first and paste <code>sample.toml</code> to try it: two
-                notes produce four cards in <code>Languages::Vocabulary::Lesson 1</code>. Before
-                making your own template, give it a unique <code>key</code> and{' '}
-                <code>model.id</code>. Update the schema header and sample to match the new key.
+                To try it first, import the ZIP and paste <code>sample.toml</code>: two notes make
+                four cards in <code>Languages::Vocabulary::Lesson 1</code>. For your own template,
+                change <code>key</code> and <code>model.id</code> in <code>template.toml</code>. Use
+                the new key for <code>template</code> in the JSON schema and sample too.
               </p>
               <Reference
                 label="Pack files"
                 rows={[
-                  ['template.toml', 'Required. Names the pack and connects all its files.'],
-                  [
-                    'input.schema.json',
-                    'Required. Describes the accepted TOML data and example values.',
-                  ],
-                  ['prompt.md', 'Required. Instructions for the LLM.'],
-                  ['cards/*.html', 'Required. Front and back files named in the manifest.'],
-                  ['style.css', 'Required. CSS for the exported Anki cards.'],
-                  ['sample.toml', 'Optional. A completed batch to test your template.'],
+                  ['template.toml', 'Template name, settings, and file names.'],
+                  ['input.schema.json', 'Allowed fields, rules, and example values.'],
+                  ['prompt.md', 'Instructions for the LLM.'],
+                  ['cards/*.html', 'Card fronts and backs.'],
+                  ['style.css', 'Card appearance.'],
+                  ['sample.toml', 'Optional test notes. All other files here are required.'],
                 ]}
               />
               <Code name="sample.toml">{starterFiles['sample.toml']}</Code>
@@ -192,71 +189,50 @@ export function TemplateDocs() {
 
             <Section id="manifest" title="Connect the files">
               <p>
-                All top-level options below are required. Paths are relative to{' '}
+                These settings are required. File paths start from the folder containing{' '}
                 <code>template.toml</code>.
               </p>
               <Code name="template.toml">{starterFiles['template.toml']}</Code>
               <Reference
                 label="Manifest options"
                 rows={[
-                  ['format_version', 'Pack format version. Must be 1.'],
+                  ['format_version', 'Use 1.'],
                   [
                     'key',
-                    'Stable identifier: a lowercase letter, then lowercase letters, digits, or hyphens; at most 64 characters.',
+                    'Your template’s unique key. Lowercase letters, digits, and hyphens; start with a letter. Maximum 64 characters.',
                   ],
-                  [
-                    'input_version',
-                    'Positive integer identifying your input contract. Start at 1.',
-                  ],
-                  ['name', 'Display name in the template picker.'],
-                  [
-                    'schema / prompt / css',
-                    'Paths to the input schema, instructions, and card stylesheet.',
-                  ],
-                  [
-                    'model.id',
-                    'Unique positive integer, at most 9007199254740991. Identifies the Anki note type. Choose your own once.',
-                  ],
-                  ['model.name', 'Name of the note type in Anki.'],
-                  [
-                    'destination.policy',
-                    'fixed: use deck as written. shared-source: append the common source, or Mix when sources are missing, empty, or different.',
-                  ],
+                  ['input_version', 'Start at 1; see “IDs & versions”.'],
+                  ['name', 'Name shown in the app.'],
+                  ['schema / prompt / css', 'File names from the table above.'],
+                  ['model.id', 'Your Anki note type’s unique number (1–9007199254740991).'],
+                  ['model.name', 'Name shown for this note type in Anki.'],
+                  ['destination.policy', 'fixed or shared-source; see below.'],
                   [
                     'destination.deck',
-                    'Base deck path, such as Languages::Vocabulary. No empty path segments; at most 200 characters.',
+                    'Deck name, e.g. Languages::Vocabulary. Maximum 200 characters; no empty parts.',
                   ],
                   [
                     'fields',
-                    '1–64 ordered field definitions. Each needs name, path, and format; list also needs item_path.',
+                    '1–64 fields, each with name, path, and format. list also needs item_path.',
                   ],
-                  [
-                    'cards',
-                    '1–8 ordered card definitions. Each needs a unique name and front/back file paths.',
-                  ],
+                  ['cards', '1–8 cards, each with a unique name and front/back file names.'],
                 ]}
               />
               <p>
-                With <code>shared-source</code>, two notes from “Lesson 1” go to{' '}
-                <code>Languages::Vocabulary::Lesson 1</code>. Notes from different lessons go to{' '}
-                <code>Languages::Vocabulary::Mix</code>. With <code>fixed</code>, both go directly
-                to <code>Languages::Vocabulary</code>. Each export contains one note type and one
-                deck.
+                <code>shared-source</code> adds <code>::Lesson 1</code> when all notes have{' '}
+                <code>source = "Lesson 1"</code>, otherwise <code>::Mix</code>. <code>fixed</code>{' '}
+                uses <code>destination.deck</code> as written. Each export makes one deck.
               </p>
             </Section>
 
             <Section id="schema" title="Describe the input">
               <p>
-                The input schema validates the whole TOML batch. Its header must require{' '}
-                <code>format_version = 1</code>, your key as <code>template</code>, and your{' '}
-                <code>input_version</code> as <code>template_version</code>. Each note needs a
-                nonblank, stable <code>id</code>.
+                A schema lists allowed fields and values. Match its three <code>const</code> values
+                to the first three lines of <code>sample.toml</code>.
               </p>
               <p>
-                List mandatory properties in <code>required</code>; the others are optional. Every
-                object needs <code>additionalProperties: false</code>, every string a{' '}
-                <code>maxLength ≤ 4000</code>, and every array a <code>maxItems ≤ 2000</code>. Add{' '}
-                <code>examples</code> so the copied LLM prompt contains useful values.
+                Put required field names in <code>required</code>; the rest are optional. Add{' '}
+                <code>examples</code> to give the LLM a useful starting point.
               </p>
               <details class="my-5 rounded-box border border-base-content/15 bg-base-100">
                 <summary class="cursor-pointer px-4 py-3 font-medium">
@@ -271,27 +247,24 @@ export function TemplateDocs() {
                 rows={[
                   [
                     '$schema, title, description, examples',
-                    'Metadata and example values. Use JSON Schema draft-07.',
+                    'Schema version (draft-07), title, description, and examples.',
                   ],
-                  [
-                    'type',
-                    'object, array, string, integer, number, or boolean. No null or union types.',
-                  ],
+                  ['type', 'object, array, string, integer, number, or boolean. Choose one.'],
                   [
                     'properties, required, additionalProperties, items',
-                    'Object properties, required names, and array items.',
-                  ],
-                  ['const, enum', 'One exact scalar value, or a choice of up to 64 values.'],
-                  ['minLength, maxLength, minItems, maxItems', 'String and array bounds.'],
-                  ['minimum, maximum', 'Numeric bounds.'],
-                  [
-                    'dependencies',
-                    'Require related properties together, e.g. a sentence and its translation.',
+                    'Fields, required names, and list items. Every object needs additionalProperties: false.',
                   ],
                   [
-                    'pattern',
-                    'Only the two expressions below are supported. Arbitrary regexes are rejected.',
+                    'const, enum',
+                    'One exact value (text, number, or true/false), or up to 64 choices.',
                   ],
+                  [
+                    'minLength, maxLength, minItems, maxItems',
+                    'Text length and list size. Set maxLength ≤ 4000 for every string and maxItems ≤ 2000 for every array.',
+                  ],
+                  ['minimum, maximum', 'Smallest and largest allowed numbers.'],
+                  ['dependencies', 'Require related fields together, as below.'],
+                  ['pattern', 'Only the two patterns below are supported.'],
                 ]}
               />
               <Code name="Optional paired fields (inside a note schema)">{`"dependencies": {
@@ -304,8 +277,8 @@ export function TemplateDocs() {
                 </summary>
                 <div class="px-3">
                   <p>
-                    The first keeps sources free of control characters and deck separators. The
-                    second rejects em dashes, HTML brackets, Anki expressions, and audio references.
+                    The first blocks <code>::</code> and control characters in sources. The second
+                    blocks em dashes, HTML brackets, Anki expressions, and audio references.
                   </p>
                   <Code name="Source pattern">
                     {JSON.stringify({ pattern: '^(?!.*::)[^\\x00-\\x1f]*$' }, null, 2)}
@@ -320,51 +293,39 @@ export function TemplateDocs() {
                 </div>
               </details>
               <p>
-                Other keywords, including <code>$ref</code>, <code>oneOf</code>, <code>allOf</code>,
-                and <code>format</code>, are unsupported. Keep schemas self-contained. The shared
-                batch rules always limit IDs to 200 characters and sources to 100 characters;
-                sources cannot contain <code>::</code> or control characters.
-              </p>
-              <p>
-                For templates bundled in the repository, edit <code>note.schema.json</code> and run{' '}
-                <code>pnpm schemas:generate</code> to build the full input schema. A standalone ZIP
-                only needs <code>input.schema.json</code>.
+                Other JSON Schema features, such as <code>$ref</code> and <code>oneOf</code>, are
+                unsupported.
               </p>
             </Section>
 
             <Section id="fields" title="Map data into Anki fields">
               <p>
-                Each <code>[[fields]]</code> reads a path from one note. Names must be unique and
-                begin with an ASCII letter, followed by letters or digits. Field order becomes Anki
-                field order.
+                Each <code>[[fields]]</code> copies a value from a note into an Anki field. Names
+                must be unique: start with <code>A–Z</code> or <code>a–z</code>, then use letters or
+                digits. Anki keeps the order you list them in.
               </p>
               <Reference
                 label="Field formats"
                 rows={[
                   [
                     'text',
-                    'HTML-escape a string, number, or boolean. Missing optional values become empty fields.',
+                    'Text, numbers, or true/false. Missing optional values leave the field empty.',
                   ],
-                  ['lines', 'Like text, with line breaks converted to <br>.'],
-                  [
-                    'list',
-                    'Read an array of objects; item_path selects one property from each item. Produces HTML divs with the field name as their class and a one-based grid-row.',
-                  ],
+                  ['lines', 'Like text, but preserves line breaks.'],
+                  ['list', 'Read a list using item_path. Adds a div per item; see below.'],
                 ]}
               />
               <p>
-                Paths use dots: <code>word</code>, <code>meanings.0.sk</code>, or{' '}
-                <code>meanings.1.en</code>. Array indices start at zero. Required content belongs in
-                the schema; a mapping does not make a field required.
+                <code>path = "word"</code> reads the word. <code>path = "meanings.0.sk"</code> reads{' '}
+                <code>sk</code> from the first meaning: counting starts at zero.
               </p>
               <Code name="Nested text mapping (template.toml)">{`[[fields]]
 name = "SlovakMeaning1"
 path = "meanings.0.sk"
 format = "text"`}</Code>
               <p>
-                Prefer separate <code>text</code> fields for a small, bounded number of meanings, as
-                the Russian template does. Put the grid HTML in card files to keep fields easy to
-                edit in Anki.
+                For a few meanings, use separate <code>text</code> fields, like the Russian
+                template. Keep layout HTML in the card files so notes stay easy to edit.
               </p>
               <Code name="List mapping alternative (template.toml)">{`[[fields]]
 name = "Meanings"
@@ -372,11 +333,10 @@ path = "meanings"
 format = "list"
 item_path = "en"`}</Code>
               <p>
-                Given{' '}
+                With{' '}
                 <code>meanings = [&#123; en = "book" &#125;, &#123; en = "volume" &#125;]</code>,
-                this produces the field below. Use <code>list</code> only when generated HTML inside
-                the editable field is acceptable. The array must exist; <code>item_path</code> is a
-                single property name and is only allowed with <code>list</code>.
+                this creates the HTML below <em>inside the editable field</em>. The list must exist.{' '}
+                <code>item_path</code> names one property and only works with <code>list</code>.
               </p>
               <Code name="Generated Meanings field">{`<div class="Meanings" style="grid-row: 1">book</div>
 <div class="Meanings" style="grid-row: 2">volume</div>`}</Code>
@@ -384,10 +344,9 @@ item_path = "en"`}</Code>
 
             <Section id="cards" title="Write the cards and CSS">
               <p>
-                Card files use Anki syntax, not SolidJS. <code>{'{{Word}}'}</code> inserts a field;{' '}
-                <code>{'{{#Example}}…{{/Example}}'}</code> shows content only when the field is
-                nonempty. Each card front should reference populated fields so Anki creates every
-                expected card.
+                <code>{'{{Word}}'}</code> shows a field. <code>{'{{#Example}}…{{/Example}}'}</code>{' '}
+                shows that part only when Example has a value. Make sure each front shows something;
+                empty fronts can prevent Anki from creating cards.
               </p>
               <For
                 each={[
@@ -400,65 +359,55 @@ item_path = "en"`}</Code>
                 {(path) => <Code name={path}>{starterFiles[path]}</Code>}
               </For>
               <p>
-                Card HTML and CSS are passed through to Anki; they are not previewed in the app.
-                Write ordinary CSS for cards. DaisyUI and Tailwind style this website and are not
-                included in exported decks. Input values are escaped, so put markup in card files,
-                not in TOML values.
+                Use ordinary HTML and CSS. Tailwind and DaisyUI are not included in Anki cards. Put
+                HTML in these files, not in TOML values: values display as text. Check the result in
+                Anki; the app has no card preview.
               </p>
               <p>
-                Need more? See Anki’s{' '}
+                See Anki’s{' '}
                 <a class="link text-primary" href="https://docs.ankiweb.net/templates/intro.html">
                   card template reference
                 </a>{' '}
-                for field filters and TTS. Voice availability depends on the Anki client.
+                for more options, including text-to-speech.
               </p>
             </Section>
 
             <Section id="prompt" title="Tell the LLM what to write">
               <Code name="prompt.md">{starterFiles['prompt.md']}</Code>
               <p>
-                Explain subject-specific choices here: language, detail, examples, and stable IDs.
-                The app prepends the shared queue instructions, then adds your prompt, a schema
-                reference, and a TOML example generated from the schema. You do not need to repeat
-                those rules.
+                Describe the language, detail, and examples you want. The app adds the shared queue
+                instructions, field rules, and a TOML example automatically.
               </p>
               <p>
-                After importing, copy the LLM prompt and check its example. The loader rejects packs
-                whose schema cannot generate a valid example; add valid <code>examples</code>{' '}
-                annotations to fix it.
+                Copy the LLM prompt to check the example. If importing reports an invalid example,
+                fix the <code>examples</code> values in your schema.
               </p>
             </Section>
 
-            <Section id="identity" title="Keep IDs stable; version the contract">
+            <Section id="identity" title="Update your template">
               <p>
-                A note’s identity comes from the pack <code>key</code> and note <code>id</code>.
-                Keep both stable when correcting content. Changing the source or destination deck
-                does not change that identity. Anki’s import settings and local edits affect how
-                reimports apply.
+                Keep <code>key</code> and each note’s <code>id</code> the same when correcting
+                notes, so Anki recognizes them on reimport. Changing decks or sources does not
+                change IDs. Anki’s import settings still affect updates.
               </p>
               <p>
-                Exact duplicate IDs and content are removed. The same ID with different content
-                blocks the batch. Identical content with different IDs produces a warning. The app
-                also rejects imports that reuse an already loaded pack key or model ID.
+                Exact duplicates are skipped. Two different notes with the same ID cause an error.
+                Imported templates also need a key and model ID that are not already loaded.
               </p>
               <Reference
                 label="Versioning"
                 rows={[
-                  ['format_version = 1', 'The supported pack and batch format documented here.'],
+                  ['format_version = 1', 'The format this page covers.'],
                   [
                     'input_version → template_version',
-                    'Your input contract version. Increase it when changing the accepted input contract, and update the schema. Old versions are rejected, not converted.',
+                    'Increase it when changing required fields or allowed values. Set template_version to match in JSON and TOML. Older versions are rejected.',
                   ],
                   [
                     'model.id',
-                    'Anki note type identity. Keep it for CSS/layout changes. Field or card name, order, or count changes need a migration decision; a new note type needs a new ID.',
+                    'Keep it for appearance changes. Changing field/card names, order, or count needs care with existing notes. New note types need new IDs.',
                   ],
                 ]}
               />
-              <p>
-                The Russian note type’s “v2” name is not a pack-format version. This page documents
-                the current format only; it does not keep older documentation editions.
-              </p>
             </Section>
 
             <Section id="limits" title="Stay within the limits">
@@ -467,22 +416,24 @@ item_path = "en"`}</Code>
                 rows={[
                   [
                     'Pack ZIP',
-                    '2 MiB compressed; 8 MiB expanded; 64 members; 512 KiB per file. UTF-8 text only.',
+                    '2 MiB zipped; 8 MiB unzipped; 64 files/folders; 512 KiB per file. UTF-8 text only.',
                   ],
                   [
                     'Pack paths',
-                    'Relative paths inside the pack. No absolute paths, backslashes, colons, empty segments, or dot/double-dot segments.',
+                    'Keep files inside the template folder. No / prefix, backslashes, colons, or . / .. folder names.',
                   ],
-                  ['Input schema', '64 KiB; 512 nodes; 12 levels; up to 64 enum choices.'],
-                  ['TOML batch', '4 MiB UTF-8; 1–2000 notes.'],
-                  ['Compiled field', '32 KiB UTF-8 after escaping and formatting.'],
+                  ['Input schema', '64 KiB; 512 schema entries; up to 12 levels of nesting.'],
+                  ['TOML batch', '4 MiB; 1–2000 notes.'],
+                  [
+                    'Note ID / source',
+                    'Nonblank ID: up to 200 characters. Source: up to 100, without :: or control characters.',
+                  ],
+                  ['Anki field', '32 KiB after conversion.'],
                 ]}
               />
               <p>
-                Test with the starter sample, then your own representative batch. Choose{' '}
-                <strong>Validate</strong> before generating, and import the resulting{' '}
-                <code>.apkg</code> into Anki to check both directions. Generation also verifies that
-                the package has the expected number of cards.
+                Choose <strong>Validate</strong>, generate the <code>.apkg</code>, then import it
+                into Anki and check both card directions.
               </p>
             </Section>
             <footer class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-base-content/15 pt-6 text-sm text-base-content/65">

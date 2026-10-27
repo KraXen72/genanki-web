@@ -203,17 +203,19 @@ function App() {
             </section>
           </Show>
           <footer class="footer md:col-start-2 gap-5 border-t border-base-content/15 pt-6 text-[15px] leading-relaxed text-base-content/75">
-            <a
-              class="btn btn-outline border-base-content/20 bg-base-100 text-base-content"
-              href={`${import.meta.env.BASE_URL}docs.html`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span class="iconify lucide--book-open size-5" aria-hidden="true" />
-              Template docs
-              <span class="iconify lucide--arrow-up-right size-4" aria-hidden="true" />
-              <span class="sr-only">(opens in a new tab)</span>
-            </a>
+            <nav aria-label="Documentation">
+              <a
+                class="btn btn-outline border-base-content/20 bg-base-100 text-base-content"
+                href={`${import.meta.env.BASE_URL}docs.html`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="iconify lucide--book-open size-5" aria-hidden="true" />
+                Template docs
+                <span class="iconify lucide--arrow-up-right size-4" aria-hidden="true" />
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+            </nav>
             <aside class="max-w-4xl gap-2">
               <p>
                 Uses the <code>genanki</code> python library in Pyodide WASM. Import the downloaded package in Anki or AnkiDroid. Russian TTS requires AnkiDroid{' '}

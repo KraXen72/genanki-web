@@ -142,3 +142,58 @@ assert len(model['tmpls']) == 2
     packagePath,
   ]);
 });
+
+for (const width of [320, 390, 1440]) {
+  test(`keeps the footer docs label and icons inside one button at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('./');
+    const link = page.getByRole('link', { name: 'Template docs' });
+    await link.scrollIntoViewIfNeeded();
+    const layout = await link.evaluate((element) => {
+      const button = element.getBoundingClientRect();
+      const range = document.createRange();
+      const text = [...element.childNodes].find(
+        (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.includes('Template docs'),
+      )!;
+      range.selectNodeContents(text);
+      const label = range.getBoundingClientRect();
+      const icons = [...element.querySelectorAll('[aria-hidden="true"]')].map((icon) => {
+        const rect = icon.getBoundingClientRect();
+        return {
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          bottom: rect.bottom,
+          center: rect.y + rect.height / 2,
+        };
+      });
+      return {
+        button: { left: button.left, right: button.right, top: button.top, bottom: button.bottom },
+        label: {
+          left: label.left,
+          right: label.right,
+          top: label.top,
+          bottom: label.bottom,
+          center: label.y + label.height / 2,
+        },
+        icons,
+      };
+    });
+    expect(layout.icons).toHaveLength(2);
+    for (const item of [layout.label, ...layout.icons]) {
+      expect(item.left).toBeGreaterThanOrEqual(layout.button.left);
+      expect(item.right).toBeLessThanOrEqual(layout.button.right);
+      expect(item.top).toBeGreaterThanOrEqual(layout.button.top);
+      expect(item.bottom).toBeLessThanOrEqual(layout.button.bottom);
+    }
+    expect(layout.icons[0].right).toBeLessThanOrEqual(layout.label.left);
+    expect(layout.label.right).toBeLessThanOrEqual(layout.icons[1].left);
+    for (const icon of layout.icons)
+      expect(Math.abs(icon.center - layout.label.center)).toBeLessThan(3);
+    const description = await page.locator('footer aside').first().boundingBox();
+    expect(description!.y).toBeGreaterThanOrEqual(layout.button.bottom);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+  });
+}

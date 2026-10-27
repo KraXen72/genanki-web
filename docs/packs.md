@@ -1,5 +1,7 @@
 # Template packs
 
+For a worked authoring guide and an importable starter ZIP, open **Template docs** in the application footer. The guide and ZIP share their source files in `examples/vocabulary-starter/`.
+
 A pack contains `template.toml`, the manifest's JSON input schema, prompt Markdown, card HTML, and CSS. Bundled and ZIP-imported packs use the same loader. A ZIP can contain these files directly or inside one directory; every member must stay inside that root. Imported packs exist only for the current tab session.
 
 The two bundled directories demonstrate the format. Start with `templates/basic/`, choose a unique stable key and model ID, and define your own subject fields, mappings, prompts, cards, and destination. Ordinary new note types require pack files only. The manifest contract is documented precisely in `schemas/manifest.schema.json`.

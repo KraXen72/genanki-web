@@ -1,0 +1,67 @@
+@reference '../index.css';
+
+@layer components {
+  .docs-content {
+    @apply leading-relaxed;
+  }
+
+  .docs-content section {
+    @apply mb-12 scroll-mt-6;
+  }
+
+  .docs-content h2 {
+    @apply mb-4 text-2xl font-medium tracking-tight;
+  }
+
+  .docs-content h2 a:hover {
+    @apply text-primary;
+  }
+
+  .docs-content p {
+    @apply my-3 text-base-content/80;
+  }
+
+  .docs-content p code {
+    @apply rounded bg-base-300/60 px-1 py-0.5 text-sm text-primary;
+    overflow-wrap: anywhere;
+  }
+
+  .docs-code {
+    @apply my-5 min-w-0 overflow-hidden rounded-box border border-base-content/15 bg-base-100;
+  }
+
+  .docs-code figcaption {
+    @apply flex items-center justify-between gap-3 border-b border-base-content/10 bg-base-200/70 px-4 py-1;
+  }
+
+  .docs-code pre {
+    @apply overflow-x-auto p-4 text-[13px] leading-relaxed;
+    tab-size: 2;
+  }
+
+  .docs-table {
+    @apply my-5 overflow-x-auto rounded-box border border-base-content/15 bg-base-100;
+  }
+
+  .docs-table .table {
+    @apply text-sm;
+  }
+
+  .docs-table td,
+  .docs-table th {
+    @apply align-top whitespace-normal;
+    overflow-wrap: anywhere;
+  }
+
+  .docs-table td:first-child {
+    @apply w-1/3 text-primary;
+  }
+
+  .docs-skip {
+    @apply sr-only;
+  }
+
+  .docs-skip:focus {
+    @apply not-sr-only fixed top-3 left-3 z-10 rounded bg-base-100 p-3 text-primary;
+  }
+}

@@ -5,6 +5,7 @@
 - Turn LLM-generated TOML into downloadable Anki `.apkg` decks entirely in your browser.
 - Copy self-contained LLM instructions with shared queue rules and a schema-generated TOML structure.
 - View and copy the shared queue prompt in a native dialog, with a link to edit its source on GitHub.
+- Create your own template with the one-page format v1 guide, copyable examples, and a downloadable starter ZIP. Open **Template docs** in the footer.
 - Use bundled Russian vocabulary and question-and-answer templates, or import a local template ZIP.
 - Validate complete batches with errors identifying the affected note and field.
 - Preserve explicit note identities across corrections, remove identical duplicates, and reject conflicting IDs.

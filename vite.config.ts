@@ -40,5 +40,8 @@ export default defineConfig({
   define: { __BUILD_INFO__: JSON.stringify(buildInfo) },
   base: process.env.VITE_BASE || '/',
   server: { port: 3000 },
-  build: { target: 'esnext' },
+  build: {
+    target: 'esnext',
+    rollupOptions: { input: { app: 'index.html', docs: 'docs.html' } },
+  },
 });

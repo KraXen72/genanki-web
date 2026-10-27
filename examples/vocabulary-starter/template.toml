@@ -1,0 +1,45 @@
+format_version = 1
+key = "vocabulary-starter"
+input_version = 1
+name = "Vocabulary starter"
+schema = "input.schema.json"
+prompt = "prompt.md"
+css = "style.css"
+
+[model]
+id = 1760000001
+name = "My vocabulary"
+
+[destination]
+policy = "shared-source"
+deck = "Languages::Vocabulary"
+
+[[fields]]
+name = "ID"
+path = "id"
+format = "text"
+
+[[fields]]
+name = "Word"
+path = "word"
+format = "text"
+
+[[fields]]
+name = "Meaning"
+path = "meaning"
+format = "text"
+
+[[fields]]
+name = "Example"
+path = "example"
+format = "lines"
+
+[[cards]]
+name = "Word → Meaning"
+front = "cards/forward.html"
+back = "cards/answer.html"
+
+[[cards]]
+name = "Meaning → Word"
+front = "cards/reverse.html"
+back = "cards/answer.html"

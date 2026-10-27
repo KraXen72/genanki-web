@@ -1,0 +1,16 @@
+format_version = 1
+template = "vocabulary-starter"
+template_version = 1
+
+[[notes]]
+id = "ru:книга"
+source = "Lesson 1"
+word = "кни́га"
+meaning = "book"
+example = "Э́то моя́ кни́га.\nThis is my book."
+
+[[notes]]
+id = "ru:дом"
+source = "Lesson 1"
+word = "дом"
+meaning = "house; home"

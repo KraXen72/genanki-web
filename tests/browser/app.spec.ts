@@ -225,7 +225,8 @@ test('imports a local pack, exports without renderer changes, and forgets it on 
   const manifest = parse(new TextDecoder().decode(members['template.toml'])) as any;
   manifest.key = 'local-basic';
   manifest.name = 'Local question & answer';
-  manifest.model.id = 1759797713;
+  // Use a fixture-only ID distinct from all bundled note types.
+  manifest.model.id = 8765432101;
   members['template.toml'] = strToU8(stringify(manifest));
   const schema = JSON.parse(new TextDecoder().decode(members['input.schema.json']));
   schema.properties.template.const = manifest.key;

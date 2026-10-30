@@ -40,8 +40,8 @@ it.each([1, 2, 3])('compiles %i paired meanings in exact field/card order', asyn
     'Sentence3',
     'Translation3',
   ]);
-  expect(result.payload.model.id).toBe(1759797712);
-  expect(result.payload.model.name).toBe('Russian vocabulary v2');
+  expect(result.payload.model.id).toBe(1759797713);
+  expect(result.payload.model.name).toBe('Russian vocabulary v3');
   expect(result.payload.notes[0].fields).toEqual([
     document.notes[0].id,
     document.notes[0].category,

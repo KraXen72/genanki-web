@@ -7,8 +7,8 @@ prompt = "prompt.md"
 css = "style.css"
 
 [model]
-id = 1759797712
-name = "Russian vocabulary v2"
+id = 1759797713
+name = "Russian vocabulary v3"
 
 [destination]
 policy = "shared-source"

@@ -75,3 +75,30 @@ test('Russian reverse shows only populated Slovak meanings without gaps', async 
   expect(boxes[0].x).toBe(boxes[1].x);
   expect(boxes[1].y).toBeGreaterThan(boxes[0].y);
 });
+
+test('Russian card sides share the updated meaning and translation styles', async ({ page }) => {
+  const fields = {
+    Category: 'podstatné meno',
+    Word: 'кни́га',
+    SlovakMeaning1: 'kniha',
+    EnglishGloss1: 'book',
+    Sentence1: 'Э́to кни́га.',
+    Translation1: 'To je kniha.',
+  };
+  const reverse = readFileSync(new URL('cards/reverse.html', pack), 'utf8');
+  const answer = readFileSync(new URL('cards/answer.html', pack), 'utf8');
+  await page.setContent(
+    `<style>${css}</style><div id="reverse" class="card">${render(reverse, fields)}</div><div id="answer" class="card">${render(answer, fields)}</div>`,
+  );
+
+  await expect(page.locator('#reverse')).toHaveCSS('font-family', 'Arial, sans-serif');
+  await expect(page.locator('#reverse .category')).toHaveCSS('font-size', '18px');
+  await expect(page.locator('#answer .category')).toHaveCSS('font-size', '18px');
+  await expect(page.locator('#reverse .slovak-meaning')).toHaveCSS('font-size', '22px');
+  await expect(page.locator('#answer .slovak-meaning')).toHaveCSS('font-size', '22px');
+  await expect(page.locator('#reverse .translation-prompt')).toHaveCSS(
+    'color',
+    'rgb(119, 119, 119)',
+  );
+  await expect(page.locator('#answer .translation')).toHaveCSS('color', 'rgb(119, 119, 119)');
+});

@@ -179,7 +179,7 @@ Sentence3, Translation3
 - Both answers: category, Russian dictionary form and TTS, paired Slovak/English meanings in a left-aligned CSS Grid, then matched Russian/Slovak example blocks with TTS on Russian sentences.
 - Both backs use the complete answer template directly, without `{{FrontSide}}`.
 - Meaning fields use plain text mappings; all layout HTML lives in the card templates. Each conditional Slovak/English pair occupies one grid row. The reverse question displays only the Slovak fields. No card JavaScript is necessary for alignment.
-- The output uses the new `Russian vocabulary v2` model (ID `1759797712`), leaving existing v1 note types unchanged. The TOML input contract remains version 1; no existing-note migration is included.
+- The output uses the new `Russian vocabulary v3` model (ID `1759797713`), leaving existing v1 and v2 note types unchanged. The TOML input contract remains version 1; no existing-note migration is included.
 - Empty optional sentence pairs remain empty. Each optional example's entire divider/content/translation block is inside its `SentenceN` conditional.
 - Escape Russian input as text; preserve combining stress marks and ё. Use upright, ordinary print fonts, no italics or transliteration.
 - The card stylesheet does not set primary foreground/background colors on `.card` or `body`. Secondary text may use `#777`. The web application's own Flexoki theme is separate from exported card CSS.

@@ -2,7 +2,7 @@
 
 ## Queue
 
-Queue standalone words/sentences and briefly acknowledge; wait to create cards. Remember mentioned sources and context.
+Queue standalone words/sentences and briefly acknowledge; wait to create cards. Remember mentioned sources and context. Set `source` only when I name one. Never invent or derive one from my request. If I named none, omit the field.
 
 On “flush”, “export”, “process batch”, “to Anki”, or similar, output everything since the last confirmed successful export in one TOML code block, following the template and structure below. Deduplicate; output content only, without HTML or Anki syntax.
 

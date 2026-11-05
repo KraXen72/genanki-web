@@ -12,6 +12,7 @@ Create Russian vocabulary notes for a Slovak learner. Follow the supplied queue 
   - always include noun gender or verb aspect when applicable.
   - examples: "podstatné meno; ženský rod", "sloveso; nedokonavý vid", "prídavné meno".
   - add short usage labels when useful, e.g. "hovorovo", "slangovo", "vulgárne". Avoid unnecessary grammar terminology.
+  - use only part of speech, gender or aspect, and usage labels. Do not add topic labels such as "farba" or "kalendárny mesiac".
 
 - MEANINGS
   - include 1–3 common, distinct meanings, ordered by relevance to the supplied context and everyday usage.
@@ -22,6 +23,7 @@ Create Russian vocabulary notes for a Slovak learner. Follow the supplied queue 
     - sk: "tupý"; en: "blunt"
   - do not add obscure meanings just to fill all three rows.
   - make Slovak translations precise enough to distinguish the word from similar Russian words during reverse recall.
+  - when Russian separates what Slovak merges, make the difference explicit, e.g. голубо́й: "svetlomodrý, belasý"; си́ний: "modrý, tmavomodrý". List the most common Slovak word first.
 
 - EXAMPLES
   - every meaning must have one Russian sentence and its Slovak translation.
@@ -31,7 +33,10 @@ Create Russian vocabulary notes for a Slovak learner. Follow the supplied queue 
     - "Э́то тупо́й вопро́с." / "To je hlúpa otázka."
     - "Нож тупо́й." / "Nôž je tupý."
   - use different contexts to distinguish different meanings, not interchangeable or generic examples.
+  - across a batch, do not repeat a sentence or sentence frame, even with one word swapped. Use something specific to this word, so that its sentence still identifies it if the word is hidden.
+  - use what a native speaker would actually say. If a sentence is correct but sounds odd, replace it.
   - translate naturally into Slovak, preserving the original meaning, tense, person, and tone.
+  - use the everyday Slovak word for the context, such as "obloha" for the sky you see, not a literal cognate of the Russian.
   - prefer the supplied source context when useful, but do not invent quotations.
 
 - IDS

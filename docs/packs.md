@@ -21,6 +21,22 @@ Supply illustrative values in schema `examples`, not a separate example file. Th
 
 For bundled packs, edit `note.schema.json` and run `pnpm schemas:generate` to compose the complete input schema from the shared envelope and manifest. ZIP users need only the generated `input.schema.json`, not `note.schema.json`.
 
+## Validators
+
+A pack can opt into bundled content checks. Packs that declare none skip this step entirely. Each entry names a validator and the mapped fields it reads; list fields are not supported.
+
+```toml
+[[validators]]
+name = "ru-stress"
+fields = ["Word", "Sentence1"]
+```
+
+Validators never make a batch invalid. Their warnings appear after **Validate**, and **Generate .apkg** stops until the user chooses **Export anyway**.
+
+`ru-stress` compares stress-marked Russian words with a dictionary of about 540,000 word forms. It skips words without a mark and words with ё, and only lists words that the dictionary lacks. A spelling with several valid stresses, such as `за́мок` and `замо́к`, accepts all of them, so it cannot tell which one a sentence needs.
+
+To add a word or a valid variant, edit `src/validators/ru-stress/supplement.txt` and run `pnpm ru-stress:generate`. To add a validator, add a module in `src/validators/`, register it in `src/validators/index.ts`, and add its name to `schemas/manifest.schema.json`.
+
 ## Field mappings
 
 Each ordered `[[fields]]` definition has `name`, `path`, and `format`:

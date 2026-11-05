@@ -14,6 +14,10 @@ name = "Russian vocabulary v3"
 policy = "shared-source"
 deck = "Ruština::Vocabulary"
 
+[[validators]]
+name = "ru-stress"
+fields = ["Word", "Sentence1", "Sentence2", "Sentence3"]
+
 [[fields]]
 name = "ID"
 path = "id"

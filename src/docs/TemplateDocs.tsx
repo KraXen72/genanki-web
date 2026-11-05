@@ -216,6 +216,10 @@ export function TemplateDocs() {
                     '1–64 fields, each with name, path, and format. list also needs item_path.',
                   ],
                   ['cards', '1–8 cards, each with a unique name and front/back file names.'],
+                  [
+                    'validators',
+                    'Optional content checks, each with name and fields. ru-stress checks Russian stress marks.',
+                  ],
                 ]}
               />
               <p>

@@ -146,6 +146,22 @@ it.each([
   expect(() => loadPack(members)).toThrow(expected);
 });
 
+it('rejects validators that are unknown or name unusable fields', () => {
+  const declare = (validator: string) => {
+    const members = files();
+    members['template.toml'] += `\n[[validators]]\n${validator}\n`;
+    return members;
+  };
+
+  expect(() => loadPack(declare('name = "ru-stress"\nfields = ["Question"]'))).not.toThrow();
+  expect(() => loadPack(declare('name = "ru-stress"\nfields = ["Missing"]'))).toThrow(
+    'unknown field Missing',
+  );
+  expect(() => loadPack(declare('name = "custom"\nfields = ["Question"]'))).toThrow(
+    'validators.0.name',
+  );
+});
+
 it('rejects duplicate fields and list mappings without item_path', () => {
   const members = files();
   members['template.toml'] = members['template.toml'].replace('name = "Question"', 'name = "ID"');

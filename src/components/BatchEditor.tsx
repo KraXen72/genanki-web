@@ -23,6 +23,7 @@ interface BatchEditorProps {
   onOpen: (file: File) => void;
   onValidate: () => void;
   onGenerate: () => void;
+  onExportAnyway: () => void;
   onCancel: () => void;
 }
 
@@ -100,7 +101,12 @@ export function BatchEditor(props: BatchEditorProps) {
           </Show>
           <Show when={props.compilation}>
             {(compilation) => (
-              <ExportResult compilation={compilation()} download={props.download} />
+              <ExportResult
+                compilation={compilation()}
+                download={props.download}
+                busy={busy()}
+                onExportAnyway={props.onExportAnyway}
+              />
             )}
           </Show>
         </div>

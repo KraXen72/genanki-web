@@ -191,6 +191,32 @@ test('keeps runtime lazy and recovers from unavailable runtime assets', async ({
   await expect(page.getByRole('link', { name: 'Download .apkg' })).toBeVisible();
 });
 
+test('waits for confirmation before exporting a batch with stress warnings', async ({ page }) => {
+  await page.goto('./');
+  const wrongStress = toml.replace('Э́то моя́ кни́га.', 'У него́ фу́тболка.');
+  await page.getByLabel('Paste the completed TOML batch').fill(wrongStress);
+
+  await page.getByRole('button', { name: 'Generate .apkg' }).click();
+  await expect(page.getByText('Batch valid, with warnings')).toBeVisible();
+  await expect(page.getByText('"фу́тболка" has unexpected stress')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Download .apkg' })).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Export anyway' }).click();
+  await expect(page.getByRole('link', { name: 'Download .apkg' })).toBeVisible();
+  await expect(page.getByText('"фу́тболка" has unexpected stress')).toBeVisible();
+});
+
+test('lists every validation problem with its note', async ({ page }) => {
+  await page.goto('./');
+  const invalid = toml.replace('word = "кни́га"', 'word = "кни́га — <b>"\nextra = 1');
+  await page.getByLabel('Paste the completed TOML batch').fill(invalid);
+
+  await page.getByRole('button', { name: 'Validate', exact: true }).click();
+  const alert = page.getByRole('alert');
+  await expect(alert).toContainText('contains "—", "<", ">", which is not allowed');
+  await expect(alert).toContainText('notes.0.extra (note "ru:книга:general")');
+});
+
 test('shows fixed build metadata and remains readable on a narrow viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('./');

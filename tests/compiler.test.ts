@@ -216,21 +216,21 @@ it.each([
     (d: any) => {
       d.notes[0].word = 'сло́во—';
     },
-    'pattern',
+    'contains "—"',
   ],
   [
     'HTML',
     (d: any) => {
       d.notes[0].word = '<b>сло́во</b>';
     },
-    'pattern',
+    'contains "<", ">"',
   ],
   [
     'Anki syntax',
     (d: any) => {
       d.notes[0].word = '{{Word}}';
     },
-    'pattern',
+    'contains "{{", "}}"',
   ],
   [
     'unpaired example',
@@ -306,7 +306,46 @@ it('packages Russian templates unchanged with native TTS and conditional example
 it('rejects formatting syntax and em dashes after newlines too', async () => {
   const document = example();
   document.notes[0].word = 'сло́во\n—';
-  await expect(compile(document)).rejects.toThrow('pattern');
+  await expect(compile(document)).rejects.toThrow('contains "—"');
+});
+
+it('reports every problem in one run with its note and failing text', async () => {
+  const document = example();
+  const [note] = document.notes;
+  const notes = Array.from({ length: 40 }, (_, index) => {
+    return { ...structuredClone(note), id: `ru:слово${index}:general`, word: 'сло́во—' };
+  });
+  notes.push({ ...notes[0], word: 'друго́е' });
+  notes.push({ ...note, id: 'ru:нота:general', word: 'a\x1fb' });
+  notes.push({ ...note, id: 'ru:лишнее:general', extra: 'x' });
+  document.notes = notes;
+
+  const error = await compile(document).catch((failure: Error) => failure);
+  const lines = (error as Error).message.split('\n');
+
+  expect(lines).toHaveLength(43);
+  expect(lines).toContain(
+    'notes.39.word (note "ru:слово39:general"): contains "—", which is not allowed. Value: "сло́во—".',
+  );
+  expect(lines).toContain(
+    'notes.41.word (note "ru:нота:general"): control characters are not allowed.',
+  );
+  expect(lines).toContain(
+    'notes.42.extra (note "ru:лишнее:general"): is not a known field; remove it.',
+  );
+  expect(lines).toContain('notes.40.id: conflicting content for ID "ru:слово0:general".');
+});
+
+it('explains a pattern it cannot break down by showing the value', async () => {
+  const document = example();
+  document.notes[0].source = 'bad\x1fsource';
+  await expect(compile(document)).rejects.toThrow('does not match the pattern');
+});
+
+it('reports wrong constants with the expected value', async () => {
+  const document = example();
+  document.format_version = 2;
+  await expect(compile(document)).rejects.toThrow('format_version: must be 1, not 2.');
 });
 
 it('checks the size of escaped fields rather than just source character counts', async () => {

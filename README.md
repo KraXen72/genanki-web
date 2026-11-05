@@ -7,7 +7,8 @@
 - View and copy the shared queue prompt in a native dialog, with a link to edit its source on GitHub.
 - Create your own template with the one-page format v1 guide, copyable examples, and a downloadable starter ZIP. Open **Template docs** in the footer.
 - Use bundled Russian vocabulary and question-and-answer templates, or import a local template ZIP.
-- Validate complete batches with errors identifying the affected note and field.
+- Validate complete batches and list every problem with its note, field, and failing text.
+- Check Russian stress marks against a bundled dictionary, with warnings you can review and export past.
 - Preserve explicit note identities across corrections, remove identical duplicates, and reject conflicting IDs.
 - Route Russian notes into source decks or a mixed deck automatically.
 - Generate two Russian cards per note with paired Slovak/English meanings and native Russian TTS expressions.

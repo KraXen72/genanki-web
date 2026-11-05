@@ -3,7 +3,16 @@ import transliterate from '@sindresorhus/transliterate';
 import envelopeSchema from '../../schemas/envelope.schema.json';
 import type { ExportPayload } from './export.generated';
 import type { Pack } from './packs';
-import { ajv, byteLength, checkText, LIMITS, validationErrors } from './validation';
+import { runValidators } from '../validators';
+import {
+  ajv,
+  byteLength,
+  controlCharacterErrors,
+  getPath,
+  LIMITS,
+  rejectIfAny,
+  validationErrors,
+} from './validation';
 
 const validateEnvelope = ajv.compile(envelopeSchema);
 const htmlEntities: Record<string, string> = {
@@ -22,24 +31,13 @@ export interface Compilation {
   cardCount: number;
   duplicates: number;
   warnings: string[];
+  /** Possible content problems. The user must confirm them before a package is built. */
+  reviewWarnings: string[];
 }
 
 /** Escapes content once, before it reaches Anki; Python preserves these field strings. */
 export function escapeText(text: string): string {
   return text.replace(/[&<>"']/g, (character) => htmlEntities[character]);
-}
-
-function getPath(value: unknown, path: string): unknown {
-  let current = value;
-
-  for (const key of path.split('.')) {
-    if (!current || typeof current !== 'object' || !Object.hasOwn(current, key)) {
-      return undefined;
-    }
-    current = (current as Record<string, unknown>)[key];
-  }
-
-  return current;
 }
 
 function compileScalar(value: unknown, path: string): string {
@@ -99,26 +97,32 @@ function canonicalContent(value: unknown): string {
   return JSON.stringify(value);
 }
 
-function deduplicateNotes(notes: InputNote[]) {
+/** Notes that failed schema validation are still scanned, so ID problems appear in the same run. */
+function deduplicateNotes(document: InputNote) {
+  const notes = Array.isArray(document.notes) ? (document.notes as InputNote[]) : [];
   const accepted = new Map<string, InputNote>();
+  const errors: string[] = [];
   let duplicates = 0;
 
   for (const [index, note] of notes.entries()) {
-    const id = note.id as string;
-    if (!id.trim()) throw new Error(`notes.${index}.id: must not be blank.`);
+    const id = note.id;
+    if (typeof id !== 'string') continue; // the schema reports this
+    if (!id.trim()) {
+      errors.push(`notes.${index}.id: must not be blank.`);
+      continue;
+    }
 
     const existing = accepted.get(id);
     if (!existing) {
       accepted.set(id, note);
-      continue;
+    } else if (canonicalContent(existing) !== canonicalContent(note)) {
+      errors.push(`notes.${index}.id: conflicting content for ID "${id}".`);
+    } else {
+      duplicates++;
     }
-    if (canonicalContent(existing) !== canonicalContent(note)) {
-      throw new Error(`notes.${index}.id: conflicting content for ID "${id}".`);
-    }
-    duplicates++;
   }
 
-  return { notes: [...accepted.values()], duplicates };
+  return { notes: [...accepted.values()], duplicates, errors };
 }
 
 function duplicateContentWarnings(notes: InputNote[]): string[] {
@@ -190,17 +194,17 @@ function parseBatch(input: string, unwrapFence: boolean) {
     if (fenced) text = fenced[1];
   }
 
-  const document = parse(text);
-  if (!validateEnvelope(document)) {
-    throw new Error(validationErrors(validateEnvelope.errors).join('\n'));
-  }
-
-  return document;
+  return parse(text);
 }
 
-function resolvePack(document: Record<string, unknown>, packs: Pack[]): Pack {
+function envelopeErrors(document: InputNote): string[] {
+  return validateEnvelope(document) ? [] : validationErrors(validateEnvelope.errors, document);
+}
+
+function resolvePack(document: InputNote, packs: Pack[]): Pack {
   const pack = packs.find((candidate) => candidate.manifest.key === document.template);
   if (!pack) {
+    rejectIfAny(envelopeErrors(document));
     throw new Error(
       `Unknown template "${document.template}". Select a bundled pack or import its ZIP.`,
     );
@@ -210,14 +214,39 @@ function resolvePack(document: Record<string, unknown>, packs: Pack[]): Pack {
       `template_version: ${document.template_version} is unsupported for ${document.template}; expected ${pack.manifest.input_version}.`,
     );
   }
-  if (!pack.validate(document)) {
-    throw new Error(validationErrors(pack.validate.errors).join('\n'));
-  }
 
   return pack;
 }
 
-/** Parses a whole batch, rejects invalid/conflicting notes, and compiles ordered Anki fields. */
+function schemaErrors(document: InputNote, pack: Pack): string[] {
+  const packErrors = pack.validate(document)
+    ? []
+    : validationErrors(pack.validate.errors, document);
+
+  // pack schemas repeat the envelope rules, so the same failure can appear twice
+  return [...new Set([...envelopeErrors(document), ...packErrors])];
+}
+
+function compileNotes(notes: InputNote[], pack: Pack) {
+  const errors: string[] = [];
+
+  const compileNoteField = (note: InputNote, field: FieldMapping) => {
+    try {
+      return compileField(note, field);
+    } catch (error) {
+      errors.push(`note "${note.id}": ${(error as Error).message}`);
+      return '';
+    }
+  };
+  const compiledNotes = notes.map((note) => ({
+    id: note.id as string,
+    fields: pack.manifest.fields.map((field) => compileNoteField(note, field)),
+  }));
+
+  return { compiledNotes, errors };
+}
+
+/** Parses a whole batch, reports every invalid or conflicting note, and compiles ordered Anki fields. */
 export async function compileBatch(
   input: string,
   packs: Pack[],
@@ -225,16 +254,21 @@ export async function compileBatch(
 ): Promise<Compilation> {
   const document = parseBatch(input, unwrapFence);
   const pack = resolvePack(document, packs);
-  checkText(document);
 
-  const { notes, duplicates } = deduplicateNotes(document.notes as InputNote[]);
+  const { notes, duplicates, errors: noteErrors } = deduplicateNotes(document);
+  rejectIfAny([
+    ...schemaErrors(document, pack),
+    ...controlCharacterErrors(document),
+    ...noteErrors,
+  ]);
+
+  const { compiledNotes, errors: fieldErrors } = compileNotes(notes, pack);
+  rejectIfAny(fieldErrors);
+
   const source = resolveSource(notes);
   const deckName = resolveDeckName(pack, source);
   const model = pack.manifest.model;
-  const compiledNotes = notes.map((note) => ({
-    id: note.id as string,
-    fields: pack.manifest.fields.map((field) => compileField(note, field)),
-  }));
+  const { reviewWarnings, notices } = runValidators(pack, notes);
 
   const payload: ExportPayload = {
     packKey: pack.manifest.key,
@@ -254,6 +288,7 @@ export async function compileBatch(
     filename: `${filenamePart(source, 'source')}__${filenamePart(pack.manifest.name, 'template')}.apkg`,
     cardCount: compiledNotes.length * pack.cards.length,
     duplicates,
-    warnings: duplicateContentWarnings(notes),
+    warnings: [...duplicateContentWarnings(notes), ...notices],
+    reviewWarnings,
   };
 }

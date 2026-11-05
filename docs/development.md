@@ -47,7 +47,7 @@ TOML and imported packs are held in memory and disappear on reload. Only an expl
 
 ## Deployment
 
-`.github/workflows/pages.yml` runs one job per stage, in order: contracts and types, unit tests, the site build, production browser tests under the repository subpath, and deployment of the default branch. The browser tests and deployment use the site built in the build job. In repository Settings → Pages, select **GitHub Actions** as the build source. This repository does not configure a backend or send content to GitHub.
+`.github/workflows/pages.yml` verifies contracts, types, compiler/runtime tests, and production browser flows under the repository subpath before uploading static files and deploying the default branch. In repository Settings → Pages, select **GitHub Actions** as the build source. This repository does not configure a backend or send content to GitHub.
 
 `VITE_BASE` controls all worker, Python, runtime, and bundled asset URLs. Build metadata is evaluated by Vite once: short Git commit (with `-dirty` for modified local builds), genanki version from the runtime lock, and UTC timestamp. GitHub Actions supplies the actual build commit through `GITHUB_SHA`.
 

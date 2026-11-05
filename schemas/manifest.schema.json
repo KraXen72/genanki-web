@@ -151,6 +151,36 @@
         "deck"
       ],
       "additionalProperties": false
+    },
+    "validators": {
+      "description": "Optional checks that warn about note content. Each check reads only the named fields.",
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "enum": [
+              "ru-stress"
+            ]
+          },
+          "fields": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            }
+          }
+        },
+        "required": [
+          "name",
+          "fields"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [

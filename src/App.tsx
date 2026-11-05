@@ -4,14 +4,11 @@ import type { Download } from './components/ExportResult';
 import { TemplatePicker } from './components/TemplatePicker';
 import { ThemePicker } from './components/ThemePicker';
 import { compileBatch, type Compilation } from './core/compiler';
+import { errorMessage } from './core/errors';
 import { bundledPacks, importPack, type Pack } from './core/packs';
 import { assemblePrompt } from './core/prompt';
 import { LIMITS } from './core/validation';
 import { Exporter } from './runtime/exporter';
-
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
 
 function App() {
   const [packs, setPacks] = createSignal(bundledPacks());
@@ -105,7 +102,7 @@ function App() {
     }
   }
 
-  async function processBatch(generate: boolean) {
+  async function processBatch(generate: boolean, exportAnyway = false) {
     const currentOperation = ++operation;
     clearResult();
     setStage('compiling');
@@ -115,7 +112,9 @@ function App() {
       if (currentOperation !== operation) return;
       setCompilation(result);
       selectPack(result.payload.packKey);
-      if (!generate) return;
+
+      const needsReview = result.reviewWarnings.length > 0 && !exportAnyway;
+      if (!generate || needsReview) return;
 
       const output = await exporter.export(result.payload, setStage);
       if (currentOperation !== operation) return;
@@ -158,7 +157,8 @@ function App() {
             <ThemePicker />
           </div>
           <p class="max-w-3xl text-base leading-relaxed text-base-content/80">
-            Create Anki flashcards with ease! Have your LLM make the cards (e.g. auto translations & example sentences) in TOML, then use this to generate a consistent Anki deck{' '}
+            Create Anki flashcards with ease! Have your LLM make the cards (e.g. auto translations &
+            example sentences) in TOML, then use this to generate a consistent Anki deck{' '}
             <code class="rounded bg-base-300/60 px-1.5 py-0.5 text-primary">.apkg</code>
           </p>
         </div>
@@ -181,6 +181,7 @@ function App() {
             onOpen={openToml}
             onValidate={() => processBatch(false)}
             onGenerate={() => processBatch(true)}
+            onExportAnyway={() => processBatch(true, true)}
             onCancel={cancelExport}
           />
           <Show when={notice()}>
@@ -218,11 +219,23 @@ function App() {
             </nav>
             <aside class="max-w-4xl gap-2">
               <p>
-                Uses the <code>genanki</code> python library in Pyodide WASM. Import the downloaded package in Anki or AnkiDroid. Russian TTS requires AnkiDroid{' '}
-                <code>2.17+</code> and a Russian voice.
+                Uses the <code>genanki</code> python library in Pyodide WASM. Import the downloaded
+                package in Anki or AnkiDroid. Russian TTS requires AnkiDroid <code>2.17+</code> and
+                a Russian voice.
               </p>
               <p>
                 Stable IDs support updates; Anki import options and local edits affect reimports.
+              </p>
+              <p>
+                Russian stress checks use data from{' '}
+                <a class="link" href="https://en.openrussian.org">
+                  OpenRussian
+                </a>
+                , licensed under{' '}
+                <a class="link" href="https://creativecommons.org/licenses/by-sa/4.0/">
+                  CC BY-SA 4.0
+                </a>
+                .
               </p>
             </aside>
             <aside>

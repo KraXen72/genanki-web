@@ -1,5 +1,7 @@
 import Ajv, { type ErrorObject } from 'ajv';
 import envelopeSchema from '../../schemas/envelope.schema.json';
+import { bannedTextByPattern } from './banned-text';
+import { getPath } from './paths';
 
 export const LIMITS = {
   inputBytes: 4 * 1024 * 1024,
@@ -11,29 +13,84 @@ export const LIMITS = {
   fieldBytes: 32 * 1024,
 } as const;
 
-export const ajv = new Ajv({ allErrors: true, strict: true, ownProperties: true });
+// verbose keeps each failing value on the error, so messages can show what was rejected
+export const ajv = new Ajv({ allErrors: true, strict: true, ownProperties: true, verbose: true });
 
-/** Converts AJV paths to human-readable paths, including missing and unknown fields. */
-export function validationErrors(errors: ErrorObject[] | null | undefined): string[] {
-  return (errors ?? []).slice(0, 30).map((error) => {
+/** Adds the note ID to paths inside notes, because array positions are hard to find in a batch. */
+function labelPath(path: string, document: unknown): string {
+  const noteIndex = path.match(/^notes\.(\d+)/)?.[1];
+  const noteId = noteIndex && getPath(document, `notes.${noteIndex}.id`);
+
+  return typeof noteId === 'string' ? `${path} (note "${noteId}")` : path;
+}
+
+function describePatternFailure(error: ErrorObject): string {
+  const value = String(error.data);
+  const bannedText = bannedTextByPattern.get(error.params.pattern) ?? [];
+  const found = bannedText.filter((text) => value.includes(text));
+  if (!found.length) {
+    return `value ${JSON.stringify(value)} does not match the pattern ${error.params.pattern}.`;
+  }
+
+  const quoted = found.map((text) => JSON.stringify(text)).join(', ');
+  return `contains ${quoted}, which is not allowed. Value: ${JSON.stringify(value)}.`;
+}
+
+function describeProblem(error: ErrorObject): string {
+  switch (error.keyword) {
+    case 'pattern':
+      return describePatternFailure(error);
+    case 'const':
+      return `must be ${JSON.stringify(error.params.allowedValue)}, not ${JSON.stringify(error.data)}.`;
+    case 'additionalProperties':
+      return 'is not a known field; remove it.';
+    default:
+      return `${error.message}.`;
+  }
+}
+
+/**
+ * Describes every schema failure on one line: its location, note ID, and what to fix.
+ *
+ * @param document the validated value, used to name the affected notes
+ */
+export function validationErrors(
+  errors: ErrorObject[] | null | undefined,
+  document?: unknown,
+): string[] {
+  return (errors ?? []).map((error) => {
     const path = error.instancePath.replace(
       /\/([^/]+)/g,
       (_, part: string) => `.${part.replace(/~1/g, '/').replace(/~0/g, '~')}`,
     );
     const field = error.params.missingProperty ?? error.params.additionalProperty;
-    return `${path.slice(1) || 'document'}${field ? `.${field}` : ''}: ${error.message}`;
+    const fullPath = `${path.slice(1)}${field ? `${path ? '.' : ''}${field}` : ''}`;
+    return `${fullPath ? labelPath(fullPath, document) : 'document'}: ${describeProblem(error)}`;
   });
 }
 
-/** Rejects content that cannot be represented safely in Anki's field storage. */
-export function checkText(value: unknown, path = 'document'): void {
-  if (typeof value === 'string' && /[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(value)) {
-    throw new Error(`${path}: control characters are not allowed.`);
+/** Finds content that cannot be represented safely in Anki's field storage. */
+export function controlCharacterErrors(document: unknown): string[] {
+  function search(value: unknown, path: string): string[] {
+    if (typeof value === 'string') {
+      const hasControlCharacter = /[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(value);
+      return hasControlCharacter
+        ? [`${labelPath(path, document)}: control characters are not allowed.`]
+        : [];
+    }
+    if (!value || typeof value !== 'object') return [];
+
+    return Object.entries(value).flatMap(([key, item]) => {
+      return search(item, path ? `${path}.${key}` : key);
+    });
   }
-  if (Array.isArray(value)) value.forEach((item, index) => checkText(item, `${path}.${index}`));
-  else if (value && typeof value === 'object') {
-    for (const [key, item] of Object.entries(value)) checkText(item, `${path}.${key}`);
-  }
+
+  return search(document, '');
+}
+
+/** Stops with the full list of problems, one per line, when there are any. */
+export function rejectIfAny(errors: string[]): void {
+  if (errors.length) throw new Error(errors.join('\n'));
 }
 
 /** Measures UTF-8 bytes rather than JavaScript UTF-16 code units. */

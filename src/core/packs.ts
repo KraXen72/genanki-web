@@ -6,7 +6,14 @@ import envelopeSchema from '../../schemas/envelope.schema.json';
 import type { PackManifest } from './manifest.generated';
 import type { ExportPayload } from './export.generated';
 import { schemaExample } from './prompt';
-import { ajv, byteLength, checkText, LIMITS, validationErrors } from './validation';
+import {
+  ajv,
+  byteLength,
+  controlCharacterErrors,
+  LIMITS,
+  rejectIfAny,
+  validationErrors,
+} from './validation';
 import { checkSchema, type Schema } from './schema';
 
 export interface Pack {
@@ -49,12 +56,25 @@ function readMember(files: PackFiles, path: string): string {
   return files[path];
 }
 
+/** Validators read one text per note, so each named field must exist and not be a list. */
+function checkValidatorFields(manifest: PackManifest): void {
+  for (const { name, fields } of manifest.validators ?? []) {
+    for (const fieldName of fields) {
+      const field = manifest.fields.find((candidate) => candidate.name === fieldName);
+      if (!field) throw new Error(`Validator ${name} names unknown field ${fieldName}.`);
+      if (field.format === 'list') {
+        throw new Error(`Validator ${name} cannot check list field ${fieldName}.`);
+      }
+    }
+  }
+}
+
 function parseManifest(text: string): PackManifest {
   const manifest = parse(text);
   if (!validateManifest(manifest)) {
-    throw new Error(validationErrors(validateManifest.errors).join('\n'));
+    throw new Error(validationErrors(validateManifest.errors, manifest).join('\n'));
   }
-  checkText(manifest);
+  rejectIfAny(controlCharacterErrors(manifest));
 
   const fieldNames = manifest.fields.map((field) => field.name);
   const cardNames = manifest.cards.map((card) => card.name);
@@ -73,6 +93,7 @@ function parseManifest(text: string): PackManifest {
   if (manifest.destination.deck.split('::').some((part) => !part.trim())) {
     throw new Error('Deck paths must have nonempty components.');
   }
+  checkValidatorFields(manifest);
 
   return manifest;
 }
@@ -133,8 +154,9 @@ export function loadPack(files: PackFiles): Pack {
     prompt: readMember(files, manifest.prompt),
     css: readMember(files, manifest.css),
   };
-  if (!validate(schemaExample(pack))) {
-    const errors = validationErrors(validate.errors).join('\n');
+  const example = schemaExample(pack);
+  if (!validate(example)) {
+    const errors = validationErrors(validate.errors, example).join('\n');
     throw new Error(
       `The schema cannot produce a valid prompt example. Add valid examples annotations.\n${errors}`,
     );

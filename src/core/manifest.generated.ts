@@ -35,4 +35,17 @@ export interface PackManifest {
     policy: 'fixed' | 'shared-source';
     deck: string;
   };
+  /**
+   * Optional checks that warn about note content. Each check reads only the named fields.
+   *
+   * @maxItems 8
+   */
+  validators?: {
+    name: 'ru-stress';
+    /**
+     * @minItems 1
+     * @maxItems 64
+     */
+    fields: string[];
+  }[];
 }

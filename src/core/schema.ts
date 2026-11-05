@@ -1,4 +1,5 @@
 import type { AnySchemaObject } from 'ajv';
+import { bannedTextByPattern } from './banned-text';
 import { LIMITS } from './validation';
 
 export type Schema = AnySchemaObject;
@@ -24,11 +25,6 @@ const keywords = new Set([
   'pattern',
   'dependencies',
 ]);
-// Deliberately finite: arbitrary uploaded regular expressions can block the main thread.
-const patterns = new Set([
-  '^(?!.*::)[^\\x00-\\x1f]*$',
-  '^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$',
-]);
 
 /** Enforces the bounded declarative schema subset before handing a pack to AJV. */
 export function checkSchema(schema: Schema): void {
@@ -52,7 +48,7 @@ export function checkSchema(schema: Schema): void {
     for (const key of Object.keys(node)) {
       if (!keywords.has(key)) throw new Error(`Unsupported input schema keyword: ${key}`);
     }
-    if (node.pattern && !patterns.has(node.pattern))
+    if (node.pattern && !bannedTextByPattern.has(node.pattern))
       throw new Error('Unsupported schema pattern. See docs/packs.md.');
     if (node.type === 'object') {
       if (node.additionalProperties !== false)

@@ -3,6 +3,7 @@ import type { PyodideInterface } from 'pyodide';
 import adapter from './adapter.py?raw';
 import bootstrap from './bootstrap.py?raw';
 import lock from '../../runtime.lock.json';
+import { errorMessage } from '../core/errors';
 import type { ExportStage, WorkerReply, WorkerRequest } from './protocol';
 
 let runtime: Promise<PyodideInterface> | undefined;
@@ -15,8 +16,7 @@ function status(stage: ExportStage) {
 }
 
 function reportError(error: unknown) {
-  const message = error instanceof Error ? error.message : String(error);
-  send({ type: 'error', message });
+  send({ type: 'error', message: errorMessage(error) });
 }
 
 // Pyodide can reject an internal asset promise while its main initialization stays pending.

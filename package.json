@@ -14,6 +14,7 @@
     "test:e2e": "playwright test",
     "runtime:prepare": "node scripts/prepare-runtime.mjs",
     "schemas:generate": "node scripts/build-pack-schemas.mjs && node scripts/generate-types.mjs",
+    "ru-stress:generate": "node scripts/build-ru-stress.mjs",
     "format": "prettier --write src tests scripts *.ts *.json",
     "format:check": "prettier --check src tests scripts *.ts *.json"
   },

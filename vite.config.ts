@@ -40,8 +40,12 @@ export default defineConfig({
   define: { __BUILD_INFO__: JSON.stringify(buildInfo) },
   base: process.env.VITE_BASE || '/',
   server: { port: 3000 },
+  // keep the Russian dictionary as plain text instead of escaping every character
+  esbuild: { charset: 'utf8' },
   build: {
     target: 'esnext',
+    // the bundled Russian dictionary is about 3 MB, or under 0.5 MB when served gzipped
+    chunkSizeWarningLimit: 4000,
     rollupOptions: { input: { app: 'index.html', docs: 'docs.html' } },
   },
 });

@@ -1,6 +1,45 @@
-Create Russian vocabulary notes for a Slovak learner. Use Russian dictionary forms, preserve ё, and mark stress with combining acute accents where appropriate. Use ordinary upright print, no transliteration. Trust your linguistic judgment for natural examples, grammar, and translations.
+Create Russian vocabulary notes for a Slovak learner. Follow the supplied queue rules and TOML structure.
 
-Write category in Slovak. Include the part of speech and only simple, learner-useful grammatical information when relevant, such as noun gender, adjective degree, or verb aspect when it helps distinguish related verbs. Avoid technical grammatical labels otherwise. 
-Each entry has one to three meanings. Keep each Slovak meaning, short English gloss, Russian example sentence, and matching Slovak translation together in one meanings table. Examples are optional, but sentence and translation must either both be present and nonempty or both be omitted. Avoid em dashes in all content. Content must be plain text with no HTML, Anki expressions, or audio references.
+- WORD
+  - use the dictionary form: infinitive for verbs, nominative singular for nouns, masculine singular for adjectives. Keep fixed expressions and plural-only words intact.
+  - preserve ё and mark stress on Russian words with 2+ syllables, both in the headword and example sentences.
+  - place a combining acute accent (U+0301) after the stressed Cyrillic vowel. ё already indicates stress; do not accent it.
+  - examples: кни́га, хорошо́, краси́вый, идёт, за́мок.
+  - use ordinary Cyrillic, no transliteration.
 
-Use IDs such as ru:книга:general, with an unstressed Russian entry and a stable disambiguator. Ordinary meanings belong in one note. Separate homographs or deliberately separate entries need distinct, explicit disambiguators (for example ru:замок:castle and ru:замок:lock). Preserve an existing ID when correcting content. A source is an optional lesson/topic name, with no :: separators; preserve it when known.
+- CATEGORY
+  - write in Slovak, beginning with the part of speech.
+  - always include noun gender or verb aspect when applicable.
+  - examples: "podstatné meno; ženský rod", "sloveso; nedokonavý vid", "prídavné meno".
+  - add short usage labels when useful, e.g. "hovorovo", "slangovo", "vulgárne". Avoid unnecessary grammar terminology.
+
+- MEANINGS
+  - include 1–3 common, distinct meanings, ordered by relevance to the supplied context and everyday usage.
+  - each meaning has a concise Slovak translation (`sk`) and matching English gloss (`en`).
+  - group close synonyms in one meaning; separate genuinely different senses into different rows.
+  - example for тупо́й:
+    - sk: "hlúpy"; en: "stupid"
+    - sk: "tupý"; en: "blunt"
+  - do not add obscure meanings just to fill all three rows.
+  - make Slovak translations precise enough to distinguish the word from similar Russian words during reverse recall.
+
+- EXAMPLES
+  - every meaning must have one Russian sentence and its Slovak translation.
+  - keep sentences short, natural, and easy for a beginner to understand. Prefer simple constructions, but use longer sentences when they better demonstrate the meaning.
+  - include the target word, inflected as needed, and clearly demonstrate that specific meaning.
+  - example for тупо́й:
+    - "Э́то тупо́й вопро́с." / "To je hlúpa otázka."
+    - "Нож тупо́й." / "Nôž je tupý."
+  - use different contexts to distinguish different meanings, not interchangeable or generic examples.
+  - translate naturally into Slovak, preserving the original meaning, tense, person, and tone.
+  - prefer the supplied source context when useful, but do not invent quotations.
+
+- IDS
+  - use ru:<unstressed Russian lemma>:general by default.
+  - keep multiple meanings of the same word in one note.
+  - use distinct IDs for unrelated homonyms, e.g. ru:замок:castle and ru:замок:lock.
+  - preserve existing IDs and sources when correcting cards.
+
+- OUTPUT
+  - field values must be plain text: no HTML, Markdown, Anki syntax, audio references, or em dashes.
+  - check every note for correct Russian, Slovak, English, stress marks, meaning/example alignment, and valid TOML before output.

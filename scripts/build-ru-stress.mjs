@@ -12,7 +12,7 @@ const SOURCE_COMMIT = '50e210c4803237779cb562bc1abcea529066031c';
 const SOURCE_URL = `https://raw.githubusercontent.com/Badestrand/russian-dictionary/${SOURCE_COMMIT}`;
 const SOURCE_FILES = ['adjectives.csv', 'nouns.csv', 'others.csv', 'verbs.csv'];
 const DIRECTORY = 'src/validators/ru-stress';
-const STRESS_MARK = '́';
+const STRESS_MARK = '\u0301';
 const MAX_SHARED_LENGTH = 35;
 const TRANSLATION_COLUMNS = new Set(['translations_en', 'translations_de']);
 

@@ -4,11 +4,12 @@ import envelopeSchema from '../../schemas/envelope.schema.json';
 import type { ExportPayload } from './export.generated';
 import type { Pack } from './packs';
 import { runValidators } from '../validators';
+import { errorMessage } from './errors';
+import { getPath } from './paths';
 import {
   ajv,
   byteLength,
   controlCharacterErrors,
-  getPath,
   LIMITS,
   rejectIfAny,
   validationErrors,
@@ -234,7 +235,7 @@ function compileNotes(notes: InputNote[], pack: Pack) {
     try {
       return compileField(note, field);
     } catch (error) {
-      errors.push(`note "${note.id}": ${(error as Error).message}`);
+      errors.push(`note "${note.id}": ${errorMessage(error)}`);
       return '';
     }
   };

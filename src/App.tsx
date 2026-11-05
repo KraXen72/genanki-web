@@ -4,14 +4,11 @@ import type { Download } from './components/ExportResult';
 import { TemplatePicker } from './components/TemplatePicker';
 import { ThemePicker } from './components/ThemePicker';
 import { compileBatch, type Compilation } from './core/compiler';
+import { errorMessage } from './core/errors';
 import { bundledPacks, importPack, type Pack } from './core/packs';
 import { assemblePrompt } from './core/prompt';
 import { LIMITS } from './core/validation';
 import { Exporter } from './runtime/exporter';
-
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
 
 function App() {
   const [packs, setPacks] = createSignal(bundledPacks());

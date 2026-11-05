@@ -1,5 +1,6 @@
 import Ajv, { type ErrorObject } from 'ajv';
 import envelopeSchema from '../../schemas/envelope.schema.json';
+import { getPath } from './paths';
 
 export const LIMITS = {
   inputBytes: 4 * 1024 * 1024,
@@ -13,20 +14,6 @@ export const LIMITS = {
 
 // verbose keeps each failing value on the error, so messages can show what was rejected
 export const ajv = new Ajv({ allErrors: true, strict: true, ownProperties: true, verbose: true });
-
-/** Reads a dot-separated path such as "meanings.0.sentence", or undefined if it is absent. */
-export function getPath(value: unknown, path: string): unknown {
-  let current = value;
-
-  for (const key of path.split('.')) {
-    if (!current || typeof current !== 'object' || !Object.hasOwn(current, key)) {
-      return undefined;
-    }
-    current = (current as Record<string, unknown>)[key];
-  }
-
-  return current;
-}
 
 /** Adds the note ID to paths inside notes, because array positions are hard to find in a batch. */
 function labelPath(path: string, document: unknown): string {

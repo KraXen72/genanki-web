@@ -1,8 +1,8 @@
 import type { CheckedText, ValidatorResult } from '..';
 import dictionary from './dictionary.txt?raw';
 
-const STRESS_MARK = '́';
-const RUSSIAN_WORD = /[\p{Script=Cyrillic}́]+/gu;
+const STRESS_MARK = '\u0301';
+const RUSSIAN_WORD = /[\p{Script=Cyrillic}\u0301]+/gu;
 
 /** A stress-marked word found in a note. */
 interface StressedWord {

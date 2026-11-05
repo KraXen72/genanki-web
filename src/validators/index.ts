@@ -1,5 +1,5 @@
 import type { Pack } from '../core/packs';
-import { getPath } from '../core/validation';
+import { getPath } from '../core/paths';
 import { checkRussianStress } from './ru-stress';
 
 /** One field of one note, passed to a validator. */

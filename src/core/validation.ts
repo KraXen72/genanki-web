@@ -1,5 +1,6 @@
 import Ajv, { type ErrorObject } from 'ajv';
 import envelopeSchema from '../../schemas/envelope.schema.json';
+import { bannedTextByPattern } from './banned-text';
 import { getPath } from './paths';
 
 export const LIMITS = {
@@ -23,28 +24,15 @@ function labelPath(path: string, document: unknown): string {
   return typeof noteId === 'string' ? `${path} (note "${noteId}")` : path;
 }
 
-/**
- * Finds the text rejected by a "must not contain" pattern such as `^(?!.*::)[^\n]*$`.
- *
- * Note schemas allow only the audited patterns in `schema.ts`, which all have this shape.
- *
- * @returns the distinct rejected texts, or nothing for any other kind of pattern
- */
-function findForbiddenText(pattern: string, value: string): string[] {
-  const forbidden = pattern.match(/^\^\(\?!(?:\.\*|\[\\s\\S\]\*)(.+)\)[^)]*$/)?.[1];
-  if (!forbidden) return [];
-
-  return [...new Set(value.match(new RegExp(forbidden, 'g')))];
-}
-
 function describePatternFailure(error: ErrorObject): string {
   const value = String(error.data);
-  const forbiddenText = findForbiddenText(error.params.pattern, value);
-  if (!forbiddenText.length) {
+  const bannedText = bannedTextByPattern.get(error.params.pattern) ?? [];
+  const found = bannedText.filter((text) => value.includes(text));
+  if (!found.length) {
     return `value ${JSON.stringify(value)} does not match the pattern ${error.params.pattern}.`;
   }
 
-  const quoted = forbiddenText.map((text) => JSON.stringify(text)).join(', ');
+  const quoted = found.map((text) => JSON.stringify(text)).join(', ');
   return `contains ${quoted}, which is not allowed. Value: ${JSON.stringify(value)}.`;
 }
 

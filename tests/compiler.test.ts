@@ -244,7 +244,7 @@ it.each([
     (d: any) => {
       d.notes[0].source = 'Lesson::1';
     },
-    'source',
+    'notes.0.source (note "ru:книга:general"): contains "::"',
   ],
   [
     'control characters',

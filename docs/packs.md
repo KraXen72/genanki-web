@@ -13,7 +13,7 @@ Use JSON Schema draft-07 with these supported keywords:
 - Metadata: `$schema`, `title`, `description`, `examples`.
 - Structure: `type`, `properties`, `required`, `additionalProperties`, `items`.
 - Constraints: `const`, `enum`, `minLength`, `maxLength`, `minItems`, `maxItems`, `minimum`, `maximum`, `dependencies`.
-- `pattern` supports only the two audited expressions in `src/core/schema.ts`: safe sources without hierarchy separators, and Russian plain text without em dashes, HTML, Anki expressions, or audio references.
+- `pattern` supports only the two audited expressions in `src/core/banned-text.ts`: safe sources without hierarchy separators, and Russian plain text without em dashes, HTML, Anki expressions, or audio references.
 
 Supported types are object, array, string, integer, number, and boolean. Every object rejects unknown properties, arrays have a bounded `maxItems`, and strings have `maxLength ≤ 4000`. References, remote schemas, compositions, recursive schemas, custom formats, arbitrary regexes, and executable extensions are unsupported. `dependencies` pairs optional fields such as sentence/translation. The schema must require the exact batch header and an array of notes with explicit IDs. The shared envelope independently checks identity and source constraints for every pack.
 

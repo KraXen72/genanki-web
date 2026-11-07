@@ -65,7 +65,7 @@ export function BatchEditor(props: BatchEditorProps) {
               label="Open TOML"
               icon="lucide--folder-open"
               iconOnly
-              class="btn-square justify-center btn-secondary btn-soft border-secondary/30"
+              class="btn-square btn-secondary btn-soft border-secondary/30"
               accept=".toml,text/plain"
               disabled={busy() || pasting()}
               onSelect={props.onOpen}

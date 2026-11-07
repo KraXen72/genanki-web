@@ -21,8 +21,12 @@ export function FileButton(props: FileButtonProps) {
 
   return (
     <label
-      class={`btn justify-start rounded-md text-[17px] font-bold shadow-none ${props.class ?? 'btn-outline border-base-content/25 bg-base-100'}`}
-      classList={{ 'btn-disabled': props.disabled }}
+      class={`btn rounded-md text-[17px] font-bold shadow-none ${props.class ?? 'btn-outline border-base-content/25 bg-base-100'}`}
+      classList={{
+        'btn-disabled': props.disabled,
+        'justify-center': props.iconOnly,
+        'justify-start': !props.iconOnly,
+      }}
       title={props.compact || props.iconOnly ? props.label : undefined}
     >
       <span class={`iconify ${props.icon} size-5 shrink-0`} aria-hidden="true" />

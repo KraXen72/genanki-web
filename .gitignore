@@ -33,3 +33,4 @@ _artifacts/
 /test-results/
 /playwright-report/
 /.playwright-cli/
+/repomix-output.xml

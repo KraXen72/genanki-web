@@ -152,6 +152,101 @@ test('opens plain TOML files and accepts a single outer fence only on paste', as
   await expect(page.getByText('Batch valid', { exact: true })).toBeVisible();
 });
 
+test('replaces file input with clipboard TOML, including an empty clipboard', async ({
+  page,
+  context,
+  browserName,
+}) => {
+  test.skip(browserName !== 'chromium', 'Clipboard permissions require Chromium.');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('./');
+  await page.getByLabel('Open TOML', { exact: true }).setInputFiles({
+    name: 'old.toml',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(toml.replace('word = "кни́га"', 'word = 42')),
+  });
+  const fenced = `\`\`\`toml\n${toml}\n\`\`\``;
+  await page.evaluate((text) => navigator.clipboard.writeText(text), fenced);
+
+  await page.getByRole('button', { name: 'Paste TOML from clipboard' }).click();
+  await page.getByRole('button', { name: 'Validate', exact: true }).click();
+
+  await expect(page.getByLabel('Paste the completed TOML batch')).toHaveValue(fenced);
+  await expect(page.getByText('Batch valid', { exact: true })).toBeVisible();
+
+  await page.evaluate(() => navigator.clipboard.writeText(''));
+  await page.getByRole('button', { name: 'Paste TOML from clipboard' }).click();
+
+  await expect(page.getByLabel('Paste the completed TOML batch')).toHaveValue('');
+  await expect(page.getByRole('button', { name: 'Validate', exact: true })).toBeDisabled();
+  await expect(page.getByText('Batch valid', { exact: true })).toHaveCount(0);
+});
+
+test('preserves editor contents when clipboard reading fails', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        readText: async () => {
+          throw new Error('Denied');
+        },
+      },
+    });
+  });
+  await page.goto('./');
+  await page.getByLabel('Paste the completed TOML batch').fill(toml);
+
+  await page.getByRole('button', { name: 'Paste TOML from clipboard' }).click();
+
+  await expect(page.getByRole('status')).toContainText('Clipboard unavailable');
+  await expect(page.getByLabel('Paste the completed TOML batch')).toHaveValue(toml);
+  await expect(page.getByRole('button', { name: 'Paste TOML from clipboard' })).toBeEnabled();
+});
+
+for (const width of [320, 360, 390]) {
+  test(`keeps export controls readable while busy at ${width}px`, async ({ page }) => {
+    const { promise: runtimeHeld, resolve: releaseRuntime } = Promise.withResolvers<void>();
+    await page.route('**/runtime/pyodide.asm.wasm', async (route) => {
+      await runtimeHeld;
+      await route.abort();
+    });
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto('./');
+    await page.getByLabel('Paste the completed TOML batch').fill(toml);
+
+    await page.getByRole('button', { name: 'Generate .apkg' }).click();
+    await expect(page.getByRole('button', { name: 'Cancel', exact: true })).toBeVisible();
+
+    for (const name of ['Validate', 'Generate .apkg', 'Cancel']) {
+      const button = page.getByRole('button', { name, exact: true });
+      const bounds = await button.evaluate((element) => {
+        const box = element.getBoundingClientRect();
+        const text = [...element.childNodes].find(
+          (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim(),
+        )!;
+        const range = document.createRange();
+        range.selectNodeContents(text);
+        const lines = [...range.getClientRects()];
+        return {
+          left: box.left,
+          right: box.right,
+          singleLine: lines.every((line) => Math.abs(line.top - lines[0].top) < 1),
+          textFits: lines.every((line) => line.top >= box.top && line.bottom <= box.bottom),
+        };
+      });
+      expect(bounds.left).toBeGreaterThanOrEqual(0);
+      expect(bounds.right).toBeLessThanOrEqual(width);
+      expect(bounds.singleLine).toBe(true);
+      expect(bounds.textFits).toBe(true);
+    }
+    await expect(page.getByLabel('Open TOML', { exact: true })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Paste TOML from clipboard' })).toBeDisabled();
+
+    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+    releaseRuntime();
+    await expect(page.getByLabel('Paste the completed TOML batch')).toHaveValue(toml);
+  });
+}
+
 test('cancels, retains input, and retries with a fresh worker', async ({ page }) => {
   await page.goto('./');
   await page.getByLabel('Paste the completed TOML batch').fill(toml);

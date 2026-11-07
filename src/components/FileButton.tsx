@@ -5,6 +5,7 @@ interface FileButtonProps {
   accept: string;
   icon: string;
   compact?: boolean;
+  iconOnly?: boolean;
   disabled?: boolean;
   class?: string;
   onSelect: (file: File) => void;
@@ -22,10 +23,17 @@ export function FileButton(props: FileButtonProps) {
     <label
       class={`btn justify-start rounded-md text-[17px] font-bold shadow-none ${props.class ?? 'btn-outline border-base-content/25 bg-base-100'}`}
       classList={{ 'btn-disabled': props.disabled }}
-      title={props.compact ? props.label : undefined}
+      title={props.compact || props.iconOnly ? props.label : undefined}
     >
       <span class={`iconify ${props.icon} size-5 shrink-0`} aria-hidden="true" />
-      <span classList={{ 'sr-only md:not-sr-only': props.compact }}>{props.label}</span>
+      <span
+        classList={{
+          'sr-only': props.iconOnly,
+          'sr-only md:not-sr-only': props.compact && !props.iconOnly,
+        }}
+      >
+        {props.label}
+      </span>
       <input
         class="sr-only"
         type="file"

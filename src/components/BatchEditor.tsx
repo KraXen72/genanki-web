@@ -1,4 +1,4 @@
-import { Show } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import type { Compilation } from '../core/compiler';
 import type { ExportStage } from '../runtime/protocol';
 import { ExportResult, type Download } from './ExportResult';
@@ -31,6 +31,8 @@ interface BatchEditorProps {
 /** TOML editor and export progress; input remains in memory through recoverable failures. */
 export function BatchEditor(props: BatchEditorProps) {
   const busy = () => !!props.stage;
+  const [pasteError, setPasteError] = createSignal('');
+  const [pasting, setPasting] = createSignal(false);
   const diagnostics = () =>
     [
       props.error,
@@ -40,20 +42,51 @@ export function BatchEditor(props: BatchEditorProps) {
       .filter(Boolean)
       .join('\n');
 
+  async function pasteClipboard() {
+    setPasteError('');
+    setPasting(true);
+    try {
+      const text = await navigator.clipboard.readText();
+      if (!busy()) props.onEdit(text);
+    } catch {
+      setPasteError('Clipboard unavailable. Paste directly into the TOML editor.');
+    } finally {
+      setPasting(false);
+    }
+  }
+
   return (
     <section class="min-w-0">
       <div>
         <div class="mb-4 flex h-11 items-center justify-between gap-3">
           <h2 class="text-lg font-normal">TOML</h2>
-          <FileButton
-            label="Open TOML"
-            icon="lucide--folder-open"
-            class="btn-secondary btn-soft border-secondary/30"
-            accept=".toml,text/plain"
-            disabled={busy()}
-            onSelect={props.onOpen}
-          />
+          <div class="flex items-center gap-2">
+            <FileButton
+              label="Open TOML"
+              icon="lucide--folder-open"
+              iconOnly
+              class="btn-square justify-center btn-secondary btn-soft border-secondary/30"
+              accept=".toml,text/plain"
+              disabled={busy() || pasting()}
+              onSelect={props.onOpen}
+            />
+            <button
+              type="button"
+              class="btn btn-square btn-secondary btn-soft border-secondary/30"
+              aria-label="Paste TOML from clipboard"
+              title="Paste TOML from clipboard"
+              disabled={busy() || pasting()}
+              onClick={pasteClipboard}
+            >
+              <span class="iconify lucide--clipboard-paste size-5 shrink-0" aria-hidden="true" />
+            </button>
+          </div>
         </div>
+        <Show when={pasteError()}>
+          <p class="mb-3 text-[15px] text-warning" role="status">
+            {pasteError()}
+          </p>
+        </Show>
         <label class="sr-only" for="toml">
           Paste the completed TOML batch
         </label>
@@ -70,7 +103,7 @@ export function BatchEditor(props: BatchEditorProps) {
         />
         <div class="mt-5 flex flex-wrap items-center gap-3">
           <button
-            class="btn btn-outline rounded-md border-base-content/20 text-[17px] font-bold shadow-none"
+            class="btn btn-outline shrink-0 whitespace-nowrap rounded-md border-base-content/20 text-[17px] font-bold shadow-none"
             disabled={busy() || !props.input.trim()}
             onClick={props.onValidate}
           >
@@ -78,15 +111,18 @@ export function BatchEditor(props: BatchEditorProps) {
             Validate
           </button>
           <button
-            class="btn btn-primary flex-1 sm:flex-none rounded-md text-[17px] font-bold shadow-none"
+            class="btn btn-primary shrink-0 whitespace-nowrap rounded-md text-[17px] font-bold shadow-none"
             disabled={busy() || !props.input.trim()}
             onClick={props.onGenerate}
           >
-            <span class="iconify lucide--package size-5" aria-hidden="true" />
+            <span class="iconify lucide--package size-5 shrink-0" aria-hidden="true" />
             Generate .apkg
           </button>
           <Show when={busy()}>
-            <button class="btn btn-ghost text-[17px] font-bold" onClick={props.onCancel}>
+            <button
+              class="btn btn-ghost shrink-0 whitespace-nowrap text-[17px] font-bold"
+              onClick={props.onCancel}
+            >
               Cancel
             </button>
           </Show>
@@ -95,8 +131,8 @@ export function BatchEditor(props: BatchEditorProps) {
           <Show when={props.stage}>
             {(stage) => (
               <p class="mt-5 flex items-center gap-3 text-[15px] text-base-content/80">
-                <span class="loading loading-spinner loading-sm text-primary" />
-                {stageLabels[stage()]}
+                <span class="loading loading-spinner loading-sm shrink-0 text-primary" />
+                <span class="min-w-0">{stageLabels[stage()]}</span>
               </p>
             )}
           </Show>

@@ -14,6 +14,9 @@ const stageLabels: Record<ProcessingStage, string> = {
   verifying: 'Verifying ZIP and SQLite…',
 };
 
+const inputActionClass =
+  'btn-square h-11 min-h-11 w-11 shrink-0 rounded-md p-0 btn-secondary btn-soft border-secondary/30';
+
 interface BatchEditorProps {
   input: string;
   stage: ProcessingStage;
@@ -65,14 +68,14 @@ export function BatchEditor(props: BatchEditorProps) {
               label="Open TOML"
               icon="lucide--folder-open"
               iconOnly
-              class="btn-square btn-secondary btn-soft border-secondary/30"
+              class={inputActionClass}
               accept=".toml,text/plain"
               disabled={busy() || pasting()}
               onSelect={props.onOpen}
             />
             <button
               type="button"
-              class="btn btn-square btn-secondary btn-soft border-secondary/30"
+              class={`btn ${inputActionClass}`}
               aria-label="Paste TOML from clipboard"
               title="Paste TOML from clipboard"
               disabled={busy() || pasting()}

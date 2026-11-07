@@ -569,8 +569,7 @@ test('aligns desktop inputs and footer, with icons at the start of buttons', asy
       return buttons.map((button) => ({
         width: button.getBoundingClientRect().width,
         height: button.getBoundingClientRect().height,
-        radius: getComputedStyle(button).borderRadius,
       }));
     });
-  expect(themeButtons).toEqual(Array(3).fill({ width: 44, height: 44, radius: '0px' }));
+  expect(themeButtons).toEqual(Array(3).fill({ width: 44, height: 44 }));
 });

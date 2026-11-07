@@ -11,7 +11,7 @@ const choices = [
 export function ThemePicker() {
   return (
     <div
-      class="join shrink-0 rounded-none border border-base-content/15 bg-base-100"
+      class="join shrink-0 overflow-hidden rounded-md border border-base-content/15 bg-base-100"
       role="group"
       aria-label="Appearance"
     >

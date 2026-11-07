@@ -2,22 +2,30 @@
 
 ![genanki web on desktop at 1920×1080](docs/screenshot.png)
 
-- Turn LLM-generated TOML into downloadable Anki `.apkg` decks entirely in your browser.
-- Copy self-contained LLM instructions with shared queue rules and a schema-generated TOML structure.
-- Open a TOML file or replace the editor contents from your clipboard using the icons beside the TOML heading.
-- View and copy the shared queue prompt in a native dialog, with a link to edit its source on GitHub.
-- Create your own template with the one-page format v1 guide, copyable examples, and a downloadable starter ZIP. Open **Template docs** in the footer.
-- Use bundled Russian vocabulary and question-and-answer templates, or import a local template ZIP.
-- Validate complete batches and list every problem with its note, field, and failing text.
-- Check Russian stress marks against a bundled dictionary, with warnings you can review and export past.
-- Copy all current errors and warnings from either diagnostic panel to send back to your LLM; clipboard failures offer selectable text.
-- Preserve explicit note identities across corrections, remove identical duplicates, and reject conflicting IDs.
-- Route Russian notes into source decks or a mixed deck automatically.
-- Generate two Russian cards per note with paired Slovak/English meanings and native Russian TTS expressions.
-- Keep Unicode stress marks and escape content safely without rendering imported card HTML in the app.
-- Build packages using pinned, self-hosted Pyodide and genanki in a cancellable worker.
-- Verify ZIP integrity, SQLite contents, identities, field order, and card counts before downloading.
-- Keep TOML and imported packs in memory, with only your appearance preference saved between visits.
-- Follow system appearance or choose light and dark Flexoki themes in a mobile-friendly interface.
-- Display the build commit, genanki version, and UTC build time baked into the bundle.
-- Deploy as static files on GitHub Pages after automated compiler, runtime, Chromium, and Firefox checks.
+Generate Anki Decks (`.apkg`) fully in your browser (even on your phone!)
+
+## usage
+1. Copy the LLM prompt (for your particular template, e.g. Russian vocabulary)
+2. Find vocabulary in the wild! YouTube, Netflix, ... just copy / screenshot it
+3. Paste it into the LLM 
+4. At some point, write `flush`, `export`, etc. and the LLM will create some TOMl text which represents the deck
+5. Paste that TOML into genanki-web, validate it, and generate an anki deck `.apkg`!
+
+## templates
+I made genanki-web to learn Russian, so it bundles an example template and the **Russian Vocabulary** template.  
+You can create your own deck templates by following the [docs](https://kraxen72.github.io/genanki-web/docs.html), and either load them from your device, on open a pull request to this repo. 
+
+Templates:  
+- validate using JSON schemas, including RegEx, and optionally, correct stress mark placement from an open Russian dictionary.
+- preserve explicit note identities across corrections, remove identical duplicates, and reject conflicting IDs.
+- will either make a deck at your desired route depending on the source, such as `Russian::Vocabulary::<source>`, or at a fallback, e.g. `Russian::Vocabulary::Mix`
+
+## quality of life
+- genanki-web uses a pinned known-good version of the python `genanki` library to generate anki cards deterministically.
+- genanki-web will verify ZIP integrity, SQLite contents, identities, field order, and card counts before downloading.
+
+## how it works
+![architecture diagram](./docs/architecture.png)  
+
+Shout out to Simon Willison, because of him, I knew that Pyodide exists, has a WASM build, and can be used like this in the browser.
+_I'll write a blog post about this later. Stay tuned!_  

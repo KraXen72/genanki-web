@@ -217,6 +217,66 @@ test('lists every validation problem with its note', async ({ page }) => {
   await expect(alert).toContainText('notes.0.extra (note "ru:книга:general")');
 });
 
+test('copies complete current diagnostics when errors are corrected to warnings', async ({
+  page,
+  context,
+  browserName,
+}) => {
+  test.skip(browserName !== 'chromium', 'Clipboard read permission requires Chromium.');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('./');
+  const editor = page.getByLabel('Paste the completed TOML batch');
+  await editor.fill(toml.replace('word = "кни́га"', 'word = "кни́га — <b>"\nextra = 1'));
+
+  await page.getByRole('button', { name: 'Validate', exact: true }).click();
+  await page.getByRole('button', { name: 'Copy all errors and warnings' }).click();
+
+  const errors = await page.evaluate(() => navigator.clipboard.readText());
+  expect(errors).toContain('contains "—", "<", ">", which is not allowed');
+  expect(errors).toContain('notes.0.extra (note "ru:книга:general")');
+
+  await editor.fill(toml.replace('Э́то моя́ кни́га.', 'Ку́пил фу́тболка бла́бла.'));
+  await page.getByRole('button', { name: 'Validate', exact: true }).click();
+  await page.getByRole('button', { name: 'Copy all errors and warnings' }).click();
+
+  const warnings = await page.evaluate(() => navigator.clipboard.readText());
+  expect(warnings).toContain('Stress not checked (not in the dictionary): бла́бла.');
+  expect(warnings).toContain(
+    'note "ru:книга:general", Sentence1: "Ку́пил" has unexpected stress; the dictionary has "купи́л".',
+  );
+  expect(warnings).toContain(
+    'note "ru:книга:general", Sentence1: "фу́тболка" has unexpected stress; the dictionary has "футбо́лка".',
+  );
+  expect(warnings).not.toContain('notes.0.extra');
+});
+
+test('offers all diagnostics for manual copying when clipboard access is unavailable', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', { value: undefined });
+  });
+  await page.goto('./');
+  await page
+    .getByLabel('Paste the completed TOML batch')
+    .fill(toml.replace('Э́то моя́ кни́га.', 'Ку́пил фу́тболка.'));
+  await page.getByRole('button', { name: 'Validate', exact: true }).click();
+
+  await page.getByRole('button', { name: 'Copy all errors and warnings' }).click();
+  const fallback = page.getByRole('textbox', { name: 'Errors and warnings to copy' });
+  await fallback.focus();
+
+  await expect(fallback).toHaveValue(
+    'note "ru:книга:general", Sentence1: "Ку́пил" has unexpected stress; the dictionary has "купи́л".\n' +
+      'note "ru:книга:general", Sentence1: "фу́тболка" has unexpected stress; the dictionary has "футбо́лка".',
+  );
+  expect(
+    await fallback.evaluate((element: HTMLTextAreaElement) =>
+      element.value.slice(element.selectionStart, element.selectionEnd),
+    ),
+  ).toBe(await fallback.inputValue());
+});
+
 test('shows fixed build metadata and remains readable on a narrow viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('./');

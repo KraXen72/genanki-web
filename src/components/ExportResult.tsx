@@ -1,5 +1,6 @@
 import { For, Show } from 'solid-js';
 import type { Compilation } from '../core/compiler';
+import { CopyDiagnostics } from './CopyDiagnostics';
 
 export interface Download {
   url: string;
@@ -13,6 +14,7 @@ interface ExportResultProps {
   download?: Download;
   busy: boolean;
   onExportAnyway: () => void;
+  diagnostics: string;
 }
 
 /** Displays compiler totals and the download offered only after package verification. */
@@ -49,7 +51,10 @@ export function ExportResult(props: ExportResultProps) {
       </For>
       <Show when={needsReview()}>
         <div class="alert alert-warning alert-soft mt-5 block" role="status">
-          <strong class="font-medium">Check before exporting</strong>
+          <div class="flex items-start justify-between gap-3">
+            <strong class="font-medium">Check before exporting</strong>
+            <CopyDiagnostics text={props.diagnostics} />
+          </div>
           <ul class="mt-2 space-y-1 text-[15px] text-base-content wrap-anywhere">
             <For each={reviewWarnings()}>{(warning) => <li>{warning}</li>}</For>
           </ul>

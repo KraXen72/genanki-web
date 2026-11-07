@@ -9,6 +9,7 @@
 - Use bundled Russian vocabulary and question-and-answer templates, or import a local template ZIP.
 - Validate complete batches and list every problem with its note, field, and failing text.
 - Check Russian stress marks against a bundled dictionary, with warnings you can review and export past.
+- Copy all current errors and warnings from either diagnostic panel to send back to your LLM; clipboard failures offer selectable text.
 - Preserve explicit note identities across corrections, remove identical duplicates, and reject conflicting IDs.
 - Route Russian notes into source decks or a mixed deck automatically.
 - Generate two Russian cards per note with paired Slovak/English meanings and native Russian TTS expressions.

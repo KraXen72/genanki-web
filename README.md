@@ -8,7 +8,7 @@ Generate Anki Decks (`.apkg`) fully in your browser (even on your phone!)
 1. Copy the LLM prompt (for your particular template, e.g. Russian vocabulary)
 2. Find vocabulary in the wild! YouTube, Netflix, ... just copy / screenshot it
 3. Paste it into the LLM 
-4. At some point, write `flush`, `export`, etc. and the LLM will create some TOMl text which represents the deck
+4. At some point, write `flush`, `export`, etc. and the LLM will create some TOML text which represents the deck
 5. Paste that TOML into genanki-web, validate it, and generate an anki deck `.apkg`!
 
 ## templates

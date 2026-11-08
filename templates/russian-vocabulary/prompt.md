@@ -2,8 +2,9 @@ Create Russian vocabulary notes for a Slovak learner. Follow the supplied queue 
 
 - WORD
   - use the dictionary form: infinitive for verbs, nominative singular for nouns, masculine singular for adjectives. Keep fixed expressions and plural-only words intact.
-  - preserve ё and mark stress on Russian words with 2+ syllables, both in the headword and example sentences.
-  - place a combining acute accent (U+0301) after the stressed Cyrillic vowel. ё already indicates stress; do not accent it.
+  - mark stress on Russian words with 2+ syllables in the headword only.
+  - place a combining acute accent (U+0301) after the stressed Cyrillic vowel. 
+  - preserve ё: ё already indicates stress; do not accent it.
   - examples: кни́га, хорошо́, краси́вый, идёт, за́мок.
   - use ordinary Cyrillic, no transliteration.
 
@@ -11,7 +12,7 @@ Create Russian vocabulary notes for a Slovak learner. Follow the supplied queue 
   - write in Slovak, beginning with the part of speech.
   - always include noun gender or verb aspect when applicable.
   - examples: "podstatné meno; ženský rod", "sloveso; nedokonavý vid", "prídavné meno".
-  - add short usage labels when useful, e.g. "hovorovo", "slangovo", "vulgárne". Avoid unnecessary grammar terminology.
+  - add short usage labels when useful, e.g. "slang", "hrubšie", "vulgárne". Avoid unnecessary grammar terminology.
   - use only part of speech, gender or aspect, and usage labels. Do not add topic labels such as "farba" or "kalendárny mesiac".
 
 - MEANINGS

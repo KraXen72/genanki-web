@@ -15,18 +15,18 @@ export function CopyDiagnostics(props: { text: string }) {
 
   return (
     <div class="min-w-0">
-      <div class="flex items-center justify-end gap-2">
+      <div class="flex items-center justify-end gap-2 text-inherit">
         <span class="text-sm" role="status">
           {status() === 'copied' ? 'Copied' : ''}
         </span>
         <button
           type="button"
-          class="btn btn-ghost btn-square btn-sm shrink-0"
+          class="btn btn-ghost btn-square btn-sm shrink-0 text-inherit"
           aria-label="Copy all errors and warnings"
           title="Copy all errors and warnings"
           onClick={copy}
         >
-          <span class="iconify lucide--copy size-5" aria-hidden="true" />
+          <span class="iconify lucide--copy size-5 fill-current text-inherit" aria-hidden="true" />
         </button>
       </div>
       <Show when={status() === 'failed'}>

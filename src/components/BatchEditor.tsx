@@ -142,8 +142,8 @@ export function BatchEditor(props: BatchEditorProps) {
           </Show>
           <Show when={props.error}>
             <div class="alert alert-error alert-soft mt-5 block" role="alert">
-              <div class="flex items-start justify-between gap-3">
-                <strong class="font-medium">Could not complete the batch</strong>
+              <div class="flex items-center justify-between gap-3 w-full text-error">
+                <strong class="font-semibold text-base">Could not complete the batch</strong>
                 <CopyDiagnostics text={diagnostics()} />
               </div>
               <pre class="mt-2 font-sans text-[15px] whitespace-pre-wrap wrap-anywhere">

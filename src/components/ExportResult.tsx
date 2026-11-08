@@ -32,14 +32,14 @@ export function ExportResult(props: ExportResultProps) {
   return (
     <div class="mt-6 border-t border-base-300 pt-5">
       <div class="flex flex-wrap items-center justify-between gap-2">
-        <span class="font-medium text-primary">{heading()}</span>
+        <span class="font-semibold text-primary text-base">{heading()}</span>
         <span class="text-[15px]">
-          {noteCount()} {noteCount() === 1 ? 'note' : 'notes'} · {cardCount()}{' '}
+          <span class="font-mono">{noteCount()}</span> {noteCount() === 1 ? 'note' : 'notes'} · <span class="font-mono">{cardCount()}</span>{' '}
           {cardCount() === 1 ? 'card' : 'cards'}
         </span>
       </div>
       <dl class="mt-3 flex flex-wrap gap-x-3 text-[15px]">
-        <dt class="text-base-content/75">Destination</dt>
+        <dt class="text-base-content/75 grow">Destination</dt>
         <dd class="break-all font-medium">{props.compilation.payload.deck.name}</dd>
       </dl>
       <Show when={props.compilation.duplicates}>
@@ -52,15 +52,15 @@ export function ExportResult(props: ExportResultProps) {
       </For>
       <Show when={needsReview()}>
         <div class="alert alert-warning alert-soft mt-5 block" role="status">
-          <div class="flex items-start justify-between gap-3">
-            <strong class="font-medium">Check before exporting</strong>
+          <div class="flex items-center justify-between gap-3 w-full text-warning">
+            <strong class="font-semibold text-base">Check before exporting</strong>
             <CopyDiagnostics text={props.diagnostics} />
           </div>
           <ul class="mt-2 space-y-1 text-[15px] text-base-content wrap-anywhere">
             <For each={reviewWarnings()}>{(warning) => <li>{warning}</li>}</For>
           </ul>
           <Show when={!props.download && !props.busy}>
-            <button class="btn btn-warning btn-soft mt-4" onClick={props.onExportAnyway}>
+            <button class="btn btn-warning btn-outline mt-4" onClick={props.onExportAnyway}>
               Export anyway
             </button>
           </Show>

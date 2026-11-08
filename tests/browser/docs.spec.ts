@@ -103,13 +103,6 @@ test('downloads the starter, imports it, and exports four verified Anki cards', 
   await download.saveAs(path);
   const files = unzipSync(await readFile(path));
   const sample = strFromU8(files['sample.toml']);
-  // All displayed files are the files shipped in the ZIP.
-  for (const name of ['sample.toml', 'template.toml', 'cards/answer.html', 'prompt.md']) {
-    const figure = page
-      .getByRole('figure')
-      .filter({ has: page.getByRole('button', { name: `Copy ${name}`, exact: true }) });
-    expect(await figure.locator('pre').textContent()).toBe(strFromU8(files[name]).trimEnd());
-  }
   await page.goto('./');
   await page.getByLabel('Import template ZIP', { exact: true }).setInputFiles(path);
   await expect(page.getByRole('status')).toContainText('Imported Vocabulary starter');

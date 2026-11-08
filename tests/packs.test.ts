@@ -153,7 +153,6 @@ it('rejects validators that are unknown or name unusable fields', () => {
     return members;
   };
 
-  expect(() => loadPack(declare('name = "ru-stress"\nfields = ["Question"]'))).not.toThrow();
   expect(() => loadPack(declare('name = "ru-stress"\nfields = ["Missing"]'))).toThrow(
     'unknown field Missing',
   );

@@ -28,8 +28,12 @@ Playwright starts the static preview server in production mode. It downloads act
 - The schema build combines those definitions with the manifest's key/version into a portable, committed `input.schema.json`.
 - The compiler, prompt reference, and TOML skeleton all consume that complete input schema.
 - Imported packs supply the complete input schema directly and need no source schema or build step.
+- `src/core/banned-text.ts` owns the supported text patterns; the authoring guide displays those same values. Portable JSON schemas repeat the patterns and are checked against this allowlist when loaded.
+- `src/runtime/protocol.ts` owns worker requests, stages, and the verified export result shared by the worker and client.
 
-The build regenerates contracts, prepares the runtime, type-checks the UI and worker separately, and bundles the site. Generated files must be committed; CI checks them for drift. Run `pnpm format` / `pnpm format:check` for TypeScript, JSX, styles, scripts, and tests.
+The build regenerates contracts, prepares the runtime, type-checks the UI and worker separately, and bundles the site. Generated files must be committed; CI checks them for drift. Run `pnpm format` / `pnpm format:check` for TypeScript, JSX, styles, scripts, tests, and template/starter HTML and CSS.
+
+Duplicate detection ignores object-property order but preserves array order, including the order of meanings. Keep tests focused on compiled fields, rendered layout, package contents, and user-visible transitions rather than literal template source or CSS class names.
 
 ## Runtime
 

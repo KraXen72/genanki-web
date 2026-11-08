@@ -26,6 +26,7 @@ const htmlEntities: Record<string, string> = {
 type InputNote = Record<string, unknown>;
 type FieldMapping = Pack['manifest']['fields'][number];
 
+/** Compiled package input, download metadata, and diagnostics for the whole batch. */
 export interface Compilation {
   payload: ExportPayload;
   filename: string;
@@ -82,20 +83,14 @@ function compileField(note: InputNote, field: FieldMapping): string {
   return content;
 }
 
-/** Sorts object keys so TOML table/property ordering does not affect duplicate checks. */
+/** Serializes content once with sorted object keys, preserving the order of arrays. */
 function canonicalContent(value: unknown): string {
-  if (Array.isArray(value)) {
-    return JSON.stringify(value.map(canonicalContent));
-  }
-  if (value && typeof value === 'object') {
-    const sortedEntries = Object.entries(value).sort(([left], [right]) =>
-      left.localeCompare(right),
-    );
-    const entries = sortedEntries.map(([key, item]) => [key, canonicalContent(item)]);
-    return JSON.stringify(entries);
-  }
+  return JSON.stringify(value, (_key, item: unknown) => {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) return item;
 
-  return JSON.stringify(value);
+    const sortedEntries = Object.entries(item).sort(([left], [right]) => left.localeCompare(right));
+    return Object.fromEntries(sortedEntries);
+  });
 }
 
 /** Notes that failed schema validation are still scanned, so ID problems appear in the same run. */

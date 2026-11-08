@@ -9,6 +9,7 @@ export interface CheckedText {
   text: string;
 }
 
+/** Separates content requiring user review from informational notices. */
 export interface ValidatorResult {
   /** Possible problems the user must confirm before exporting. */
   reviewWarnings: string[];

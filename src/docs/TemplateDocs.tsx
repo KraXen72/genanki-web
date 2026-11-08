@@ -1,5 +1,6 @@
 import { createSignal, For, type JSX } from 'solid-js';
 import { ThemePicker } from '../components/ThemePicker';
+import { textPatterns } from '../core/banned-text';
 import { starterFiles, starterZip } from './starter';
 
 const sections = [
@@ -105,7 +106,7 @@ export function TemplateDocs() {
       document.body.append(anchor);
       anchor.click();
       anchor.remove();
-      // Allow the browser to begin reading the download before releasing its URL.
+      // allow the browser to begin reading the download before releasing its URL
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       setDownloadError('');
     } catch {
@@ -285,14 +286,10 @@ export function TemplateDocs() {
                     blocks em dashes, HTML brackets, Anki expressions, and audio references.
                   </p>
                   <Code name="Source pattern">
-                    {JSON.stringify({ pattern: '^(?!.*::)[^\\x00-\\x1f]*$' }, null, 2)}
+                    {JSON.stringify({ pattern: textPatterns.source }, null, 2)}
                   </Code>
                   <Code name="Plain text pattern">
-                    {JSON.stringify(
-                      { pattern: '^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$' },
-                      null,
-                      2,
-                    )}
+                    {JSON.stringify({ pattern: textPatterns.plainText }, null, 2)}
                   </Code>
                 </div>
               </details>

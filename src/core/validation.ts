@@ -3,6 +3,7 @@ import envelopeSchema from '../../schemas/envelope.schema.json';
 import { bannedTextByPattern } from './banned-text';
 import { getPath } from './paths';
 
+/** Resource limits shared by input loading, pack import, and field compilation. */
 export const LIMITS = {
   inputBytes: 4 * 1024 * 1024,
   packBytes: 2 * 1024 * 1024,
@@ -13,7 +14,7 @@ export const LIMITS = {
   fieldBytes: 32 * 1024,
 } as const;
 
-// verbose keeps each failing value on the error, so messages can show what was rejected
+/** Shared strict validator; verbose errors retain rejected values for actionable diagnostics. */
 export const ajv = new Ajv({ allErrors: true, strict: true, ownProperties: true, verbose: true });
 
 /** Adds the note ID to paths inside notes, because array positions are hard to find in a batch. */

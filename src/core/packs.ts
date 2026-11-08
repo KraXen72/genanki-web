@@ -16,6 +16,7 @@ import {
 } from './validation';
 import { checkSchema, type Schema } from './schema';
 
+/** A validated declarative pack; card markup is passed through, never rendered by the app. */
 export interface Pack {
   manifest: PackManifest;
   schema: Schema;

@@ -8,9 +8,11 @@ import type { ExportStage, WorkerReply, WorkerRequest } from './protocol';
 
 let runtime: Promise<PyodideInterface> | undefined;
 let busy = false;
+
 function send(message: WorkerReply, transfer: Transferable[] = []) {
   self.postMessage(message, transfer);
 }
+
 function status(stage: ExportStage) {
   send({ type: 'status', stage });
 }
@@ -47,6 +49,24 @@ async function initialize(runtimeUrl: string): Promise<PyodideInterface> {
   return pyodide;
 }
 
+/** Copies package bytes out of Python-owned memory before releasing the proxy. */
+function buildPackage(pyodide: PyodideInterface, payload: WorkerRequest['payload']): ArrayBuffer {
+  try {
+    pyodide.globals.set('_payload_json', JSON.stringify(payload));
+    pyodide.globals.set('_report', status);
+    const result = pyodide.runPython('build_package(_payload_json, _report)');
+    try {
+      const bytes: Uint8Array<ArrayBuffer> = result.toJs().slice();
+      return bytes.buffer;
+    } finally {
+      result.destroy();
+    }
+  } finally {
+    pyodide.globals.delete('_payload_json');
+    pyodide.globals.delete('_report');
+  }
+}
+
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   if (busy) {
     send({ type: 'error', message: 'An export is already running.' });
@@ -54,29 +74,18 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   }
   busy = true;
   const start = performance.now();
-  let pyodide: PyodideInterface | undefined;
+
   try {
     runtime ??= initialize(event.data.runtimeUrl).catch((error) => {
       runtime = undefined;
       throw error;
     });
-    pyodide = await runtime;
-    pyodide.globals.set('_payload_json', JSON.stringify(event.data.payload));
-    pyodide.globals.set('_report', status);
-    const result = pyodide.runPython('build_package(_payload_json, _report)');
-    let bytes: Uint8Array;
-    try {
-      bytes = result.toJs().slice();
-    } finally {
-      result.destroy();
-    }
-    const buffer = bytes.buffer as ArrayBuffer;
+    const pyodide = await runtime;
+    const buffer = buildPackage(pyodide, event.data.payload);
     send({ type: 'complete', bytes: buffer, elapsedMs: performance.now() - start }, [buffer]);
   } catch (error) {
     reportError(error);
   } finally {
-    pyodide?.globals.delete('_payload_json');
-    pyodide?.globals.delete('_report');
     busy = false;
   }
 };

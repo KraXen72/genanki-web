@@ -5,6 +5,7 @@ import { ExportResult, type Download } from './ExportResult';
 import { CopyDiagnostics } from './CopyDiagnostics';
 import { FileButton } from './FileButton';
 
+/** An idle editor, browser-side compilation, or one of the package worker's stages. */
 export type ProcessingStage = '' | 'compiling' | ExportStage;
 const stageLabels: Record<ProcessingStage, string> = {
   '': '',

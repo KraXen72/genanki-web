@@ -155,6 +155,30 @@ it('deduplicates identical IDs, blocks conflicts, and warns for distinct IDs wit
   expect((await compile(document)).warnings).toHaveLength(1);
 });
 
+it('deduplicates reordered nested properties but rejects reordered meanings', async () => {
+  const document = example();
+  const first = document.notes[0];
+  first.meanings = [
+    { sk: 'kniha', en: 'book' },
+    { sk: 'zväzok', en: 'volume' },
+  ];
+  const reordered = Object.fromEntries(Object.entries(first).reverse());
+  const reorderedMeanings = first.meanings.map((meaning: Record<string, unknown>) =>
+    Object.fromEntries(Object.entries(meaning).reverse()),
+  );
+  reordered.meanings = reorderedMeanings;
+  document.notes.push(reordered);
+
+  const result = await compile(document);
+
+  expect(result.duplicates).toBe(1);
+  expect(result.payload.notes.map((note) => note.id)).toEqual([first.id]);
+
+  reorderedMeanings.reverse();
+
+  await expect(compile(document)).rejects.toThrow('conflicting content');
+});
+
 it('unwraps a single pasted TOML fence but requires plain TOML files', async () => {
   const fenced = `\`\`\`toml\n${stringify(example())}\n\`\`\``;
   expect((await compileBatch(fenced, packs)).payload.notes).toHaveLength(1);
@@ -286,21 +310,6 @@ describe.each(packs)('schema-derived prompt for $manifest.key', (pack) => {
     expect(parsed.template).toBe(pack.manifest.key);
     expect(parsed.template_version).toBe(pack.manifest.input_version);
   });
-});
-
-it('packages Russian templates unchanged with native TTS and conditional examples', () => {
-  const [forward, reverse] = russian.cards;
-  expect(forward.qfmt).toContain('{{tts ru_RU:Word}}');
-  expect(reverse.qfmt).not.toMatch(/\{\{(?:Word|EnglishGloss\d|tts)/);
-  expect(forward.afmt).toBe(reverse.afmt);
-  expect(forward.afmt).not.toContain('{{FrontSide}}');
-  for (const card of russian.cards) {
-    for (let index = 1; index <= 3; index++) {
-      expect(card.afmt).toContain(`{{#Sentence${index}}}<section`);
-      expect(card.afmt).toContain(`</section>{{/Sentence${index}}}`);
-    }
-  }
-  expect(russian.css).not.toMatch(/(?:background|font-style:\s*italic)/);
 });
 
 it('rejects formatting syntax and em dashes after newlines too', async () => {

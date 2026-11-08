@@ -2,6 +2,7 @@ import { For, Show } from 'solid-js';
 import type { Compilation } from '../core/compiler';
 import { CopyDiagnostics } from './CopyDiagnostics';
 
+/** Browser-owned download URL and display metadata; the app releases replaced URLs. */
 export interface Download {
   url: string;
   name: string;

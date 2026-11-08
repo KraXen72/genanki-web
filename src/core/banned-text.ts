@@ -10,6 +10,12 @@ function escapeForPattern(text: string): string {
 const plainTextAlternatives = PLAIN_TEXT_BANNED.map(escapeForPattern).join('|');
 const sourceAlternatives = SOURCE_BANNED.map(escapeForPattern).join('|');
 
+/** Supported JSON Schema patterns, shared by pack validation and the authoring guide. */
+export const textPatterns = {
+  plainText: `^(?![\\s\\S]*(?:${plainTextAlternatives}))[\\s\\S]*$`,
+  source: `^(?!.*${sourceAlternatives})[^\\x00-\\x1f]*$`,
+};
+
 /**
  * The only patterns a schema may use, each with the text it bans.
  *
@@ -17,6 +23,6 @@ const sourceAlternatives = SOURCE_BANNED.map(escapeForPattern).join('|');
  * thread. Schemas repeat these patterns word for word, and `checkSchema` rejects any that differ.
  */
 export const bannedTextByPattern = new Map([
-  [`^(?![\\s\\S]*(?:${plainTextAlternatives}))[\\s\\S]*$`, PLAIN_TEXT_BANNED],
-  [`^(?!.*${sourceAlternatives})[^\\x00-\\x1f]*$`, SOURCE_BANNED],
+  [textPatterns.plainText, PLAIN_TEXT_BANNED],
+  [textPatterns.source, SOURCE_BANNED],
 ]);

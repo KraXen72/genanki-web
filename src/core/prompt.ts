@@ -1,9 +1,11 @@
 import { stringify } from 'smol-toml';
 import queuePrompt from '../../prompts/queue.md?raw';
 
-export { queuePrompt };
 import type { Pack } from './packs';
 import type { Schema } from './schema';
+
+/** Shared queue instructions included at the start of every assembled prompt. */
+export { queuePrompt };
 
 function exampleValue(schema: Schema): unknown {
   if (schema.const !== undefined) return schema.const;

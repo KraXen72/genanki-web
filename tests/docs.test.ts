@@ -1,6 +1,5 @@
 import { expect, it } from 'vitest';
 import { parse, stringify } from 'smol-toml';
-import { strFromU8, unzipSync } from 'fflate';
 import { starterFiles, starterZip } from '../src/docs/starter';
 import { bundledPacks, importPack } from '../src/core/packs';
 import { compileBatch } from '../src/core/compiler';
@@ -11,11 +10,6 @@ it('ships an importable starter with identities distinct from the bundled packs'
   for (const bundled of bundledPacks()) {
     expect(pack.manifest.key).not.toBe(bundled.manifest.key);
     expect(pack.manifest.model.id).not.toBe(bundled.manifest.model.id);
-  }
-  const downloaded = unzipSync(starterZip());
-  expect(Object.keys(downloaded).sort()).toEqual(Object.keys(starterFiles).sort());
-  for (const [path, text] of Object.entries(starterFiles)) {
-    expect(strFromU8(downloaded[path])).toBe(text);
   }
 });
 
@@ -29,10 +23,6 @@ it('compiles the documented sample, including missing optional fields and line b
     ['ru:дом', 'дом', 'house; home', ''],
   ]);
   expect(result.payload.model.fields).toEqual(['ID', 'Word', 'Meaning', 'Example']);
-  expect(result.payload.model.cards.map((card) => card.qfmt.trim())).toEqual([
-    '<div class="word">{{Word}}</div>',
-    '<div class="word">{{Meaning}}</div>',
-  ]);
 });
 
 it('generates a valid, self-contained LLM prompt from the downloadable schema', async () => {

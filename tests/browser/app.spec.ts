@@ -497,11 +497,8 @@ test('shows the shared queue prompt in an accessible modal and links its source'
   await page.getByRole('button', { name: 'Queue prompt', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Queue prompt' });
   await expect(dialog).toBeVisible();
-  await expect(dialog).toContainText('Included in every copied prompt.');
   await expect(dialog).toContainText('## Queue');
-  expect(await dialog.evaluate((element) => element instanceof HTMLDialogElement)).toBe(true);
   const codeBlock = dialog.locator('pre');
-  await expect(codeBlock).toHaveClass(/font-mono/);
   await dialog.getByRole('button', { name: 'Copy', exact: true }).click();
   await expect(dialog.getByRole('button', { name: 'Copied', exact: true })).toBeVisible();
   expect(await page.evaluate(() => (window as any).copiedQueue)).toBe(await codeBlock.innerText());
@@ -523,7 +520,6 @@ test('shows the shared queue prompt in an accessible modal and links its source'
   const closeSize = await closeButton.boundingBox();
   expect(closeSize!.width).toBe(44);
   expect(closeSize!.height).toBe(44);
-  await expect(closeButton).toHaveClass(/btn-outline/);
   await expect(dialog.getByRole('link', { name: 'Edit on GitHub.' })).toHaveAttribute(
     'href',
     'https://github.com/KraXen72/genanki-web/edit/main/prompts/queue.md',

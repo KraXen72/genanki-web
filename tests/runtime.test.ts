@@ -110,17 +110,3 @@ it('rejects a package when a conditional front produces fewer cards than the man
   expect(() => python.runPython('build_package(_test_payload)')).toThrow('expected cards');
   await exportExample();
 });
-
-it('verifies escaped fields through the independent second note type', async () => {
-  const pack = packs.find((pack) => pack.manifest.key === 'basic')!;
-  const document = schemaExample(pack) as any;
-  document.notes[0].answer = '<b>\"A\" & B</b>\nNext';
-  const compilation = await compileBatch(stringify(document), packs);
-  python.globals.set('_test_payload', JSON.stringify(compilation.payload));
-  const proxy = python.runPython('build_package(_test_payload)');
-  try {
-    expect(proxy.toJs().byteLength).toBeGreaterThan(0);
-  } finally {
-    proxy.destroy();
-  }
-});

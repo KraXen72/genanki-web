@@ -10,6 +10,9 @@ import { assemblePrompt } from './core/prompt';
 import { LIMITS } from './core/validation';
 import { Exporter } from './runtime/exporter';
 
+type BatchAction = 'validate' | 'export' | 'export-reviewed';
+
+/** Coordinates session-only inputs, compilation, and cancellable package downloads. */
 function App() {
   const [packs, setPacks] = createSignal(bundledPacks());
   const [selectedKey, setSelectedKey] = createSignal('russian-vocabulary');
@@ -102,7 +105,7 @@ function App() {
     }
   }
 
-  async function processBatch(generate: boolean, exportAnyway = false) {
+  async function processBatch(action: BatchAction) {
     const currentOperation = ++operation;
     clearResult();
     setStage('compiling');
@@ -113,8 +116,8 @@ function App() {
       setCompilation(result);
       selectPack(result.payload.packKey);
 
-      const needsReview = result.reviewWarnings.length > 0 && !exportAnyway;
-      if (!generate || needsReview) return;
+      const needsReview = result.reviewWarnings.length > 0 && action !== 'export-reviewed';
+      if (action === 'validate' || needsReview) return;
 
       const output = await exporter.export(result.payload, setStage);
       if (currentOperation !== operation) return;
@@ -179,9 +182,9 @@ function App() {
             download={download()}
             onEdit={editInput}
             onOpen={openToml}
-            onValidate={() => processBatch(false)}
-            onGenerate={() => processBatch(true)}
-            onExportAnyway={() => processBatch(true, true)}
+            onValidate={() => processBatch('validate')}
+            onGenerate={() => processBatch('export')}
+            onExportAnyway={() => processBatch('export-reviewed')}
             onCancel={cancelExport}
           />
           <Show when={notice()}>

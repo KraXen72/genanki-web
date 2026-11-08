@@ -1,5 +1,5 @@
 import type { ExportPayload } from '../core/export.generated';
-import type { ExportStage, WorkerReply } from './protocol';
+import type { ExportResult, ExportStage, WorkerReply } from './protocol';
 
 /** Single package-writer boundary. Cancellation terminates the worker and releases its runtime. */
 export class Exporter {
@@ -7,10 +7,7 @@ export class Exporter {
   private reject?: (reason: Error) => void;
 
   /** Builds one verified package and reports worker stages. Rejects overlapping requests. */
-  export(
-    payload: ExportPayload,
-    onStage: (stage: ExportStage) => void,
-  ): Promise<{ bytes: ArrayBuffer; elapsedMs: number }> {
+  export(payload: ExportPayload, onStage: (stage: ExportStage) => void): Promise<ExportResult> {
     if (this.reject) return Promise.reject(new Error('An export is already running.'));
     this.worker ??= new Worker(new URL('./export.worker.ts', import.meta.url), { type: 'module' });
     const worker = this.worker;

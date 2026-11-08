@@ -5,6 +5,14 @@
   color: #100f0f;
   background: #fffcf0;
 }
-.word { font-size: 32px; }
-.example { margin-top: 1em; font-size: 18px; }
-.nightMode.card { color: #cecdc3; background: #100f0f; }
+.word {
+  font-size: 32px;
+}
+.example {
+  margin-top: 1em;
+  font-size: 18px;
+}
+.nightMode.card {
+  color: #cecdc3;
+  background: #100f0f;
+}

@@ -34,3 +34,4 @@ _artifacts/
 /playwright-report/
 /.playwright-cli/
 /repomix-output.xml
+/genanki*.7z

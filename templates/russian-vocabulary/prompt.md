@@ -28,15 +28,18 @@ Create Russian vocabulary notes for a Slovak learner. Follow the supplied queue 
 
 - EXAMPLES
   - every meaning must have one Russian sentence and its Slovak translation.
-  - keep sentences short, natural, and easy for a beginner to understand. Prefer simple constructions, but use longer sentences when they better demonstrate the meaning.
+  - write lived-in, grounded sentences from real everyday life, casual conversation, or vivid scenes; never sterile "textbook filler" or bland third-person exposition.
+  - favor first- and second-person perspectives (я, ты, мы, мой, наш), concrete details (specific objects, named pets, relatable situations), and natural conversational framing (e.g., «Говорю тебе...», «Говорят, что...», «Блин...») when it fits the register.
+  - cut redundant modifier padding; do not stack unnecessary adjectives or genitives just to lengthen a sentence (e.g., prefer «новую чёрную» or «своего размера», not both; «с крыши», not «с крыши дома»).
+  - match the register and rawness of the word: for slang, anatomical, or vulgar terms, use authentic contexts where native speakers actually say them (attraction, blunt banter, parenting, messing up)—never sanitize them into safe, clinical excuses.
+  - keep sentences natural and digestible, using punchy clauses or simple cause-and-effect actions rather than stiff, overly formal phrasing.
   - include the target word, inflected as needed, and clearly demonstrate that specific meaning.
   - example for тупо́й:
     - "Э́то тупо́й вопро́с." / "To je hlúpa otázka."
     - "Нож тупо́й." / "Nôž je tupý."
   - use different contexts to distinguish different meanings, not interchangeable or generic examples.
   - across a batch, do not repeat a sentence or sentence frame, even with one word swapped. Use something specific to this word, so that its sentence still identifies it if the word is hidden.
-  - use what a native speaker would actually say. If a sentence is correct but sounds odd, replace it.
-  - translate naturally into Slovak, preserving the original meaning, tense, person, and tone.
+  - translate into idiomatic, spoken Slovak rather than mirroring Russian syntax—use natural Slovak dative/reflexive constructions (e.g., "hodí sa ti k očiam", not "hodí k tvojim očiam") and drop words that sound redundant in Slovak (e.g., "už sme sa dlho nevideli", not "už sme sa spolu dlho nevideli").
   - use the everyday Slovak word for the context, such as "obloha" for the sky you see, not a literal cognate of the Russian.
   - prefer the supplied source context when useful, but do not invent quotations.
 

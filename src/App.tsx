@@ -233,6 +233,10 @@ function App() {
               </p>
               <p>
                 Russian stress checks use data from{' '}
+                <a class="link" href="https://en.wiktionary.org">
+                  Wiktionary
+                </a>{' '}
+                and{' '}
                 <a class="link" href="https://en.openrussian.org">
                   OpenRussian
                 </a>

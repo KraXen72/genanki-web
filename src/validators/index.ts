@@ -1,6 +1,7 @@
 import type { Pack } from '../core/packs';
 import { getPath } from '../core/paths';
 import { checkRussianStress } from './ru-stress';
+import { loadStressDictionary } from './ru-stress/dictionary';
 
 /** One field of one note, passed to a validator. */
 export interface CheckedText {
@@ -17,7 +18,7 @@ export interface ValidatorResult {
   notices: string[];
 }
 
-type Validator = (texts: CheckedText[]) => ValidatorResult;
+type Validator = (texts: CheckedText[]) => Promise<ValidatorResult>;
 type ValidatorName = NonNullable<Pack['manifest']['validators']>[number]['name'];
 
 // packs select validators by name because imported packs cannot run their own code
@@ -43,13 +44,24 @@ function collectTexts(
 }
 
 /** Runs the validators a pack opted into. Packs that declare none get an empty result. */
-export function runValidators(pack: Pack, notes: Record<string, unknown>[]): ValidatorResult {
-  const results = (pack.manifest.validators ?? []).map(({ name, fields }) => {
-    return validators[name](collectTexts(notes, pack, fields));
-  });
+export async function runValidators(
+  pack: Pack,
+  notes: Record<string, unknown>[],
+): Promise<ValidatorResult> {
+  const results = await Promise.all(
+    (pack.manifest.validators ?? []).map(({ name, fields }) => {
+      return validators[name](collectTexts(notes, pack, fields));
+    }),
+  );
 
   return {
     reviewWarnings: results.flatMap((result) => result.reviewWarnings),
     notices: results.flatMap((result) => result.notices),
   };
+}
+
+/** Starts downloading validator data in the background, so the first validation is not slowed. */
+export function preloadValidators(): void {
+  // a failed download is retried and reported by the validation that needs it
+  loadStressDictionary().catch(() => {});
 }

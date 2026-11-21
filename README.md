@@ -17,7 +17,7 @@ I made genanki-web to learn Russian, so it bundles an example template and the *
 You can create your own deck templates by following the [docs](https://kraxen72.github.io/genanki-web/docs.html), and either load them from your device, on open a pull request to this repo. 
 
 Templates:  
-- validate using JSON schemas, including RegEx, and optionally, correct stress mark placement from an open Russian dictionary.
+- validate using JSON schemas, including RegEx, and optionally, correct stress mark placement from open Russian dictionaries (Wiktionary and OpenRussian).
 - preserve explicit note identities across corrections, remove identical duplicates, and reject conflicting IDs.
 - will either make a deck at your desired route depending on the source, such as `Russian::Vocabulary::<source>`, or at a fallback, e.g. `Russian::Vocabulary::Mix`
 
@@ -30,3 +30,15 @@ Templates:
 
 Shout out to Simon Willison, because of him, I knew that Pyodide exists, has a WASM build, and can be used like this in the browser.
 _I'll write a blog post about this later. Stay tuned!_  
+
+## development
+
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start the dev server on port 3000 |
+| `pnpm build` | Build the site into `dist/` |
+| `pnpm test` | Run the unit tests |
+| `pnpm test:e2e` | Run the browser tests |
+| `pnpm ru-stress:generate` | Rebuild the Russian stress dictionary from Wiktionary and OpenRussian |
+
+`pnpm ru-stress:generate` downloads the full 3 GB Wiktionary dump from kaikki.org. To reuse a copy you already downloaded, pass its path: `pnpm ru-stress:generate path/to/raw-wiktextract-data.jsonl.gz`. The script prints which version of each source it used; put that in the commit message.

@@ -264,7 +264,7 @@ export async function compileBatch(
   const source = resolveSource(notes);
   const deckName = resolveDeckName(pack, source);
   const model = pack.manifest.model;
-  const { reviewWarnings, notices } = runValidators(pack, notes);
+  const { reviewWarnings, notices } = await runValidators(pack, notes);
 
   const payload: ExportPayload = {
     packKey: pack.manifest.key,

@@ -1,4 +1,4 @@
-# Common words missing from the OpenRussian data, or valid variants it does not list.
+# Common words missing from both Wiktionary and OpenRussian, or valid variants they do not list.
 # Merged by scripts/build-ru-stress.mjs. An apostrophe follows the stressed vowel.
 # Words with ё are not needed, because the validator skips them.
 

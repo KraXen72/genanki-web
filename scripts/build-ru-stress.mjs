@@ -1,43 +1,54 @@
 /**
  * Builds the dictionary used by the ru-stress validator.
  *
- * The output has one sorted stressed word form per line. Each line starts with one base-36
- * character: how many leading characters it shares with the previous form. This keeps the file
- * small enough to bundle while staying plain text.
+ * Usage: node scripts/build-ru-stress.mjs [path/to/raw-wiktextract-data.jsonl.gz]
+ *
+ * The dictionary combines three sources:
+ * 1. English Wiktionary, which is updated every week, gives the base stress of each spelling.
+ * 2. OpenRussian adds spellings that Wiktionary lacks. Where Wiktionary has the spelling,
+ *    OpenRussian's stress is ignored, because Wiktionary is more often right when they disagree.
+ * 3. `supplement.txt` adds hand-picked forms that both sources lack.
+ *
+ * A spelling can have several accepted stresses, such as "за́мок" and "замо́к", so the rule
+ * compares whole spellings, not single forms.
+ *
+ * The text has one sorted stressed word form per line. Each line starts with one base-36
+ * character: how many leading characters it shares with the previous form. The script writes it
+ * compressed with zstd, which the app decompresses after downloading it.
  */
 import { readFile, writeFile } from 'node:fs/promises';
+import { constants, zstdCompressSync } from 'node:zlib';
+import { downloadOpenRussianForms, splitApostropheForms } from './ru-stress/openrussian.mjs';
+import { readWiktionaryForms, WIKTIONARY_URL } from './ru-stress/wiktionary.mjs';
 
-// pinned so that rebuilding only changes the dictionary on purpose
-const SOURCE_COMMIT = '50e210c4803237779cb562bc1abcea529066031c';
-const SOURCE_URL = `https://raw.githubusercontent.com/Badestrand/russian-dictionary/${SOURCE_COMMIT}`;
-const SOURCE_FILES = ['adjectives.csv', 'nouns.csv', 'others.csv', 'verbs.csv'];
 const DIRECTORY = 'src/validators/ru-stress';
 const STRESS_MARK = '\u0301';
 const MAX_SHARED_LENGTH = 35;
-const TRANSLATION_COLUMNS = new Set(['translations_en', 'translations_de']);
-
-async function downloadTable(file) {
-  const response = await fetch(`${SOURCE_URL}/${file}`);
-  if (!response.ok) throw new Error(`Could not download ${file}: ${response.status}`);
-
-  return await response.text();
-}
-
-/** Cells can hold several comma-separated forms, such as "ко'фтой, ко'фтою". */
-function stressedForms(table) {
-  const [header, ...rows] = table.split('\n').map((row) => row.split('\t'));
-  const formColumns = header.flatMap((name, index) => {
-    return TRANSLATION_COLUMNS.has(name) || name === 'bare' ? [] : [index];
-  });
-
-  return rows.flatMap((row) => {
-    return formColumns.flatMap((index) => (row[index] ?? '').toLowerCase().split(/[,;/\s]+/));
-  });
-}
 
 /** Keeps forms with exactly one stress mark; ё is left out because it already shows the stress. */
 function isUsableForm(form) {
-  return /^[а-я]*[аеиоуыэюя]'[а-я]*$/.test(form);
+  return /^[а-я]*[аеиоуыэюя]\u0301[а-я]*$/.test(form);
+}
+
+function removeStress(form) {
+  return form.replace(STRESS_MARK, '');
+}
+
+function fromApostrophes(forms) {
+  return forms.map((form) => form.replace("'", STRESS_MARK));
+}
+
+function parseSupplement(text) {
+  const entries = text.split('\n').filter((line) => !line.startsWith('#'));
+  return splitApostropheForms(entries.join(' '));
+}
+
+/** Adds the forms of `secondary` whose spelling `primary` lacks. */
+function fillMissingSpellings(primary, secondary) {
+  const knownSpellings = new Set(primary.map(removeStress));
+  const missing = secondary.filter((form) => !knownSpellings.has(removeStress(form)));
+
+  return [...primary, ...missing];
 }
 
 function frontCode(forms) {
@@ -58,18 +69,26 @@ function frontCode(forms) {
   });
 }
 
-function parseSupplement(text) {
-  const entries = text.split('\n').filter((line) => !line.startsWith('#'));
-  return entries.join(' ').toLowerCase().split(/\s+/);
-}
+const [wiktionary, openRussian, supplementText] = await Promise.all([
+  readWiktionaryForms(process.argv[2]),
+  downloadOpenRussianForms(),
+  readFile(`${DIRECTORY}/supplement.txt`, 'utf8'),
+]);
 
-const tables = await Promise.all(SOURCE_FILES.map(downloadTable));
-const supplement = await readFile(`${DIRECTORY}/supplement.txt`, 'utf8');
+const wiktionaryForms = wiktionary.forms.filter(isUsableForm);
+const openRussianForms = fromApostrophes(openRussian.forms).filter(isUsableForm);
+const supplementForms = fromApostrophes(parseSupplement(supplementText)).filter(isUsableForm);
 
-const allForms = [...tables.flatMap(stressedForms), ...parseSupplement(supplement)];
-const usableForms = allForms.filter(isUsableForm);
-const stressMarkedForms = usableForms.map((form) => form.replace("'", STRESS_MARK));
-const forms = [...new Set(stressMarkedForms)].sort();
+const combined = [...fillMissingSpellings(wiktionaryForms, openRussianForms), ...supplementForms];
+const forms = [...new Set(combined)].sort();
 
-await writeFile(`${DIRECTORY}/dictionary.txt`, `${frontCode(forms).join('\n')}\n`);
-console.log(`Wrote ${forms.length} forms.`);
+const text = `${frontCode(forms).join('\n')}\n`;
+const compressed = zstdCompressSync(Buffer.from(text), {
+  params: { [constants.ZSTD_c_compressionLevel]: 19, [constants.ZSTD_c_checksumFlag]: 1 },
+});
+await writeFile(`${DIRECTORY}/dictionary.txt.zst`, compressed);
+
+console.log(`Wrote ${forms.length} forms, ${compressed.length} bytes compressed.`);
+console.log(`Wiktionary: ${wiktionaryForms.length} forms from ${WIKTIONARY_URL}`);
+console.log(`  version (Last-Modified): ${wiktionary.lastModified}`);
+console.log(`OpenRussian: ${openRussianForms.length} forms, newest word ${openRussian.newestWord}`);

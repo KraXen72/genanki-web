@@ -1,5 +1,5 @@
+import { loadStressDictionary, type StressDictionary } from './dictionary';
 import type { CheckedText, ValidatorResult } from '..';
-import dictionary from './dictionary.txt?raw';
 
 const STRESS_MARK = '\u0301';
 const RUSSIAN_WORD = /[\p{Script=Cyrillic}\u0301]+/gu;
@@ -28,23 +28,15 @@ function findStressedWords({ noteId, field, text }: CheckedText): StressedWord[]
   });
 }
 
-/**
- * Finds the accepted stress of each word.
- *
- * Scanning the dictionary on each run avoids keeping over 500,000 strings in memory.
- * `scripts/build-ru-stress.mjs` documents the file format.
- */
-function lookUpStress(unstressedWords: Set<string>): Map<string, string[]> {
+function lookUpStress(
+  dictionary: StressDictionary,
+  unstressedWords: Set<string>,
+): Map<string, string[]> {
   const acceptedForms = new Map<string, string[]>();
-  let form = '';
 
-  for (const line of dictionary.trimEnd().split('\n')) {
-    const sharedLength = Number.parseInt(line[0], 36);
-    form = form.slice(0, sharedLength) + line.slice(1);
-
-    const unstressed = removeStress(form);
-    if (!unstressedWords.has(unstressed)) continue;
-    acceptedForms.set(unstressed, [...(acceptedForms.get(unstressed) ?? []), form]);
+  for (const unstressed of unstressedWords) {
+    const forms = dictionary.stressesOf(unstressed);
+    if (forms.length) acceptedForms.set(unstressed, forms);
   }
 
   return acceptedForms;
@@ -57,9 +49,10 @@ function describeWrongStress(word: StressedWord, acceptedForms: string[]): strin
 }
 
 /** Warns about stress marks that differ from the dictionary. Words it lacks are only counted. */
-export function checkRussianStress(texts: CheckedText[]): ValidatorResult {
+export async function checkRussianStress(texts: CheckedText[]): Promise<ValidatorResult> {
   const words = texts.flatMap(findStressedWords);
-  const acceptedForms = lookUpStress(new Set(words.map((word) => word.unstressed)));
+  const unstressedWords = new Set(words.map((word) => word.unstressed));
+  const acceptedForms = lookUpStress(await loadStressDictionary(), unstressedWords);
 
   const wrongStress = words.filter((word) => {
     return acceptedForms.get(word.unstressed)?.includes(word.stressed) === false;

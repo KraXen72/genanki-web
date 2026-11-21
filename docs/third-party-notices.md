@@ -6,7 +6,12 @@ Icons are from [Lucide](https://lucide.dev/), distributed by `@iconify-json/luci
 
 # Russian stress dictionary
 
-`src/validators/ru-stress/dictionary.txt` is adapted from the [OpenRussian dictionary data](https://github.com/Badestrand/russian-dictionary), licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). `scripts/build-ru-stress.mjs` keeps only stressed word forms, adds `supplement.txt`, and compresses the list. The dictionary and supplement are distributed under the same license.
+`src/validators/ru-stress/dictionary.txt.zst` is adapted from two sources, both licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/):
+
+- [English Wiktionary](https://en.wiktionary.org/), as extracted by [wiktextract](https://github.com/tatuylonen/wiktextract) and published on [kaikki.org](https://kaikki.org/dictionary/rawdata.html). Wiktionary text is also available under the GFDL.
+- The [OpenRussian dictionary data](https://en.openrussian.org/dictionary-data), exported from its [public TogetherDB database](https://app.togetherdb.com/db/fwoedz5fvtwvq03v/openrussian_public/words).
+
+`scripts/build-ru-stress.mjs` keeps only stressed word forms, combines the sources, adds `supplement.txt`, and compresses the list. The dictionary and supplement are distributed under CC BY-SA 4.0.
 
 # Runtime
 

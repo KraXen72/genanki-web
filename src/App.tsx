@@ -9,6 +9,7 @@ import { bundledPacks, importPack, type Pack } from './core/packs';
 import { assemblePrompt } from './core/prompt';
 import { LIMITS } from './core/validation';
 import { Exporter } from './runtime/exporter';
+import { preloadValidators } from './validators';
 
 type BatchAction = 'validate' | 'export' | 'export-reviewed';
 
@@ -26,6 +27,7 @@ function App() {
   const [download, setDownload] = createSignal<Download>();
 
   const exporter = new Exporter();
+  preloadValidators();
   const selectedPack = () => packs().find((pack) => pack.manifest.key === selectedKey())!;
   let operation = 0;
 

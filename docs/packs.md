@@ -45,6 +45,8 @@ fields = ["Word", "Kind", "Aspect", "Partner", "Motion"]
 
 These names refer to Anki mappings whose raw input paths supply the values. Include `Partner` in `ru-stress` to check its stress too. Only dictionary facts can block content; heuristic findings remain review warnings.
 
+Production builds keep compressed dictionaries in the browser's Cache Storage, keyed by each asset's complete content-hashed URL. Repeat visits reuse those bytes; a changed dictionary hash downloads a new asset. Development builds fetch directly because their asset URLs stay constant. Storage restrictions or quota failures fall back to normal downloads. Clearing site data or browser eviction removes cached assets. The cache contains dictionary assets; note input stays in memory.
+
 Rebuild aspect data with `pnpm ru-aspect:generate`, or both dictionaries with `pnpm ru-data:generate` in one Wiktionary pass. Pass an existing gzip dump path to reuse a download. `src/validators/ru-aspect/supplement.tsv` overrides matching stressed headwords last. `data/ru-aspect.tsv` is the uncompressed dictionary for the separate Anki fixup scripts. Source dates and extraction counts are recorded in `data/ru-aspect.sources.json`.
 
 To add a word or a valid variant, edit `src/validators/ru-stress/supplement.txt` and run `pnpm ru-stress:generate`. To add a validator, add a module in `src/validators/`, register it in `src/validators/index.ts`, and add its name to `schemas/manifest.schema.json`.

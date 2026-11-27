@@ -1,4 +1,5 @@
 import { decompress } from 'fzstd';
+import { fetchDictionaryAsset } from '../asset-cache';
 
 const STRESS_MARK = '\u0301';
 const VOWELS = new Set('аеиоуыэюя');
@@ -109,7 +110,7 @@ export function loadStressDictionary(): Promise<StressDictionary> {
 }
 
 async function downloadDictionary(): Promise<StressDictionary> {
-  const response = await fetch(new URL('./dictionary.txt.zst', import.meta.url));
+  const response = await fetchDictionaryAsset(new URL('./dictionary.txt.zst', import.meta.url));
   if (!response.ok) {
     throw new Error(`Could not load the Russian stress dictionary: ${response.status}`);
   }

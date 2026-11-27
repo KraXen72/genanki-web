@@ -1,4 +1,5 @@
 import { decompress } from 'fzstd';
+import { fetchDictionaryAsset } from '../asset-cache';
 
 export const ASPECTS = ['impf', 'pf', 'both'] as const;
 export type Aspect = (typeof ASPECTS)[number];
@@ -71,7 +72,7 @@ export function loadAspectDictionary(): Promise<AspectDictionary> {
 }
 
 async function downloadDictionary(): Promise<AspectDictionary> {
-  const response = await fetch(new URL('./aspects.tsv.zst', import.meta.url));
+  const response = await fetchDictionaryAsset(new URL('./aspects.tsv.zst', import.meta.url));
   if (!response.ok) {
     throw new Error(`Could not load the Russian aspect dictionary: ${response.status}`);
   }

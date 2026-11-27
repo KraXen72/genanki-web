@@ -170,7 +170,7 @@
         "type": "object",
         "properties": {
           "name": {
-            "enum": ["ru-stress"]
+            "enum": ["ru-stress", "ru-aspect"]
           },
           "fields": {
             "type": "array",

@@ -5,14 +5,18 @@
   font-style: normal;
   line-height: 1.5;
 }
-.category,
+.grammar,
 .translation,
 .translation-prompt {
   color: #777;
 }
-.category {
+.grammar {
   font-size: 18px;
   margin-bottom: 12px;
+}
+.partner {
+  font-size: 19px;
+  margin: -12px 0 20px;
 }
 .word {
   font-size: 32px;

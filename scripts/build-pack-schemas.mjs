@@ -22,6 +22,7 @@ for (const directory of packDirectories.filter((entry) => entry.isDirectory())) 
   }
   note.required = [...note.required, ...content.required];
   if (content.dependencies) note.dependencies = content.dependencies;
+  if (content.examples) note.examples = content.examples;
 
   const json = `${JSON.stringify(schema, null, 2)}\n`;
   await writeFile(`${root}/${manifest.schema}`, json);

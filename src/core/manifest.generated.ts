@@ -51,7 +51,7 @@ export interface PackManifest {
    * @maxItems 8
    */
   validators?: {
-    name: 'ru-stress';
+    name: 'ru-stress' | 'ru-aspect';
     /**
      * @minItems 1
      * @maxItems 64

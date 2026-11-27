@@ -113,13 +113,13 @@ Use one pack per batch initially. Pack selection can be automatic from the heade
 ```toml
 format_version = 1
 template = "russian-vocabulary"
-template_version = 1
+template_version = 2
 
 [[notes]]
 id = "ru:книга:general"
 source = "Lesson 1"
 
-category = "podstatné meno; ženský rod"
+kind = "pod.m:ž"
 word = "кни́га"
 
 [[notes.meanings]]
@@ -129,13 +129,13 @@ sentence = "Э́то моя́ кни́га."
 translation = "Toto je moja kniha."
 ```
 
-The generic header identifies the batch format and exact template input version. Each pack supplies the schema for its complete TOML document, reusing the shared header and note-identity definitions. Subject-specific fields live directly on each note: Russian vocabulary uses `word`, `category`, and `meanings`; another pack might use `question` and `answer`. There is no generic Anki-field dump or unnecessary `data` wrapper. Reject unknown properties, wrong types, unsupported versions, and missing templates with useful error paths. Do not silently coerce types or discard invalid notes.
+The generic header identifies the batch format and exact template input version. Each pack supplies the schema for its complete TOML document, reusing the shared header and note-identity definitions. Subject-specific fields live directly on each note: Russian vocabulary uses `word`, `kind`, verb `aspect`/`partner`/`motion`, optional `usage`, and `meanings`; another pack might use `question` and `answer`. Reject unknown properties, wrong types, unsupported versions, and missing templates with useful error paths.
 
 `template_version` identifies an input contract, not a transient pack release. The copy button always uses the selected pack's current contract. Styling changes need not change it. An older version must either remain explicitly supported or produce a clear version error; do not reinterpret old input as the newest schema.
 
 Each Russian meaning contains its Slovak meaning, English gloss, Russian sentence, and Slovak translation together. Require one to three meaning objects. This makes their correspondence structural, instead of depending on parallel lists and numbered fields in LLM output.
 
-Category text is Slovak so it can appear on the reverse question without revealing Russian or English. The prompt explains the expected grammatical information. Input strings contain content only: no Anki template syntax, HTML formatting, or audio references for this pack.
+Kind slugs identify part of speech and noun gender. Verb aspect and paired motion direction have separate enums. The pack maps these slugs to Slovak display labels for both card fronts. Optional Slovak usage labels describe register. Input strings contain plain content.
 
 **Copyable LLM instructions**
 
@@ -167,19 +167,19 @@ Prefer JSON if deeply nested structures become common or machine-to-machine stru
 Preserve this exact field order:
 
 ```text
-ID, Category, Word, SlovakMeaning1, EnglishGloss1,
-SlovakMeaning2, EnglishGloss2, SlovakMeaning3, EnglishGloss3,
-Sentence1, Translation1, Sentence2, Translation2,
-Sentence3, Translation3
+ID, Word, Kind, Aspect, Partner, Motion, Usage,
+SlovakMeaning1, EnglishGloss1, SlovakMeaning2, EnglishGloss2,
+SlovakMeaning3, EnglishGloss3, Sentence1, Translation1,
+Sentence2, Translation2, Sentence3, Translation3
 ```
 
 - Generate one note and exactly two cards per accepted entry.
-- Russian → Slovak question: category, Russian dictionary form, divider, Russian examples. Include native Russian TTS beside each displayed Russian word/example.
-- Slovak → Russian question: category, Slovak meanings, divider, Slovak example translations. Include no Russian, English glosses, or TTS.
-- Both answers: category, Russian dictionary form and TTS, paired Slovak/English meanings in a left-aligned CSS Grid, then matched Russian/Slovak example blocks with TTS on Russian sentences.
+- Russian → Slovak question: grammar line, Russian dictionary form, divider, Russian examples. Include native Russian TTS beside each displayed Russian word/example.
+- Slovak → Russian question: grammar line including the requested aspect and motion direction, Slovak meanings, divider, Slovak example translations.
+- Both answers: grammar line, Russian dictionary form and TTS, aspect partner, paired Slovak/English meanings in a left-aligned CSS Grid, then matched Russian/Slovak example blocks with TTS on Russian sentences. The aspect partner appears only on answers.
 - Both backs use the complete answer template directly, without `{{FrontSide}}`.
 - Meaning fields use plain text mappings; all layout HTML lives in the card templates. Each conditional Slovak/English pair occupies one grid row. The reverse question displays only the Slovak fields. No card JavaScript is necessary for alignment.
-- The output uses the new `Russian vocabulary v3` model (ID `1759797713`), leaving existing v1 and v2 note types unchanged. The TOML input contract remains version 1; no existing-note migration is included.
+- The output uses `Russian vocabulary v4` (model ID `1401682072`) and input contract version 2. The pack key remains `russian-vocabulary`, preserving GUIDs. A separate one-time Anki fixup handles older note types. Raw kinds produce `genanki::<kind>` tags.
 - Empty optional sentence pairs remain empty. Each optional example's entire divider/content/translation block is inside its `SentenceN` conditional.
 - Escape Russian input as text; preserve combining stress marks and ё. Use upright, ordinary print fonts, no italics or transliteration.
 - The card stylesheet does not set primary foreground/background colors on `.card` or `body`. Secondary text may use `#777`. The web application's own Flexoki theme is separate from exported card CSS.
@@ -187,7 +187,7 @@ Sentence3, Translation3
 
 The documented native TTS syntax requires [AnkiDroid 2.17+](https://docs.ankiweb.net/templates/fields.html#text-to-speech-for-individual-fields) and an available Russian TTS voice. The web app cannot bundle or inspect the user's Android voice installation. Actual playback is tested in AnkiDroid.
 
-Validate structural requirements and explicit formatting constraints, such as the maximum number of meanings and the absence of em dashes. Trust the LLM for translations and natural examples. Validators read raw fields together for each note and return blocking errors, review warnings, and informational notices. Blocking errors require dictionary facts. `ru-stress` warns about unexpected stress and reports unchecked words; see [packs.md](packs.md#validators). Heuristic checks can request review.
+Validate structural requirements and explicit formatting constraints, such as the maximum number of meanings and the absence of em dashes. Trust the LLM for translations and natural examples. Validators read raw fields together for each note and return blocking errors, review warnings, and informational notices. `ru-aspect` blocks dictionary aspect conflicts and invalid verb-field or motion combinations. Unknown words produce notices. `ru-stress` warns about unexpected stress; incomplete partner lists and verb-like nonverb kinds request review. Heuristic checks can request review; blocking content corrections require dictionary facts. See [packs.md](packs.md#validators).
 
 **Identity, deduplication, and deck selection**
 

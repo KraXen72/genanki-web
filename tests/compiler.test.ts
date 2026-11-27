@@ -25,8 +25,12 @@ it.each([1, 2, 3])('compiles %i paired meanings in exact field/card order', asyn
   const result = await compile(document);
   expect(result.payload.model.fields).toEqual([
     'ID',
-    'Category',
     'Word',
+    'Kind',
+    'Aspect',
+    'Partner',
+    'Motion',
+    'Usage',
     'SlovakMeaning1',
     'EnglishGloss1',
     'SlovakMeaning2',
@@ -40,12 +44,16 @@ it.each([1, 2, 3])('compiles %i paired meanings in exact field/card order', asyn
     'Sentence3',
     'Translation3',
   ]);
-  expect(result.payload.model.id).toBe(1759797713);
-  expect(result.payload.model.name).toBe('Russian vocabulary v3');
+  expect(result.payload.model.id).toBe(1401682072);
+  expect(result.payload.model.name).toBe('Russian vocabulary v4');
   expect(result.payload.notes[0].fields).toEqual([
     document.notes[0].id,
-    document.notes[0].category,
     document.notes[0].word,
+    'sloveso',
+    'impf.',
+    'сде́лать',
+    '',
+    '',
     ...Array.from({ length: 3 }, (_, index) =>
       index < count ? [`Slovak ${index + 1}`, `English ${index + 1}`] : ['', ''],
     ).flat(),
@@ -66,15 +74,15 @@ it('keeps optional pairs empty, combining stress and ё unchanged', async () => 
   delete document.notes[0].meanings[0].sentence;
   delete document.notes[0].meanings[0].translation;
   const result = await compile(document);
-  expect(result.payload.notes[0].fields[2]).toBe('всё ещё́');
-  expect(result.payload.notes[0].fields.slice(9)).toEqual(['', '', '', '', '', '']);
+  expect(result.payload.notes[0].fields[1]).toBe('всё ещё́');
+  expect(result.payload.notes[0].fields.slice(13)).toEqual(['', '', '', '', '', '']);
 });
 
 it('keeps meaning fields editable as escaped text without layout markup', async () => {
   const document = example();
   document.notes[0].meanings = [{ sk: 'kniha & text', en: 'a "book"' }];
   const result = await compile(document);
-  expect(result.payload.notes[0].fields.slice(3, 9)).toEqual([
+  expect(result.payload.notes[0].fields.slice(7, 13)).toEqual([
     'kniha &amp; text',
     'a &quot;book&quot;',
     '',
@@ -210,7 +218,7 @@ it.each([
   [
     'unsupported version',
     (d: any) => {
-      d.template_version = 2;
+      d.template_version = 1;
     },
     'template_version',
   ],
@@ -268,7 +276,7 @@ it.each([
     (d: any) => {
       d.notes[0].source = 'Lesson::1';
     },
-    'notes.0.source (note "ru:книга:general"): contains "::"',
+    'notes.0.source (note "ru:делать:general"): contains "::"',
   ],
   [
     'control characters',

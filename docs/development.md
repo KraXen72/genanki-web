@@ -35,6 +35,18 @@ The build regenerates contracts, prepares the runtime, type-checks the UI and wo
 
 Duplicate detection ignores object-property order but preserves array order, including the order of meanings. Keep tests focused on compiled fields, rendered layout, package contents, and user-visible transitions rather than literal template source or CSS class names.
 
+## Russian dictionary data
+
+| Command | Output |
+|---|---|
+| `pnpm ru-stress:generate [dump.jsonl.gz]` | Compressed stress forms |
+| `pnpm ru-aspect:generate [dump.jsonl.gz]` | Compressed aspect rows, `data/ru-aspect.tsv`, and source metadata |
+| `pnpm ru-data:generate [dump.jsonl.gz]` | Both dictionaries from one streamed dump pass |
+
+Without a local path, the commands stream the full kaikki.org gzip dump. OpenRussian supplies fallback headwords through its public `words` and `verbs` exports. Wiktionary wins per stressed headword; the generator prints disagreement counts and the first 20 conflicts. Unknown aspect values are counted in the build log and source metadata. Manual rows in `src/validators/ru-aspect/supplement.tsv` override the same stressed headword last.
+
+The complete verb example is a note-level schema `examples` annotation, so its optional fields form a valid combination. The schema composer carries it into `input.schema.json`; the copied prompt still lists every optional field and enum in its field reference.
+
 ## Runtime
 
 `runtime.lock.json` pins Pyodide 314.0.7, genanki 0.13.1, every Python dependency, and SHA-256 hashes for the delivered core files and wheels. `scripts/prepare-runtime.mjs` verifies cached assets or downloads the exact missing assets at build time into the ignored `public/runtime/` directory. Vite copies them into `dist/runtime/`.

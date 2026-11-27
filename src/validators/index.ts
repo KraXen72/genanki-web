@@ -2,6 +2,8 @@ import type { Pack } from '../core/packs';
 import { getPath } from '../core/paths';
 import { checkRussianStress } from './ru-stress';
 import { loadStressDictionary } from './ru-stress/dictionary';
+import { checkRussianAspect } from './ru-aspect';
+import { loadAspectDictionary } from './ru-aspect/dictionary';
 
 /** A note's raw input values, keyed by the validator's declared Anki field names. */
 export interface CheckedNote {
@@ -24,6 +26,7 @@ type ValidatorName = NonNullable<Pack['manifest']['validators']>[number]['name']
 // packs select validators by name because imported packs cannot run their own code
 const validators: Record<ValidatorName, Validator> = {
   'ru-stress': checkRussianStress,
+  'ru-aspect': checkRussianAspect,
 };
 
 function collectNotes(
@@ -65,4 +68,5 @@ export async function runValidators(
 export function preloadValidators(): void {
   // a failed download is retried and reported by the validation that needs it
   loadStressDictionary().catch(() => {});
+  loadAspectDictionary().catch(() => {});
 }

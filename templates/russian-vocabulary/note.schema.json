@@ -1,28 +1,87 @@
 {
   "type": "object",
+  "examples": [
+    {
+      "id": "ru:делать:general",
+      "source": "Lesson 1",
+      "kind": "slov",
+      "aspect": "impf",
+      "partner": "сде́лать",
+      "word": "де́лать",
+      "meanings": [
+        {
+          "sk": "robiť",
+          "en": "to do, to make",
+          "sentence": "Я де́лаю э́то сам.",
+          "translation": "Robím to sám."
+        }
+      ]
+    }
+  ],
   "properties": {
     "id": {
-      "examples": [
-        "ru:книга:general"
-      ]
+      "examples": ["ru:делать:general"]
     },
-    "category": {
+    "kind": {
+      "type": "string",
+      "maxLength": 4000,
+      "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+      "enum": [
+        "pod.m:m",
+        "pod.m:ž",
+        "pod.m:s",
+        "pod.m:oboj",
+        "pod.m:pomn",
+        "príd.m",
+        "slov",
+        "prís",
+        "zám",
+        "čísl",
+        "spoj",
+        "pred",
+        "čast",
+        "cito",
+        "fráza"
+      ],
+      "examples": ["slov"]
+    },
+    "aspect": {
+      "type": "string",
+      "maxLength": 4000,
+      "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+      "enum": ["impf", "pf", "both"],
+      "examples": ["impf"],
+      "description": "Required for kind = slov; forbidden for other kinds."
+    },
+    "partner": {
       "type": "string",
       "minLength": 1,
       "maxLength": 4000,
       "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
-      "examples": [
-        "podstatné meno; ženský rod"
-      ]
+      "examples": ["сде́лать"],
+      "description": "Stressed aspect partners, comma-separated. Verbs only."
+    },
+    "motion": {
+      "type": "string",
+      "maxLength": 4000,
+      "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+      "enum": ["unidir", "multidir"],
+      "description": "Only for the 14 unprefixed paired verbs of motion. Omit for other verbs."
+    },
+    "usage": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
+      "examples": ["hovorové"],
+      "description": "Optional Slovak register or usage labels."
     },
     "word": {
       "type": "string",
       "minLength": 1,
       "maxLength": 4000,
       "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
-      "examples": [
-        "кни́га"
-      ]
+      "examples": ["де́лать"]
     },
     "meanings": {
       "type": "array",
@@ -36,58 +95,43 @@
             "minLength": 1,
             "maxLength": 4000,
             "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
-            "examples": [
-              "kniha"
-            ]
+            "examples": ["robiť"]
           },
           "en": {
             "type": "string",
             "minLength": 1,
             "maxLength": 4000,
             "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
-            "examples": [
-              "book"
-            ]
+            "examples": ["to do, to make"]
           },
           "sentence": {
             "type": "string",
             "minLength": 1,
             "maxLength": 4000,
             "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
-            "examples": [
-              "Э́то моя́ кни́га."
-            ]
+            "examples": ["Я де́лаю э́то сам."]
           },
           "translation": {
             "type": "string",
             "minLength": 1,
             "maxLength": 4000,
             "pattern": "^(?![\\s\\S]*(?:—|<|>|\\{\\{|\\}\\}|\\[sound:))[\\s\\S]*$",
-            "examples": [
-              "Toto je moja kniha."
-            ]
+            "examples": ["Robím to sám."]
           }
         },
-        "required": [
-          "sk",
-          "en"
-        ],
+        "required": ["sk", "en"],
         "additionalProperties": false,
         "dependencies": {
-          "sentence": [
-            "translation"
-          ],
-          "translation": [
-            "sentence"
-          ]
+          "sentence": ["translation"],
+          "translation": ["sentence"]
         }
       }
     }
   },
-  "required": [
-    "category",
-    "word",
-    "meanings"
-  ],
+  "required": ["kind", "word", "meanings"],
+  "dependencies": {
+    "partner": ["aspect"],
+    "motion": ["aspect"]
+  },
   "additionalProperties": false
 }

@@ -102,7 +102,7 @@ export function BatchEditor(props: BatchEditorProps) {
           value={props.input}
           onInput={(event) => props.onEdit(event.currentTarget.value)}
           placeholder={
-            'format_version = 1\ntemplate = "russian-vocabulary"\ntemplate_version = 1\n\n[[notes]]\n…'
+            'format_version = 1\ntemplate = "russian-vocabulary"\ntemplate_version = 2\n\n[[notes]]\n…'
           }
         />
         <div class="mt-5 flex flex-wrap items-center gap-3">

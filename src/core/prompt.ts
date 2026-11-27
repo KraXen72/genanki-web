@@ -9,7 +9,7 @@ export { queuePrompt };
 
 function exampleValue(schema: Schema): unknown {
   if (schema.const !== undefined) return schema.const;
-  if (schema.examples?.length) return schema.examples[0];
+  if (schema.examples?.length) return structuredClone(schema.examples[0]);
   if (schema.enum?.length) return schema.enum[0];
 
   switch (schema.type) {

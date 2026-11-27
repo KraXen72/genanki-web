@@ -35,6 +35,18 @@ Validators read the raw input values of their declared Anki fields together for 
 
 `ru-stress` compares stress-marked Russian words with a dictionary of about 540,000 word forms. It skips words without a mark and words with ё. Wrong stress produces a review warning with accepted spellings; missing words produce a notice. A spelling with several valid stresses, such as `за́мок` and `замо́к`, accepts all of them.
 
+`ru-aspect` reads `Word`, `Kind`, `Aspect`, `Partner`, and `Motion`. It blocks incorrect dictionary aspects, missing verb aspects, verb-only fields on other kinds, and invalid directions for the 14 unprefixed motion pairs. It resolves homographs by stress, checks verb-headed phrases through their first token, and accepts either aspect of a biaspectual verb with a notice. Unknown verbs produce notices. Partner disagreements and verb-like nonverb kinds request review.
+
+```toml
+[[validators]]
+name = "ru-aspect"
+fields = ["Word", "Kind", "Aspect", "Partner", "Motion"]
+```
+
+These names refer to Anki mappings whose raw input paths supply the values. Include `Partner` in `ru-stress` to check its stress too. Only dictionary facts can block content; heuristic findings remain review warnings.
+
+Rebuild aspect data with `pnpm ru-aspect:generate`, or both dictionaries with `pnpm ru-data:generate` in one Wiktionary pass. Pass an existing gzip dump path to reuse a download. `src/validators/ru-aspect/supplement.tsv` overrides matching stressed headwords last. `data/ru-aspect.tsv` is the uncompressed dictionary for the separate Anki fixup scripts. Source dates and extraction counts are recorded in `data/ru-aspect.sources.json`.
+
 To add a word or a valid variant, edit `src/validators/ru-stress/supplement.txt` and run `pnpm ru-stress:generate`. To add a validator, add a module in `src/validators/`, register it in `src/validators/index.ts`, and add its name to `schemas/manifest.schema.json`.
 
 ## Field mappings

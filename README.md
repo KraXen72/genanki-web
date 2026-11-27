@@ -18,6 +18,7 @@ You can create your own deck templates by following the [docs](https://kraxen72.
 
 Templates:  
 - validate using JSON schemas, including RegEx, and optionally, correct stress mark placement from open Russian dictionaries (Wiktionary and OpenRussian).
+- Russian Vocabulary v4 checks verb aspect against Wiktionary and OpenRussian; dictionary conflicts block export with copyable corrections.
 - preserve explicit note identities across corrections, remove identical duplicates, and reject conflicting IDs.
 - will either make a deck at your desired route depending on the source, such as `Russian::Vocabulary::<source>`, or at a fallback, e.g. `Russian::Vocabulary::Mix`
 
@@ -40,5 +41,9 @@ _I'll write a blog post about this later. Stay tuned!_
 | `pnpm test` | Run the unit tests |
 | `pnpm test:e2e` | Run the browser tests |
 | `pnpm ru-stress:generate` | Rebuild the Russian stress dictionary from Wiktionary and OpenRussian |
+| `pnpm ru-aspect:generate` | Rebuild the Russian aspect dictionary and Python-facing TSV |
+| `pnpm ru-data:generate` | Rebuild stress and aspect dictionaries in one Wiktionary pass |
 
 `pnpm ru-stress:generate` downloads the full 3 GB Wiktionary dump from kaikki.org. To reuse a copy you already downloaded, pass its path: `pnpm ru-stress:generate path/to/raw-wiktextract-data.jsonl.gz`. The script prints which version of each source it used; put that in the commit message.
+
+Both aspect commands accept the same optional dump path. Source dates and counts are saved in `data/ru-aspect.sources.json`. The LLM supplies kind/aspect slugs; pack-authored labels become the grammar line on the cards. `Russian vocabulary v4` uses input version 2. Existing Anki notes need the separate one-time fixup before corrected notes can update them.

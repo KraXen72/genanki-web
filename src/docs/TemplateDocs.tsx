@@ -223,7 +223,7 @@ export function TemplateDocs() {
                   ],
                   [
                     'validators',
-                    'Optional content checks reading raw named fields together per note. Dictionary errors block export; review warnings need confirmation; notices allow export.',
+                    'ru-stress checks marked Russian stress; ru-aspect checks verb aspect, partners, and motion. Each reads raw named fields together per note. Dictionary errors block export; review warnings need confirmation; notices allow export.',
                   ],
                 ]}
               />

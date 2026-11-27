@@ -2,18 +2,27 @@ Create Russian vocabulary notes for a Slovak learner. Follow the supplied queue 
 
 - WORD
   - use the dictionary form: infinitive for verbs, nominative singular for nouns, masculine singular for adjectives. Keep fixed expressions and plural-only words intact.
-  - mark stress on Russian words with 2+ syllables in the headword only.
+  - mark stress on Russian words with 2+ syllables in `word` and `partner`.
   - place a combining acute accent (U+0301) after the stressed Cyrillic vowel. 
   - preserve ё: ё already indicates stress; do not accent it.
   - examples: кни́га, хорошо́, краси́вый, идёт, за́мок.
   - use ordinary Cyrillic, no transliteration.
 
-- CATEGORY
-  - write in Slovak, beginning with the part of speech.
-  - always include noun gender or verb aspect when applicable.
-  - examples: "podstatné meno; ženský rod", "sloveso; nedokonavý vid", "prídavné meno".
-  - add short usage labels when useful, e.g. "slang", "hrubšie", "vulgárne". Avoid unnecessary grammar terminology.
-  - use only part of speech, gender or aspect, and usage labels. Do not add topic labels such as "farba" or "kalendárny mesiac".
+- KIND
+  - set `kind` to exactly one of the allowed values. Noun gender is part of the kind: `pod.m:m`, `pod.m:ž`, `pod.m:s`, `pod.m:oboj` for common gender like сирота́, `pod.m:pomn` for plural-only like но́жницы.
+  - write the enum slug, e.g. `kind = "pod.m:ž"`. The app supplies its Slovak display label.
+  - use `slov` for verbs, including reflexive -ся verbs; use `fráza` only for fixed multi-word expressions not headed by a single verb or noun.
+
+- ASPECT (verbs only)
+  - every `slov` note has `aspect`: `impf` (nedokonavý), `pf` (dokonavý), or `both` (obojvidový, e.g. испо́льзовать, жени́ться).
+  - use the headword's aspect.
+  - add `partner` with the stressed aspect partner(s) when one exists: де́лать → `partner = "сде́лать"`. For several common partners separate them with ", ". Omit `partner` if there is no standard partner.
+  - for the unprefixed paired verbs of motion (идти́/ходи́ть, е́хать/е́здить, бежа́ть/бе́гать, лете́ть/лета́ть, плыть/пла́вать, нести́/носи́ть, вести́/води́ть, везти́/вози́ть, тащи́ть/таска́ть, кати́ть/ката́ть, гнать/гоня́ть, ползти́/по́лзать, лезть/ла́зить, брести́/броди́ть) also set `motion`: `unidir` for the first verb in each pair, `multidir` for the second. Prefixed motion verbs (прийти́, приходи́ть) get no `motion`.
+  - never set `aspect`, `partner`, or `motion` on non-verbs.
+  - the app checks aspect against a dictionary. If it reports an error, correct only the flagged fields and keep IDs.
+
+- USAGE
+  - optional `usage` in Slovak for register or usage labels: "slang", "hovorové", "hrubšie", "vulgárne", "knižné", "zastarané". Keep part of speech, gender, and aspect in their structured fields. Omit topic labels.
 
 - MEANINGS
   - include 1–3 common, distinct meanings, ordered by relevance to the supplied context and everyday usage.
@@ -48,6 +57,7 @@ Create Russian vocabulary notes for a Slovak learner. Follow the supplied queue 
   - keep multiple meanings of the same word in one note.
   - use distinct IDs for unrelated homonyms, e.g. ru:замок:castle and ru:замок:lock.
   - preserve existing IDs and sources when correcting cards.
+  - aspect partners are separate notes with their own IDs, e.g. `ru:делать:general` and `ru:сделать:general`.
 
 - OUTPUT
   - field values must be plain text: no HTML, Markdown, Anki syntax, audio references, or em dashes.

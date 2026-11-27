@@ -94,11 +94,7 @@ export class StressDictionary {
 
 let dictionary: Promise<StressDictionary> | undefined;
 
-/**
- * Downloads and prepares the stress dictionary once; later calls reuse the result.
- *
- * The zstd file is about a sixteenth of the text's size, and decompressing takes about 20 ms.
- */
+/** Downloads and prepares the stress dictionary once; later calls reuse the result. */
 export function loadStressDictionary(): Promise<StressDictionary> {
   dictionary ??= downloadDictionary().catch((error: unknown) => {
     // let the next validation try again instead of keeping the failure

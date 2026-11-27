@@ -25,7 +25,7 @@ const motionByWord = new Map<string, string>(
   ]),
 );
 
-/** Checks grammatical constraints and dictionary facts; incomplete partner lists request review. */
+/** Checks verb fields and dictionary facts, requesting review of supplied partner disagreements. */
 export async function checkRussianAspect(
   notes: CheckedNote[],
   dictionary?: AspectDictionary,

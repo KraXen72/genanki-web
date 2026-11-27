@@ -1,12 +1,25 @@
 # Verification
 
-The automated suite exercises both bundled packs, complete TOML validation, generated prompts, exact Russian v4 field/card order, all kind slugs, labels, tags, 1–3 meanings, optional pairs, Unicode, escaping, source selection, duplicate IDs/content, and imported ZIP/schema bounds. Aspect fixtures cover stress-resolved homographs, biaspectual verbs, phrases, incomplete partners, unknown words, all 14 motion pairs, and batched blocking errors. Data-build tests check source extraction, precedence, supplements, and identical TSV/zstd contents. Runtime tests execute the real pinned Pyodide/genanki adapter, including persisted tags, repeated exports, verification failure, and temporary-file cleanup.
+## Automated coverage
 
-Browser tests run Chromium and Firefox against the production site under `/genanki-web/`, including actual APKG downloads and independent Python stdlib ZIP/SQLite inspection. The same-ID correction changes stored fields while preserving the GUID. Covered UI flows include clipboard success/failure, plain file input, pasted fences, ZIP pack import, no card rendering, cancellation/retry, missing runtime assets, appearance persistence, reload reset, build metadata, narrow layouts, input/footer alignment, and the shared queue dialog. Request monitoring includes worker requests and rejects any external request during export.
+The unit tests cover:
+
+- Both bundled packs, TOML schemas, generated prompts, explicit IDs, duplicate handling, and destination selection.
+- Russian v4 field/card order, kind labels, tags, one to three meanings, optional sentence/translation pairs, Unicode, and escaping.
+- Stress checks and aspect cases: stressed homographs, biaspectual verbs, verb phrases, partner disagreements, unknown words, all 14 motion pairs, and multiple blocking errors.
+- Dictionary extraction, source precedence, supplements, and matching TSV/zstd data.
+- Imported ZIP paths, schema restrictions, resource limits, and the downloadable starter pack.
+- Real Pyodide/`genanki` exports, stored tags, repeated exports, verification failures, and temporary-file cleanup.
+
+Browser tests cover Chromium and Firefox, including production builds under `/genanki-web/`. They download APKGs and inspect ZIP/SQLite data through `tests/inspect_package.py`. A correction with the same note ID changes stored fields while preserving the GUID.
+
+UI cases include clipboard fallbacks, file input, pasted fences, ZIP imports, cancellation/retry, missing runtime files, theme preferences, reload reset, build metadata, narrow layouts, footer alignment, and the shared queue dialog. Request monitoring includes worker requests and rejects external requests during export.
+
+Desktop migration coverage is described in the [fixup CLI guide](../tools/anki-fixups/README.md).
 
 ## Initial measurements
 
-Measured locally on 2026-10-26 with Node 24 and Pyodide 314.0.7:
+The following results were recorded on 2026-10-26 with Node 24 and Pyodide 314.0.7:
 
 | Measurement | Result |
 | --- | --- |
@@ -17,12 +30,14 @@ Measured locally on 2026-10-26 with Node 24 and Pyodide 314.0.7:
 | Warm packaging + SQLite/ZIP verification | 159 ms |
 | Whole Node test-process resident memory | 242,155,520 bytes (231 MiB) |
 
-The gzip total is an asset-size calculation, not a promise about a host's transfer encoding. Node RSS includes JavaScript, WASM, and test overhead; it is not an isolated browser or mobile-memory measurement. Browser cold export tests typically completed within a few seconds over localhost; network speed and device capability vary. No application runtime requests go to a CDN or PyPI.
+These measurements describe the initial implementation. Measure the current build and target device before using them to choose batch sizes.
 
-Reproduce the batch measurement with `MEASURE_RUNTIME=1 pnpm exec vitest run tests/runtime.test.ts`; results are written to `/tmp/genanki-runtime-metrics.json`. The 2,000-note, 4-MiB-input, and 32-KiB-field bounds protect memory without claiming support for arbitrary maximum-length content on every device.
+The gzip total sums separately compressed assets. Actual transfer size depends on the host's compression settings. Process memory includes JavaScript, WASM, and test overhead.
 
-## Outstanding external acceptance
+Run `pnpm runtime:prepare`, then `MEASURE_RUNTIME=1 pnpm exec vitest run tests/runtime.test.ts` to measure the batch on current code. It writes `/tmp/genanki-runtime-metrics.json`.
 
-No AnkiDroid device was available in this environment. Import/update behavior and preservation of review progress, actual native Russian TTS playback, and card theme inheritance require on-device testing. The automated suite verifies the structures and stable identities that support those features, without claiming that package inspection proves Anki's import decisions.
+## AnkiDroid and deployment checks
 
-The GitHub Actions workflow is configured for static Pages deployment; a live deployment requires repository Pages settings and a successful remote workflow run.
+AnkiDroid device checks remain: import/reimport behavior, review-progress preservation, Russian TTS playback, and card theme inheritance. Import settings, local edits, and note-type compatibility affect updates.
+
+The GitHub Actions workflow configures static Pages deployment. Publishing requires repository Pages settings and a successful remote workflow run.

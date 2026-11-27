@@ -1,7 +1,9 @@
 import { execFileSync } from 'node:child_process';
+import mdx from '@mdx-js/rollup';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
+import remarkGfm from 'remark-gfm';
 import runtimeLock from './runtime.lock.json';
 
 function buildCommit(): string {
@@ -36,7 +38,15 @@ export const buildInfo = {
 };
 
 export default defineConfig({
-  plugins: [solidPlugin(), tailwindcss()],
+  plugins: [
+    mdx({
+      include: '**/src/docs/*.mdx',
+      jsxImportSource: 'solid-js/h',
+      remarkPlugins: [remarkGfm],
+    }),
+    solidPlugin(),
+    tailwindcss(),
+  ],
   define: { __BUILD_INFO__: JSON.stringify(buildInfo) },
   base: process.env.VITE_BASE || '/',
   server: { port: 3000 },

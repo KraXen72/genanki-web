@@ -21,6 +21,10 @@
     @apply my-3 text-base-content/80;
   }
 
+  .docs-content p a {
+    @apply link text-primary;
+  }
+
   .docs-content p code {
     @apply rounded bg-base-300/60 px-1 py-0.5 text-sm text-primary;
     overflow-wrap: anywhere;
@@ -35,7 +39,7 @@
   }
 
   .docs-code pre {
-    @apply overflow-x-auto p-4 text-[13px] leading-relaxed;
+    @apply overflow-x-auto p-4 text-[15px] leading-relaxed;
     tab-size: 2;
   }
 
@@ -43,13 +47,18 @@
     @apply my-5 overflow-x-auto rounded-box border border-base-content/15 bg-base-100;
   }
 
-  .docs-table .table {
-    @apply text-sm;
+  .docs-table table {
+    @apply w-full border-collapse text-left text-[15px];
+  }
+
+  .docs-table thead,
+  .docs-table tbody tr:not(:last-child) {
+    @apply border-b border-base-content/10;
   }
 
   .docs-table td,
   .docs-table th {
-    @apply align-top whitespace-normal;
+    @apply px-4 py-3 align-top whitespace-normal;
     overflow-wrap: anywhere;
   }
 

@@ -162,9 +162,9 @@ function App() {
             <ThemePicker />
           </div>
           <p class="max-w-3xl text-base leading-relaxed text-base-content/80">
-            Create Anki flashcards with ease! Have your LLM make the cards (e.g. auto translations &
-            example sentences) in TOML, then use this to generate a consistent Anki deck{' '}
-            <code class="rounded bg-base-300/60 px-1.5 py-0.5 text-primary">.apkg</code>
+            Ask your LLM for translations, example sentences, or other note content in TOML.
+            Paste the TOML here to validate it and create an Anki package{' '}
+            <code class="rounded bg-base-300/60 px-1.5 py-0.5 text-primary">.apkg</code>.
           </p>
         </div>
         <div class="grid items-start gap-7 md:grid-cols-[260px_minmax(0,1fr)] md:gap-x-10 md:gap-y-6 lg:gap-x-14">
@@ -224,15 +224,15 @@ function App() {
             </nav>
             <aside class="max-w-4xl gap-2">
               <p>
-                Uses the <code>genanki</code> python library in Pyodide WASM. Import the downloaded
-                package in Anki or AnkiDroid. Russian TTS requires AnkiDroid <code>2.17+</code> and
-                a Russian voice.
+                Packages use the <code>genanki</code> Python library in Pyodide. Import the
+                downloaded package into Anki or AnkiDroid. Russian TTS requires AnkiDroid{' '}
+                <code>2.17+</code> and a Russian voice.
               </p>
               <p>
                 Stable IDs support updates; Anki import options and local edits affect reimports.
               </p>
               <p>
-                Russian stress checks use data from{' '}
+                Additional validation uses data from{' '}
                 <a class="link" href="https://en.wiktionary.org">
                   Wiktionary
                 </a>{' '}

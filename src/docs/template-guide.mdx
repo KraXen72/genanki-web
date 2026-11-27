@@ -1,0 +1,212 @@
+import { Code, DownloadStarter, Section, Table } from './components';
+import { starterFiles } from './starter';
+import { textPatterns } from '../core/banned-text';
+
+<Section id="quick-start" title="Start with a working pack">
+
+Download and unzip the starter. Edit its files, ZIP the folder again, then choose **Import template ZIP** in the app. Reloading the tab removes imported templates.
+
+<DownloadStarter />
+
+To try it first, import the ZIP and paste `sample.toml`: two notes make four cards in `Languages::Vocabulary::Lesson 1`. For your own template, change `key` and `model.id` in `template.toml`. Use the new key for `template` in the JSON schema and sample too.
+
+<Table label="Pack files">
+
+| File | Purpose |
+| --- | --- |
+| `template.toml` | Template name, settings, and file names. |
+| `input.schema.json` | Allowed fields, rules, and example values. |
+| `prompt.md` | Instructions for the LLM. |
+| `cards/*.html` | Card fronts and backs. |
+| `style.css` | Card appearance. |
+| `sample.toml` | Optional test notes. All other files here are required. |
+
+</Table>
+
+<Code name="sample.toml">{starterFiles['sample.toml']}</Code>
+
+</Section>
+
+<Section id="manifest" title="Connect the files">
+
+The manifest connects the pack's files and defines its Anki note type. File paths start from the folder containing `template.toml`.
+
+<Code name="template.toml">{starterFiles['template.toml']}</Code>
+
+<Table label="Manifest options">
+
+| Option | Meaning |
+| --- | --- |
+| `format_version` | Use 1. |
+| `key` | Your template's unique key. Use lowercase letters, digits, and hyphens, starting with a letter. Maximum 64 characters. |
+| `input_version` | Start at 1; see “IDs & versions”. |
+| `name` | Name shown in the app. |
+| `schema` / `prompt` / `css` | File names from the pack files table. |
+| `model.id` | Your Anki note type's unique number, from 1 to 9007199254740991. |
+| `model.name` | Name shown for this note type in Anki. |
+| `destination.policy` | `fixed` or `shared-source`; see below. |
+| `destination.deck` | Deck name, such as `Languages::Vocabulary`. Maximum 200 characters; each part needs a name. |
+| `fields` | 1–64 fields, each with `name`, `path`, and `format`. `list` also needs `item_path`; `label` needs a `labels` table. |
+| `cards` | 1–8 cards, each with a unique name and front/back file names. |
+| `tags` | Optional prefix/path mappings from raw strings to `prefix::value` tags. |
+| `validators` | Optional content checks: `ru-stress` for Russian stress; `ru-aspect` for verb aspect, partners, and motion. |
+
+</Table>
+
+`shared-source` adds `::Lesson 1` when all notes have `source = "Lesson 1"`, otherwise `::Mix`. `fixed` uses the configured `destination.deck`. Deck name components are trimmed and normalized to Unicode NFC. Each export makes one deck.
+
+Tags use nonempty values without whitespace. Missing optional values produce no tag. Anki reimports can replace existing tags, including tags added by hand.
+
+Validators read the raw values of their named fields together for each note. Errors block export. Review warnings require **Export anyway**; notices allow export immediately.
+
+</Section>
+
+<Section id="schema" title="Describe the input">
+
+A schema lists allowed fields and values. Match its three `const` values to the first three lines of `sample.toml`.
+
+Put required field names in `required`; the rest are optional. Add `examples` to give the LLM a useful starting point.
+
+<details class="my-5 rounded-box border border-base-content/15 bg-base-100">
+<summary class="cursor-pointer px-4 py-3 font-medium">Complete input.schema.json</summary>
+<div class="px-3">
+<Code name="input.schema.json">{starterFiles['input.schema.json']}</Code>
+</div>
+</details>
+
+<Table label="Supported JSON Schema keywords">
+
+| Keyword | Meaning |
+| --- | --- |
+| `$schema`, `title`, `description`, `examples` | Schema version (draft-07), title, description, and examples. |
+| `type` | Choose one: object, array, string, integer, number, or boolean. |
+| `properties`, `required`, `additionalProperties`, `items` | Fields, required names, and list items. Every object needs `additionalProperties: false`. |
+| `const`, `enum` | One exact value (text, number, or true/false), or up to 64 choices. |
+| `minLength`, `maxLength`, `minItems`, `maxItems` | Text length and list size. Set `maxLength ≤ 4000` for every string and `maxItems ≤ 2000` for every array. |
+| `minimum`, `maximum` | Smallest and largest allowed numbers. |
+| `dependencies` | Require related fields together, as below. |
+| `pattern` | Use one of the two patterns below. |
+
+</Table>
+
+<Code name="Optional paired fields (inside a note schema)">{`"dependencies": {
+  "sentence": ["translation"],
+  "translation": ["sentence"]
+}`}</Code>
+
+<details class="my-5 rounded-box border border-base-content/15 bg-base-100">
+<summary class="cursor-pointer px-4 py-3 font-medium">Supported pattern values (JSON)</summary>
+<div class="px-3">
+
+The source pattern blocks `::` and control characters. The plain text pattern blocks em dashes, HTML brackets, Anki expressions, and audio references.
+
+<Code name="Source pattern">{JSON.stringify({ pattern: textPatterns.source }, null, 2)}</Code>
+<Code name="Plain text pattern">{JSON.stringify({ pattern: textPatterns.plainText }, null, 2)}</Code>
+
+</div>
+</details>
+
+The loader rejects other JSON Schema features, such as `$ref` and `oneOf`.
+
+</Section>
+
+<Section id="fields" title="Map data into Anki fields">
+
+Each `[[fields]]` copies a value from a note into an Anki field. Names must be unique: start with `A–Z` or `a–z`, then use letters or digits. Anki keeps the order you list them in.
+
+<Table label="Field formats">
+
+| Format | Behavior |
+| --- | --- |
+| `text` | Text, numbers, or true/false. Missing optional values leave the field empty. |
+| `lines` | Like `text`, converting line breaks to `<br>`. |
+| `list` | Read a list using `item_path`. Adds a `div` per item; see below. |
+| `label` | Map a string enum through `[fields.labels]`, then HTML-escape the label. Missing optional values leave the field empty. |
+
+</Table>
+
+`path = "word"` reads the word. `path = "meanings.0.sk"` reads `sk` from the first meaning: counting starts at zero.
+
+<Code name="Nested text mapping (template.toml)">{`[[fields]]
+name = "SlovakMeaning1"
+path = "meanings.0.sk"
+format = "text"`}</Code>
+
+A `label` mapping requires `[fields.labels]` with exactly one label per input enum value, up to 64. Labels live in the pack manifest. The LLM writes enum slugs in its input TOML; the compiler expands them for Anki.
+
+For a few meanings, use separate `text` fields, like the Russian template. Keep layout HTML in the card files so notes stay easy to edit.
+
+<Code name="List mapping alternative (template.toml)">{`[[fields]]
+name = "Meanings"
+path = "meanings"
+format = "list"
+item_path = "en"`}</Code>
+
+With `meanings = [{ en = "book" }, { en = "volume" }]`, this creates the HTML below *inside the editable field*. The list must exist. `item_path` names one property and works with `list`.
+
+<Code name="Generated Meanings field">{`<div class="Meanings" style="grid-row: 1">book</div>
+<div class="Meanings" style="grid-row: 2">volume</div>`}</Code>
+
+</Section>
+
+<Section id="cards" title="Write the cards and CSS">
+
+`{{Word}}` shows a field. `{{#Example}}…{{/Example}}` shows that part only when Example has a value. Make sure each front shows something; empty fronts can prevent Anki from creating cards.
+
+<Code name="cards/forward.html">{starterFiles['cards/forward.html']}</Code>
+<Code name="cards/reverse.html">{starterFiles['cards/reverse.html']}</Code>
+<Code name="cards/answer.html">{starterFiles['cards/answer.html']}</Code>
+<Code name="style.css">{starterFiles['style.css']}</Code>
+
+Use ordinary HTML and CSS for card layout. TOML values display as text. Import a generated package into Anki to check its appearance. Anki cards need their own CSS; the app's Tailwind and DaisyUI styles apply to the website.
+
+See Anki's [card template reference](https://docs.ankiweb.net/templates/intro.html) for more options, including text-to-speech.
+
+</Section>
+
+<Section id="prompt" title="Tell the LLM what to write">
+
+<Code name="prompt.md">{starterFiles['prompt.md']}</Code>
+
+Describe the language, detail, and examples you want. The app adds the shared queue instructions, field rules, and a TOML example automatically.
+
+Copy the LLM prompt to check the example. If importing reports an invalid example, fix the `examples` values in your schema.
+
+</Section>
+
+<Section id="identity" title="Update your template">
+
+Keep `key` and each note's `id` the same when correcting notes so exported notes keep the same identity. Anki's import settings, local edits, and note-type compatibility affect updates.
+
+The app skips repeated notes with identical IDs, sources, and content. Conflicting source or content under the same ID causes an error. Each imported template needs a unique key and model ID among the loaded packs.
+
+<Table label="Versioning">
+
+| Setting | When to change it |
+| --- | --- |
+| `format_version = 1` | The pack format this page covers. |
+| `input_version` → `template_version` | Increase it when changing required fields or allowed values. Set `template_version` to match in JSON and TOML. The app rejects every other version. |
+| `model.id` | Keep it for appearance changes. Changing field/card names, order, or count requires a migration decision. Give each new note type a distinct ID. |
+
+</Table>
+
+</Section>
+
+<Section id="limits" title="Stay within the limits">
+
+<Table label="Resource limits">
+
+| Resource | Limit |
+| --- | --- |
+| Pack ZIP | 2 MiB zipped; 8 MiB unzipped; 64 files/folders; 512 KiB per file. UTF-8 text only. |
+| Pack paths | Keep files inside the template folder. Use relative paths with `/` separators. The loader rejects backslashes, colons, and `.` / `..` folder names. |
+| Input schema | 64 KiB; 512 schema entries; up to 12 levels of nesting. |
+| TOML batch | 4 MiB; 1–2000 notes. |
+| Note ID / source | Nonblank ID: up to 200 characters. Source: up to 100, without `::` or control characters. |
+| Anki field | 32 KiB after conversion. |
+
+</Table>
+
+Choose **Validate** and review the results. Click **Generate .apkg**, confirm any review warnings with **Export anyway**, then click **Download .apkg**. Import the package into Anki and check its cards.
+
+</Section>

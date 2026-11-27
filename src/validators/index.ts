@@ -11,7 +11,7 @@ export interface CheckedNote {
   fields: Record<string, string>;
 }
 
-/** Separates blocking dictionary facts, review warnings, and informational notices. */
+/** Separates blocking content errors, review warnings, and informational notices. */
 export interface ValidatorResult {
   errors: string[];
   /** Possible problems the user must confirm before exporting. */

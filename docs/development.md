@@ -1,6 +1,6 @@
 # Development
 
-Use Node 24, pnpm 10.34.9, and Python 3.11+ (for independent package inspection in browser tests).
+Use Node 24, pnpm 10.34.9, and Python 3.11+ for package inspection in browser tests. VS Code includes TypeScript language support. The workspace recommends Python and Pylance for Python files.
 
 ```sh
 pnpm install --frozen-lockfile
@@ -33,7 +33,15 @@ Playwright starts the static preview server in production mode. It downloads act
 
 The build regenerates contracts, prepares the runtime, type-checks the UI and worker separately, and bundles the site. Generated files must be committed; CI checks them for drift. Run `pnpm format` / `pnpm format:check` for TypeScript, JSX, styles, scripts, tests, and template/starter HTML and CSS.
 
-Duplicate detection ignores object-property order but preserves array order, including the order of meanings. Keep tests focused on compiled fields, rendered layout, package contents, and user-visible transitions rather than literal template source or CSS class names.
+Duplicate detection ignores object-property order and preserves array order, including the order of meanings. Tests should check compiled fields, rendered layout, package contents, and user-visible transitions.
+
+## Template authoring page
+
+Edit the guide's prose and tables in `src/docs/template-guide.mdx`. `src/docs/TemplateDocs.tsx` supplies the page layout and navigation. `src/docs/components.tsx` provides copyable code blocks, scrollable tables, section anchors, and the starter ZIP download.
+
+Vite compiles the repository-authored MDX with `@mdx-js/rollup`; `remark-gfm` handles Markdown tables. The plugin is restricted to `src/docs/*.mdx`. The guide reads examples from `examples/vocabulary-starter/` and supported patterns from `src/core/banned-text.ts`.
+
+Install the recommended MDX extension in VS Code for syntax highlighting and language support.
 
 ## Russian dictionary data
 
@@ -51,22 +59,22 @@ The complete verb example is a note-level schema `examples` annotation, so its o
 
 `runtime.lock.json` pins Pyodide 314.0.7, genanki 0.13.1, every Python dependency, and SHA-256 hashes for the delivered core files and wheels. `scripts/prepare-runtime.mjs` verifies cached assets or downloads the exact missing assets at build time into the ignored `public/runtime/` directory. Vite copies them into `dist/runtime/`.
 
-Browser exports use only these same-origin files; neither PyPI nor a CDN resolves packages at runtime. `micropip.install(..., deps=False)` installs the explicit wheel list after Pyodide loads its local micropip and PyYAML wheels. SQLite availability is checked before the adapter loads. Runtime licenses are included in the deployed assets.
+Browser exports load runtime files from the same site. After Pyodide loads its local micropip and PyYAML wheels, `micropip.install(..., deps=False)` installs the explicit wheel list. Bootstrap checks SQLite availability before loading the adapter. Runtime licenses are included in the deployed assets.
 
 The worker is created only after successful compilation. One worker handles one job at a time, reusing its initialized Python runtime after success. Cancellation or failure destroys the worker; retry initializes a fresh one. Upstream initialization can reject an internal promise without settling the loader, so the worker forwards unhandled rejections to the client as recoverable errors.
 
-Python receives ordered strings and upstream card templates; it does not format content or render HTML. Each job creates a temporary directory and temporarily points Python's `tempfile` there because genanki leaves its intermediate SQLite database behind. Verification and all cleanup happen before the byte buffer reaches the UI. PyProxy objects and replaced Blob URLs are explicitly released.
+Python receives compiled field strings and card templates. Each job creates a temporary directory and temporarily points Python's `tempfile` there because genanki leaves its intermediate SQLite database behind. The adapter verifies the package and cleans temporary files before returning the byte buffer. The worker releases PyProxy objects, and the UI revokes replaced Blob URLs.
 
 ## Privacy and appearance
 
-TOML and imported packs are held in memory and disappear on reload. Only an explicit light/dark preference is stored under `genanki-web:theme`; system mode removes that key. Browser storage failure does not prevent conversion or theme selection. Appearance persistence is an explicit UI addition to the original stateless design; user content is never stored.
+TOML and imported packs stay in memory and disappear on reload. An explicit light/dark preference is stored under `genanki-web:theme`; system mode removes that key. Production builds cache dictionary assets as described in [Template packs](packs.md#validators). Conversion and theme selection remain available when browser storage is restricted.
 
 ## Deployment
 
-`.github/workflows/pages.yml` verifies contracts, types, compiler/runtime tests, and production browser flows under the repository subpath before uploading static files and deploying the default branch. In repository Settings → Pages, select **GitHub Actions** as the build source. This repository does not configure a backend or send content to GitHub.
+`.github/workflows/pages.yml` checks generated contracts, types, unit/runtime tests, and production browser flows under the repository subpath before deploying the default branch. In repository **Settings → Pages**, select **GitHub Actions** as the build source. GitHub serves the static files; the browser processes note content.
 
 `VITE_BASE` controls all worker, Python, runtime, and bundled asset URLs. Build metadata is evaluated by Vite once: short Git commit (with `-dirty` for modified local builds), genanki version from the runtime lock, and UTC timestamp. GitHub Actions supplies the actual build commit through `GITHUB_SHA`.
 
 ## Device acceptance
 
-Automated checks establish package structure, identity stability, timestamps, and browser behavior. An actual AnkiDroid device is still required to confirm import/update behavior, review-progress preservation, Russian voice playback, and theme inheritance. Stable GUIDs alone do not guarantee that import options overwrite local edits or move existing cards.
+Automated checks cover package structure, identity stability, timestamps, and browser behavior. Use an AnkiDroid device to check import/reimport behavior, review-progress preservation, Russian voice playback, and theme inheritance. Anki's import settings, local edits, and note-type compatibility affect updates.

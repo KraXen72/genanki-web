@@ -88,27 +88,36 @@ function normalizeForm(form, tags) {
 }
 
 /**
- * Collects the stressed headwords and inflected forms of all Russian entries.
- *
- * Pass the path of a downloaded dump to avoid downloading it again. `lastModified` identifies the
- * version of the dump, because kaikki.org replaces it in place.
+ * Visits modern Russian entries once, letting several dictionary builders share the same stream.
+ * Returns the source date for the build log.
  */
-export async function readWiktionaryForms(localPath) {
+export async function readWiktionaryEntries(localPath, visit) {
   const { stream, lastModified } = await openDump(localPath);
   const lines = createInterface({ input: stream.pipe(createGunzip()), crlfDelay: Infinity });
-  const forms = new Set();
 
   for await (const line of lines) {
-    // parsing only lines that can be Russian entries makes reading the dump several times faster
-    if (!line.includes('"lang_code": "ru"')) continue;
+    if (!/"lang_code"\s*:\s*"ru"/.test(line)) continue;
     const entry = JSON.parse(line);
     if (entry.lang_code !== 'ru' || hasOnlyExcludedSenses(entry)) continue;
-
-    for (const { form, tags = [] } of entry.forms ?? []) {
-      const normalized = typeof form === 'string' && normalizeForm(form, tags);
-      if (normalized) forms.add(normalized);
-    }
+    visit(entry);
   }
 
-  return { forms: [...forms], lastModified };
+  return { lastModified };
+}
+
+/** Adds an entry's accepted stressed forms to a shared build's set. */
+export function collectStressForms(entry, forms) {
+  for (const { form, tags = [] } of entry.forms ?? []) {
+    const normalized = typeof form === 'string' && normalizeForm(form, tags);
+    if (normalized) forms.add(normalized);
+  }
+}
+
+/** Collects stressed headwords and inflections, optionally from a previously downloaded dump. */
+export async function readWiktionaryForms(localPath) {
+  const forms = new Set();
+  const metadata = await readWiktionaryEntries(localPath, (entry) =>
+    collectStressForms(entry, forms),
+  );
+  return { forms: [...forms], ...metadata };
 }

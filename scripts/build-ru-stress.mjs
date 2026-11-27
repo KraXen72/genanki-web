@@ -18,6 +18,7 @@
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { constants, zstdCompressSync } from 'node:zlib';
+import { pathToFileURL } from 'node:url';
 import { downloadOpenRussianForms, splitApostropheForms } from './ru-stress/openrussian.mjs';
 import { readWiktionaryForms, WIKTIONARY_URL } from './ru-stress/wiktionary.mjs';
 
@@ -69,26 +70,33 @@ function frontCode(forms) {
   });
 }
 
-const [wiktionary, openRussian, supplementText] = await Promise.all([
-  readWiktionaryForms(process.argv[2]),
-  downloadOpenRussianForms(),
-  readFile(`${DIRECTORY}/supplement.txt`, 'utf8'),
-]);
+/** Writes stress data from collected sources, allowing aspect and stress to share one dump pass. */
+export async function writeStressDictionary(wiktionary, openRussian) {
+  const supplementText = await readFile(`${DIRECTORY}/supplement.txt`, 'utf8');
+  const wiktionaryForms = wiktionary.forms.filter(isUsableForm);
+  const openRussianForms = fromApostrophes(openRussian.forms).filter(isUsableForm);
+  const supplementForms = fromApostrophes(parseSupplement(supplementText)).filter(isUsableForm);
 
-const wiktionaryForms = wiktionary.forms.filter(isUsableForm);
-const openRussianForms = fromApostrophes(openRussian.forms).filter(isUsableForm);
-const supplementForms = fromApostrophes(parseSupplement(supplementText)).filter(isUsableForm);
+  const combined = [...fillMissingSpellings(wiktionaryForms, openRussianForms), ...supplementForms];
+  const forms = [...new Set(combined)].sort();
+  const text = `${frontCode(forms).join('\n')}\n`;
+  const compressed = zstdCompressSync(Buffer.from(text), {
+    params: { [constants.ZSTD_c_compressionLevel]: 19, [constants.ZSTD_c_checksumFlag]: 1 },
+  });
+  await writeFile(`${DIRECTORY}/dictionary.txt.zst`, compressed);
 
-const combined = [...fillMissingSpellings(wiktionaryForms, openRussianForms), ...supplementForms];
-const forms = [...new Set(combined)].sort();
+  console.log(`Wrote ${forms.length} stress forms, ${compressed.length} bytes compressed.`);
+  console.log(`Wiktionary: ${wiktionaryForms.length} forms from ${WIKTIONARY_URL}`);
+  console.log(`  version (Last-Modified): ${wiktionary.lastModified}`);
+  console.log(
+    `OpenRussian: ${openRussianForms.length} forms, newest word ${openRussian.newestWord}`,
+  );
+}
 
-const text = `${frontCode(forms).join('\n')}\n`;
-const compressed = zstdCompressSync(Buffer.from(text), {
-  params: { [constants.ZSTD_c_compressionLevel]: 19, [constants.ZSTD_c_checksumFlag]: 1 },
-});
-await writeFile(`${DIRECTORY}/dictionary.txt.zst`, compressed);
-
-console.log(`Wrote ${forms.length} forms, ${compressed.length} bytes compressed.`);
-console.log(`Wiktionary: ${wiktionaryForms.length} forms from ${WIKTIONARY_URL}`);
-console.log(`  version (Last-Modified): ${wiktionary.lastModified}`);
-console.log(`OpenRussian: ${openRussianForms.length} forms, newest word ${openRussian.newestWord}`);
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const [wiktionary, openRussian] = await Promise.all([
+    readWiktionaryForms(process.argv[2]),
+    downloadOpenRussianForms(),
+  ]);
+  await writeStressDictionary(wiktionary, openRussian);
+}

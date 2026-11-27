@@ -54,8 +54,11 @@ function parseCsv(text) {
 }
 
 /** Turns CSV rows into objects keyed by the header names. */
-function parseTable(text) {
+export function parseTable(text, requiredColumns = []) {
   const [header, ...rows] = parseCsv(text.replace(/^\uFEFF/, ''));
+  for (const column of requiredColumns) {
+    if (!header?.includes(column)) throw new Error(`OpenRussian table lacks column "${column}".`);
+  }
   return rows.map((row) => Object.fromEntries(header.map((name, index) => [name, row[index]])));
 }
 
@@ -67,19 +70,31 @@ export function splitApostropheForms(cell) {
   return (cell ?? '').toLowerCase().split(/[,;/\s]+/);
 }
 
+/** Downloads shared word metadata and the tables needed by the selected dictionary builds. */
+export async function downloadOpenRussianData({ includeForms = false, includeVerbs = false } = {}) {
+  const [wordsCsv, formsCsv, verbsCsv] = await Promise.all([
+    downloadTable('words'),
+    includeForms ? downloadTable('words_forms') : undefined,
+    includeVerbs ? downloadTable('verbs') : undefined,
+  ]);
+  const words = parseTable(wordsCsv, ['id', 'type', 'accented', 'disabled', 'created_at']);
+  return {
+    words,
+    wordForms: formsCsv ? parseTable(formsCsv, ['word_id', 'form']) : [],
+    verbs: verbsCsv ? parseTable(verbsCsv, ['word_id', 'aspect', 'partner']) : [],
+    newestWord: words.map((word) => word.created_at ?? '').reduce((a, b) => (a > b ? a : b), ''),
+  };
+}
+
 /**
  * Downloads the headwords and inflected forms of all words that are not disabled.
  *
  * Forms keep OpenRussian's apostrophe stress marks. `newestWord` is the date the newest word was
  * added, to record which state of the database the dictionary was built from.
  */
-export async function downloadOpenRussianForms() {
-  const [wordsCsv, wordFormsCsv] = await Promise.all([
-    downloadTable('words'),
-    downloadTable('words_forms'),
-  ]);
-  const words = parseTable(wordsCsv);
-  const wordForms = parseTable(wordFormsCsv);
+export async function downloadOpenRussianForms(data) {
+  const { words, wordForms, newestWord } =
+    data ?? (await downloadOpenRussianData({ includeForms: true }));
 
   const enabledWords = words.filter((word) => word.disabled !== '1');
   const enabledIds = new Set(enabledWords.map((word) => word.id));
@@ -89,7 +104,6 @@ export async function downloadOpenRussianForms() {
     ...enabledWords.flatMap((word) => splitApostropheForms(word.accented)),
     ...enabledForms.flatMap((wordForm) => splitApostropheForms(wordForm.form)),
   ]);
-  const newestWord = words.map((word) => word.created_at ?? '').reduce((a, b) => (a > b ? a : b));
 
   return { forms: [...forms], newestWord };
 }

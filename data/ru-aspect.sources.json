@@ -1,0 +1,20 @@
+{
+  "wiktionary": {
+    "url": "https://kaikki.org/dictionary/raw-wiktextract-data.jsonl.gz",
+    "lastModified": "Fri, 30 Oct 2026 20:48:24 GMT",
+    "entries": 196831,
+    "unknownAspects": {
+      "(missing)": 2034
+    }
+  },
+  "openRussian": {
+    "url": "https://en.openrussian.org/dictionary-data",
+    "newestWord": "2026-01-06 02:27:55",
+    "entries": 15298,
+    "unknownAspects": {
+      "(missing)": 28
+    }
+  },
+  "entries": 200986,
+  "conflicts": 104
+}

@@ -34,20 +34,22 @@ def inspect(path):
                 assert stored['qfmt'] == (pack_root / card['front']).read_text()
                 assert stored['afmt'] == (pack_root / card['back']).read_text()
 
-            notes = connection.execute('SELECT id, guid, mid, mod, flds FROM notes').fetchall()
+            notes = connection.execute('SELECT id, guid, mid, mod, flds, tags FROM notes').fetchall()
             assert len(notes) == 1
-            note_id, guid, stored_model, modified, fields = notes[0]
+            note_id, guid, stored_model, modified, fields, tags = notes[0]
             assert stored_model == model_id
             assert modified > 0
             fields = fields.split('\x1f')
-            assert len(fields) == 15
+            assert len(fields) == 19
             assert fields[0] == 'ru:книга:general'
-            assert fields[2] == 'кни́га'
-            assert fields[3] in {'kniha', 'knižka'}
-            assert fields[4:9] == ['book', '', '', '', '']
-            assert '<' not in fields[3]
-            assert fields[9:11] == ['Э́то моя́ кни́га.', 'Toto je moja kniha.']
-            assert fields[11:] == ['', '', '', '']
+            assert fields[1] == 'кни́га'
+            assert fields[2:7] == ['podst. meno, ženský rod', '', '', '', '']
+            assert fields[7] in {'kniha', 'knižka'}
+            assert fields[8:13] == ['book', '', '', '', '']
+            assert '<' not in fields[7]
+            assert fields[13:15] == ['Э́то моя́ кни́га.', 'Toto je moja kniha.']
+            assert fields[15:] == ['', '', '', '']
+            assert set(tags.split()) == {'genanki::pod.m:ž'}
             cards = connection.execute('SELECT ord, did FROM cards WHERE nid=? ORDER BY ord', (note_id,)).fetchall()
             assert [card[0] for card in cards] == [0, 1]
             assert cards[0][1] == cards[1][1]
@@ -62,7 +64,7 @@ def compare_exports(first_path, updated_path):
     first = inspect(first_path)
     updated = inspect(updated_path)
     assert first['guid'] == updated['guid']
-    assert first['fields'][3] != updated['fields'][3]
+    assert first['fields'][7] != updated['fields'][7]
     assert updated['modified'] >= first['modified']
     print(f'ZIP/SQLite verified; GUID preserved: {first["guid"]}')
 

@@ -18,7 +18,7 @@ for (const width of [360, 720]) {
   for (const count of [1, 2, 3]) {
     test(`Russian answer aligns ${count} meaning pairs at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 });
-      const fields: Record<string, string> = { Word: 'авантю́ра', Category: 'podstatné meno' };
+      const fields: Record<string, string> = { Word: 'авантю́ра', Kind: 'podst. meno, ženský rod' };
       for (let index = 1; index <= count; index++) {
         fields[`SlovakMeaning${index}`] =
           index === 1 ? 'riskantné dobrodružstvo, odvážny podnik '.repeat(3) : 'pochybný podnik';
@@ -52,7 +52,7 @@ test('Russian reverse shows only populated Slovak meanings without gaps', async 
   const template = readFileSync(new URL('cards/reverse.html', pack), 'utf8');
   await page.setContent(
     `<style>${css}</style><div class="card">${render(template, {
-      Category: 'podstatné meno',
+      Kind: 'podst. meno, ženský rod',
       SlovakMeaning1: 'riskantné dobrodružstvo',
       SlovakMeaning3: 'pochybný podnik',
       EnglishGloss1: 'risky adventure',
@@ -78,7 +78,7 @@ test('Russian reverse shows only populated Slovak meanings without gaps', async 
 
 test('Russian card sides share the updated meaning and translation styles', async ({ page }) => {
   const fields = {
-    Category: 'podstatné meno',
+    Kind: 'podst. meno, ženský rod',
     Word: 'кни́га',
     SlovakMeaning1: 'kniha',
     EnglishGloss1: 'book',
@@ -92,8 +92,8 @@ test('Russian card sides share the updated meaning and translation styles', asyn
   );
 
   await expect(page.locator('#reverse')).toHaveCSS('font-family', 'Arial, sans-serif');
-  await expect(page.locator('#reverse .category')).toHaveCSS('font-size', '18px');
-  await expect(page.locator('#answer .category')).toHaveCSS('font-size', '18px');
+  await expect(page.locator('#reverse .grammar')).toHaveCSS('font-size', '18px');
+  await expect(page.locator('#answer .grammar')).toHaveCSS('font-size', '18px');
   await expect(page.locator('#reverse .slovak-meaning')).toHaveCSS('font-size', '22px');
   await expect(page.locator('#answer .slovak-meaning')).toHaveCSS('font-size', '22px');
   await expect(page.locator('#reverse .translation-prompt')).toHaveCSS(
@@ -102,3 +102,36 @@ test('Russian card sides share the updated meaning and translation styles', asyn
   );
   await expect(page.locator('#answer .translation')).toHaveCSS('color', 'rgb(119, 119, 119)');
 });
+
+for (const side of ['forward', 'reverse', 'answer']) {
+  test(`Russian ${side} shows verb grammar and keeps the partner on the answer`, async ({
+    page,
+  }, testInfo) => {
+    const fields = {
+      Word: 'ходи́ть',
+      Kind: 'sloveso',
+      Aspect: 'impf.',
+      Motion: 'multidir.',
+      Usage: 'hovorové',
+      Partner: 'сходи́ть',
+      SlovakMeaning1: 'chodiť',
+      EnglishGloss1: 'to walk',
+    };
+    const template = readFileSync(new URL(`cards/${side}.html`, pack), 'utf8');
+    await page.setViewportSize({ width: 360, height: 700 });
+
+    await page.setContent(
+      `<style>${css}</style><div class="card">${render(template, fields)}</div>`,
+    );
+
+    await expect(page.locator('.grammar')).toHaveText(
+      /sloveso\s*·\s*impf\.\s*·\s*multidir\.\s*·\s*hovorové/,
+    );
+    await expect(page.locator('.partner')).toHaveCount(side === 'answer' ? 1 : 0);
+    if (side === 'answer') await expect(page.locator('.partner')).toHaveText('pár: сходи́ть');
+    else await expect(page.locator('body')).not.toContainText('сходи́ть');
+    if (side === 'reverse') await expect(page.locator('body')).not.toContainText('ходи́ть');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(360);
+    await page.screenshot({ path: testInfo.outputPath(`${side}-grammar.png`) });
+  });
+}

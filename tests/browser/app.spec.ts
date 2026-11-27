@@ -6,12 +6,12 @@ import { parse, stringify } from 'smol-toml';
 
 const toml = `format_version = 1
 template = "russian-vocabulary"
-template_version = 1
+template_version = 2
 
 [[notes]]
 id = "ru:книга:general"
 source = "Lesson 1"
-category = "podstatné meno; ženský rod"
+kind = "pod.m:ž"
 word = "кни́га"
 
 [[notes.meanings]]

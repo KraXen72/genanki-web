@@ -1,42 +1,49 @@
 # genanki web
 
-Create Anki packages (`.apkg`) in your browser. An LLM writes the note content as TOML; genanki web validates it and builds the package locally.
-
 ![genanki web on desktop at 1920×1080](docs/screenshot.png)
 
-## Usage
+Generate Anki decks (`.apkg`) fully in your browser (even on your phone!). An LLM writes the notes as TOML, and genanki web validates them and builds the deck locally.
 
-1. Choose a template and click **Copy LLM prompt**.
-2. Paste the prompt into your LLM conversation.
-3. Send vocabulary, screenshots, or other material to the LLM.
-4. Ask it to `flush` or `export` the queued notes as TOML.
-5. Paste the TOML into genanki web, or load it with **Open TOML**.
-6. Click **Validate**. Correct any errors and review warnings.
-7. Click **Generate .apkg**, confirm any review warnings with **Export anyway**, then click **Download .apkg**. Import the package into Anki or AnkiDroid.
+## usage
+1. Pick a template (e.g. Russian vocabulary) and click **Copy LLM prompt**
+2. Paste the prompt into your LLM conversation
+3. Find vocabulary in the wild! YouTube, Netflix, ... just copy / screenshot it and send it to the LLM
+4. At some point, write `flush`, `export`, etc. and the LLM will give you TOML text which represents the notes
+5. Paste that TOML into genanki web (or load a file with **Open TOML**)
+6. Click **Validate**, fix any errors and look over the warnings
+7. Generate the deck, download the `.apkg` and import it into Anki or AnkiDroid!
 
-Keep each note's ID when correcting its content so later exports can update the same note. Anki's import settings and local edits affect how it applies updates.
+If the LLM corrects a note later, keep its ID. That way, re-importing updates the existing note in Anki instead of adding a new one.
 
-## Templates and validation
+## templates
+I made genanki web to learn Russian, so it bundles a simple **Question & answer** template and the **Russian vocabulary** template.
+You can create your own templates by following the [docs](https://kraxen72.github.io/genanki-web/docs.html) (there's a starter ZIP), and either load them from your device with **Import template ZIP**, or open a pull request to this repo.
 
-The bundled templates are **Question & answer** and **Russian vocabulary**. To create your own, open [Template docs](https://kraxen72.github.io/genanki-web/docs.html) and download the starter ZIP. Import a pack from your device with **Import template ZIP**, or contribute its files through a pull request.
+Templates:
+- validate the TOML using JSON schemas, including RegEx.
+- preserve note IDs across corrections, remove identical duplicates, and reject conflicting IDs.
+- put notes into a deck based on their source, such as `Ruština::Vocabulary::<source>`, or into a fallback, e.g. `Ruština::Vocabulary::Mix`.
 
-Every pack supplies a JSON Schema, field mappings, card HTML, CSS, and LLM instructions. Validation checks the TOML structure, removes identical duplicates, and rejects conflicting note IDs.
+The Russian vocabulary template also checks stress marks, verb aspect, aspect partners and motion verb pairs against open Russian dictionaries (Wiktionary and OpenRussian). Errors block the export; warnings make you click **Export anyway**. See the [pack reference](docs/packs.md) for details and versioning.
 
-The Russian vocabulary pack also checks stress marks, verb aspect, aspect partners, and paired motion direction using Wiktionary and OpenRussian data. Errors block export. Review warnings require **Export anyway**; notices allow export immediately.
+## quality of life
+- genanki web uses a pinned known-good version of the Python `genanki` library to generate Anki decks deterministically.
+- genanki web verifies ZIP integrity, SQLite contents, note IDs, fields, tags and card counts before offering the download.
+- everything stays in your browser: your TOML and imported templates are only kept in memory until you reload the tab.
 
-Russian notes go to `Ruština::Vocabulary::<source>` when every note shares a nonempty source, or `Ruština::Vocabulary::Mix` otherwise. The pack uses Anki note type **Russian vocabulary v4** and TOML input version **2**. See the [pack reference](docs/packs.md) for validation and versioning details.
-
-## How it works
-
+## how it works
 ![Browser compilation, Russian validation, worker packaging, and local download](docs/architecture.png)
 
-The browser maps validated content into Anki fields. A Web Worker runs the pinned Python `genanki` library through Pyodide, then verifies the package's ZIP, SQLite data, identities, fields, tags, and card counts before offering a download.
+The browser validates the TOML and maps it onto Anki fields. Then a Web Worker runs `genanki` through Pyodide and builds the package. More in [Architecture](docs/design.md) and the [third-party notices](docs/third-party-notices.md).
 
-TOML and imported templates stay in memory until the tab reloads. The browser saves theme preferences and caches dictionary assets. Runtime files come from the same site. See [Architecture](docs/design.md) and [third-party notices](docs/third-party-notices.md).
+Shout out to Simon Willison, because of him, I knew that Pyodide exists, has a WASM build, and can be used like this in the browser.
+_I'll write a blog post about this later. Stay tuned!_
 
-## Development
+## desktop Anki fixups
+There's also a separate [one-time fixup CLI](tools/anki-fixups/README.md) for desktop Anki. It can add aspect badges to Core 5000 verbs and migrate older vocabulary note types to v4. Preview the changes and make a backup before applying them, and install the Anki library version that matches your desktop app.
 
-Use Node 24 and pnpm 10.34.9. Run `pnpm install --frozen-lockfile` first. VS Code includes TypeScript support. The workspace recommends Python and Pylance for the desktop tools and the MDX extension for the template-authoring guide.
+## development
+Use Node 24 and pnpm 10.34.9, and run `pnpm install --frozen-lockfile` first. The VS Code workspace recommends extensions for Python (desktop tools) and MDX (template docs).
 
 | Command | Description |
 | --- | --- |
@@ -53,10 +60,6 @@ Use Node 24 and pnpm 10.34.9. Run `pnpm install --frozen-lockfile` first. VS Cod
 | `pnpm ru-data:generate [dump.jsonl.gz]` | Rebuild both dictionaries in one Wiktionary pass |
 | `python -m pytest tools/anki-fixups/tests` | Test the desktop Anki tools after [Python setup](tools/anki-fixups/README.md#install) |
 
-Dictionary commands stream the full Wiktionary dump from kaikki.org unless you pass a local gzip file. They also fetch OpenRussian data. Record the printed source versions in the commit message when updating dictionaries.
+The dictionary commands download the full 3 GB Wiktionary dump from kaikki.org (plus OpenRussian data). To reuse a copy you already downloaded, pass its path, e.g. `pnpm ru-data:generate path/to/raw-wiktextract-data.jsonl.gz`. The script prints which version of each source it used; put that in the commit message.
 
-See [Development](docs/development.md) for browser setup and deployment, and [Verification](docs/verification.md) for test coverage, recorded measurements, and AnkiDroid device checks.
-
-## Credits
-
-Simon Willison's writing introduced me to using Pyodide to run Python in the browser.
+More in [Development](docs/development.md) (browser setup, deployment) and [Verification](docs/verification.md) (test coverage, measurements, AnkiDroid checks).

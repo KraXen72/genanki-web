@@ -70,8 +70,10 @@ function compileList(value: unknown, field: FieldMapping): string {
 
 function compileField(note: InputNote, field: FieldMapping): string {
   const value = getPath(note, field.path);
+  const mappedValue =
+    field.format === 'label' && value !== undefined ? field.labels![String(value)] : value;
   let content =
-    field.format === 'list' ? compileList(value, field) : compileScalar(value, field.path);
+    field.format === 'list' ? compileList(value, field) : compileScalar(mappedValue, field.path);
 
   if (field.format === 'lines') {
     content = content.replace(/\r\n|\r|\n/g, '<br>');
@@ -223,6 +225,17 @@ function schemaErrors(document: InputNote, pack: Pack): string[] {
   return [...new Set([...envelopeErrors(document), ...packErrors])];
 }
 
+function compileTags(note: InputNote, pack: Pack): string[] {
+  return (pack.manifest.tags ?? []).flatMap(({ prefix, path }) => {
+    const value = getPath(note, path);
+    if (value === undefined) return [];
+    if (typeof value !== 'string' || !value || /\s/u.test(value)) {
+      throw new Error(`Tag mapping ${path} requires a nonempty string without whitespace.`);
+    }
+    return [`${prefix}::${value}`];
+  });
+}
+
 function compileNotes(notes: InputNote[], pack: Pack) {
   const errors: string[] = [];
 
@@ -236,6 +249,14 @@ function compileNotes(notes: InputNote[], pack: Pack) {
   };
   const compiledNotes = notes.map((note) => ({
     id: note.id as string,
+    tags: (() => {
+      try {
+        return compileTags(note, pack);
+      } catch (error) {
+        errors.push(`note "${note.id}": ${errorMessage(error)}`);
+        return [];
+      }
+    })(),
     fields: pack.manifest.fields.map((field) => compileNoteField(note, field)),
   }));
 
@@ -264,7 +285,8 @@ export async function compileBatch(
   const source = resolveSource(notes);
   const deckName = resolveDeckName(pack, source);
   const model = pack.manifest.model;
-  const { reviewWarnings, notices } = await runValidators(pack, notes);
+  const { errors, reviewWarnings, notices } = await runValidators(pack, notes);
+  rejectIfAny(errors);
 
   const payload: ExportPayload = {
     packKey: pack.manifest.key,

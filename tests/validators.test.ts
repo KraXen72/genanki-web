@@ -9,7 +9,7 @@ import { StressDictionary } from '../src/validators/ru-stress/dictionary';
 const packs = bundledPacks();
 const pack = (key: string) => packs.find((candidate) => candidate.manifest.key === key)!;
 const check = (text: string, noteId = 'ru:тест:general') => {
-  return checkRussianStress([{ noteId, field: 'Sentence1', text }]);
+  return checkRussianStress([{ noteId, fields: { Sentence1: text } }]);
 };
 
 it.each([
@@ -27,7 +27,7 @@ it.each([
 
 it('accepts correct stress, capitals, and every stress of a homograph', async () => {
   const sentence = 'Э́то кни́га. За́мок и замо́к. Хорошо́ говори́ть по-ру́сски.';
-  expect(await check(sentence)).toEqual({ reviewWarnings: [], notices: [] });
+  expect(await check(sentence)).toEqual({ errors: [], reviewWarnings: [], notices: [] });
 });
 
 it('accepts common words that only the supplement lists', async () => {
@@ -35,15 +35,24 @@ it('accepts common words that only the supplement lists', async () => {
 });
 
 it('knows words that OpenRussian added after its last export', async () => {
-  expect(await check('Он порезал мизи́нчик.')).toEqual({ reviewWarnings: [], notices: [] });
+  expect(await check('Он порезал мизи́нчик.')).toEqual({
+    errors: [],
+    reviewWarnings: [],
+    notices: [],
+  });
 });
 
 it('skips unmarked words and words with ё', async () => {
-  expect(await check('футболка идёт ещё кот')).toEqual({ reviewWarnings: [], notices: [] });
+  expect(await check('футболка идёт ещё кот')).toEqual({
+    errors: [],
+    reviewWarnings: [],
+    notices: [],
+  });
 });
 
 it('only mentions words missing from the dictionary', async () => {
   expect(await check('бла́бла бла́бла')).toEqual({
+    errors: [],
     reviewWarnings: [],
     notices: ['Stress not checked (not in the dictionary): бла́бла.'],
   });

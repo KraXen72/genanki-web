@@ -110,3 +110,29 @@ it('rejects a package when a conditional front produces fewer cards than the man
   expect(() => python.runPython('build_package(_test_payload)')).toThrow('expected cards');
   await exportExample();
 });
+
+it('persists Unicode tags when a pack declares tag mappings', async () => {
+  const pack = {
+    ...russian,
+    manifest: { ...russian.manifest, tags: [{ prefix: 'genanki', path: 'id' }] },
+  };
+  const compilation = await compileBatch(stringify(schemaExample(pack)), [pack]);
+  python.globals.set('_test_payload', JSON.stringify(compilation.payload));
+
+  const storedTags = python.runPython(`
+import io
+with zipfile.ZipFile(io.BytesIO(build_package(_test_payload))) as archive:
+    with tempfile.TemporaryDirectory() as directory:
+        database = os.path.join(directory, 'tags.sqlite')
+        with open(database, 'wb') as output:
+            output.write(archive.read('collection.anki2'))
+        with closing(sqlite3.connect(database)) as connection:
+            stored_tags = connection.execute('SELECT tags FROM notes').fetchone()[0]
+stored_tags
+`);
+
+  expect(storedTags.trim().split(/\s+/)).toEqual(compilation.payload.notes[0].tags);
+  expect(compilation.payload.notes[0].tags).toEqual([
+    `genanki::${compilation.payload.notes[0].id}`,
+  ]);
+});

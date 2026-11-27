@@ -187,7 +187,7 @@ Sentence3, Translation3
 
 The documented native TTS syntax requires [AnkiDroid 2.17+](https://docs.ankiweb.net/templates/fields.html#text-to-speech-for-individual-fields) and an available Russian TTS voice. The web app cannot bundle or inspect the user's Android voice installation. Actual playback is tested in AnkiDroid.
 
-Validate structural requirements and explicit formatting constraints, such as the maximum number of meanings and the absence of em dashes. Trust the LLM for translation, grammar, natural examples, and dictionary forms. Stress placement is checked against a dictionary by the optional `ru-stress` validator, which warns but never makes a batch invalid; see [packs.md](packs.md#validators). Do not add linguistic scoring or heuristic warnings.
+Validate structural requirements and explicit formatting constraints, such as the maximum number of meanings and the absence of em dashes. Trust the LLM for translations and natural examples. Validators read raw fields together for each note and return blocking errors, review warnings, and informational notices. Blocking errors require dictionary facts. `ru-stress` warns about unexpected stress and reports unchecked words; see [packs.md](packs.md#validators). Heuristic checks can request review.
 
 **Identity, deduplication, and deck selection**
 

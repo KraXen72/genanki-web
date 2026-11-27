@@ -51,20 +51,22 @@ def _verify_model_and_deck(connection, payload):
 
 def _verify_notes(connection, payload, timestamp):
     """Check every note's GUID, data, modification time, and exact card ordinals."""
-    rows = connection.execute("SELECT id, guid, flds, mod, mid FROM notes ORDER BY id").fetchall()
+    rows = connection.execute("SELECT id, guid, flds, mod, mid, tags FROM notes ORDER BY id").fetchall()
     if len(rows) != len(payload["notes"]):
         raise ValueError("Stored note count mismatch")
 
     cards_per_note = len(payload["model"]["cards"])
     expected_cards = [(ordinal, payload["deck"]["id"]) for ordinal in range(cards_per_note)]
     for row, note in zip(rows, payload["notes"]):
-        note_id, guid, fields, modified, model_id = row
+        note_id, guid, fields, modified, model_id, tags = row
         if guid != genanki.guid_for(payload["packKey"], note["id"]):
             raise ValueError("Stored GUID mismatch")
 
         correct_fields = fields.split("\x1f") == note["fields"]
         correct_timestamp = modified == int(timestamp)
         correct_model = model_id == payload["model"]["id"]
+        if set(tags.split()) != set(note["tags"]):
+            raise ValueError("Stored note tags mismatch")
         if not (correct_fields and correct_timestamp and correct_model):
             raise ValueError("Stored note data mismatch")
 
@@ -108,6 +110,7 @@ def _create_deck(payload):
             model=model,
             fields=note_data["fields"],
             guid=genanki.guid_for(payload["packKey"], note_data["id"]),
+            tags=note_data["tags"],
         )
         deck.add_note(note)
 

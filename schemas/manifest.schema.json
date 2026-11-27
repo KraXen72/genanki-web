@@ -33,10 +33,7 @@
           "maxLength": 4000
         }
       },
-      "required": [
-        "id",
-        "name"
-      ],
+      "required": ["id", "name"],
       "additionalProperties": false
     },
     "schema": {
@@ -77,11 +74,15 @@
             "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)*$"
           },
           "format": {
-            "enum": [
-              "text",
-              "lines",
-              "list"
-            ]
+            "enum": ["text", "lines", "list", "label"]
+          },
+          "labels": {
+            "type": "object",
+            "maxProperties": 64,
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 4000
+            }
           },
           "item_path": {
             "type": "string",
@@ -90,11 +91,30 @@
             "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
           }
         },
-        "required": [
-          "name",
-          "path",
-          "format"
-        ],
+        "required": ["name", "path", "format"],
+        "additionalProperties": false
+      }
+    },
+    "tags": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "properties": {
+          "prefix": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "^\\S+$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)*$"
+          }
+        },
+        "required": ["prefix", "path"],
         "additionalProperties": false
       }
     },
@@ -123,11 +143,7 @@
             "pattern": "^[a-zA-Z0-9_/.-]+\\.[a-z]+$"
           }
         },
-        "required": [
-          "name",
-          "front",
-          "back"
-        ],
+        "required": ["name", "front", "back"],
         "additionalProperties": false
       }
     },
@@ -135,10 +151,7 @@
       "type": "object",
       "properties": {
         "policy": {
-          "enum": [
-            "fixed",
-            "shared-source"
-          ]
+          "enum": ["fixed", "shared-source"]
         },
         "deck": {
           "type": "string",
@@ -146,23 +159,18 @@
           "maxLength": 200
         }
       },
-      "required": [
-        "policy",
-        "deck"
-      ],
+      "required": ["policy", "deck"],
       "additionalProperties": false
     },
     "validators": {
-      "description": "Optional checks that warn about note content. Each check reads only the named fields.",
+      "description": "Optional content checks reading raw values of the named fields. Dictionary facts can block export.",
       "type": "array",
       "maxItems": 8,
       "items": {
         "type": "object",
         "properties": {
           "name": {
-            "enum": [
-              "ru-stress"
-            ]
+            "enum": ["ru-stress"]
           },
           "fields": {
             "type": "array",
@@ -175,10 +183,7 @@
             }
           }
         },
-        "required": [
-          "name",
-          "fields"
-        ],
+        "required": ["name", "fields"],
         "additionalProperties": false
       }
     }

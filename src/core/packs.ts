@@ -57,7 +57,7 @@ function readMember(files: PackFiles, path: string): string {
   return files[path];
 }
 
-/** Validators read one text per note, so each named field must exist and not be a list. */
+/** Validators read raw scalar values from each declared field. */
 function checkValidatorFields(manifest: PackManifest): void {
   for (const { name, fields } of manifest.validators ?? []) {
     for (const fieldName of fields) {
@@ -89,6 +89,9 @@ function parseManifest(text: string): PackManifest {
     }
     if (field.format !== 'list' && field.item_path) {
       throw new Error(`Only list mappings support item_path (${field.name}).`);
+    }
+    if ((field.format === 'label') !== (field.labels !== undefined)) {
+      throw new Error(`Mapping ${field.name} requires labels exactly when format = "label".`);
     }
   }
   if (manifest.destination.deck.split('::').some((part) => !part.trim())) {
@@ -135,11 +138,39 @@ function parseInputSchema(text: string, manifest: PackManifest): Schema {
   return schema;
 }
 
+/** Label tables cover exactly the string enum at the mapped input path. */
+function checkLabelMappings(schema: Schema, manifest: PackManifest): void {
+  for (const field of manifest.fields) {
+    if (field.format !== 'label') continue;
+
+    let property: Schema | undefined = schema.properties?.notes?.items;
+    for (const part of field.path.split('.')) {
+      property =
+        property?.type === 'array' && /^\d+$/.test(part)
+          ? property.items
+          : property?.properties?.[part];
+    }
+    const values: unknown[] | undefined = property?.enum;
+    if (property?.type !== 'string' || !values?.every((value) => typeof value === 'string')) {
+      throw new Error(`Label mapping ${field.name} requires a string enum at ${field.path}.`);
+    }
+    const labels = field.labels!;
+    const missing = values.filter((value) => !Object.hasOwn(labels, value as string));
+    const extra = Object.keys(labels).filter((value) => !values.includes(value));
+    if (missing.length || extra.length) {
+      throw new Error(
+        `Label mapping ${field.name}: missing labels [${missing.join(', ')}]; extra labels [${extra.join(', ')}].`,
+      );
+    }
+  }
+}
+
 /** Loads bundled and imported packs through the same declarative validation pipeline. */
 export function loadPack(files: PackFiles): Pack {
   checkFiles(files);
   const manifest = parseManifest(readMember(files, 'template.toml'));
   const schema = parseInputSchema(readMember(files, manifest.schema), manifest);
+  checkLabelMappings(schema, manifest);
   const validate = ajv.compile(schema);
   const cards = manifest.cards.map((card) => ({
     name: card.name,

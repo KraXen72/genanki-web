@@ -40,11 +40,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "name",
-              "qfmt",
-              "afmt"
-            ],
+            "required": ["name", "qfmt", "afmt"],
             "additionalProperties": false
           }
         },
@@ -52,13 +48,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "id",
-        "name",
-        "fields",
-        "cards",
-        "css"
-      ],
+      "required": ["id", "name", "fields", "cards", "css"],
       "additionalProperties": false
     },
     "deck": {
@@ -73,10 +63,7 @@
           "maxLength": 4000
         }
       },
-      "required": [
-        "id",
-        "name"
-      ],
+      "required": ["id", "name"],
       "additionalProperties": false
     },
     "notes": {
@@ -94,22 +81,20 @@
             "items": {
               "type": "string"
             }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
-        "required": [
-          "id",
-          "fields"
-        ],
+        "required": ["id", "fields", "tags"],
         "additionalProperties": false
       }
     }
   },
-  "required": [
-    "packKey",
-    "model",
-    "deck",
-    "notes"
-  ],
+  "required": ["packKey", "model", "deck", "notes"],
   "additionalProperties": false,
   "title": "ExportPayload"
 }

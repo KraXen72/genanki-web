@@ -1,5 +1,5 @@
 import { loadStressDictionary, type StressDictionary } from './dictionary';
-import type { CheckedText, ValidatorResult } from '..';
+import type { CheckedNote, ValidatorResult } from '..';
 
 const STRESS_MARK = '\u0301';
 const RUSSIAN_WORD = /[\p{Script=Cyrillic}\u0301]+/gu;
@@ -18,7 +18,7 @@ function removeStress(word: string): string {
 }
 
 /** Words without a mark have nothing to check, and ё already shows the stress. */
-function findStressedWords({ noteId, field, text }: CheckedText): StressedWord[] {
+function findStressedWords(noteId: string, field: string, text: string): StressedWord[] {
   const words = text.normalize('NFC').match(RUSSIAN_WORD) ?? [];
   const checkable = words.filter((word) => word.includes(STRESS_MARK) && !/[ёЁ]/.test(word));
 
@@ -49,8 +49,10 @@ function describeWrongStress(word: StressedWord, acceptedForms: string[]): strin
 }
 
 /** Warns about stress marks that differ from the dictionary. Words it lacks are only counted. */
-export async function checkRussianStress(texts: CheckedText[]): Promise<ValidatorResult> {
-  const words = texts.flatMap(findStressedWords);
+export async function checkRussianStress(notes: CheckedNote[]): Promise<ValidatorResult> {
+  const words = notes.flatMap(({ noteId, fields }) =>
+    Object.entries(fields).flatMap(([field, text]) => findStressedWords(noteId, field, text)),
+  );
   const unstressedWords = new Set(words.map((word) => word.unstressed));
   const acceptedForms = lookUpStress(await loadStressDictionary(), unstressedWords);
 
@@ -66,6 +68,7 @@ export async function checkRussianStress(texts: CheckedText[]): Promise<Validato
     : [];
 
   return {
+    errors: [],
     reviewWarnings: wrongStress.map((word) => {
       return describeWrongStress(word, acceptedForms.get(word.unstressed)!);
     }),

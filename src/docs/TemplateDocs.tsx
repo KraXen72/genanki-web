@@ -218,8 +218,12 @@ export function TemplateDocs() {
                   ],
                   ['cards', '1–8 cards, each with a unique name and front/back file names.'],
                   [
+                    'tags',
+                    'Optional prefix/path mappings producing prefix::value tags. Missing values produce no tag; whitespace is rejected. Reimport updates existing tags.',
+                  ],
+                  [
                     'validators',
-                    'Optional content checks, each with name and fields. ru-stress checks Russian stress marks.',
+                    'Optional content checks reading raw named fields together per note. Dictionary errors block export; review warnings need confirmation; notices allow export.',
                   ],
                 ]}
               />
@@ -314,6 +318,10 @@ export function TemplateDocs() {
                   ],
                   ['lines', 'Like text, but preserves line breaks.'],
                   ['list', 'Read a list using item_path. Adds a div per item; see below.'],
+                  [
+                    'label',
+                    'Map a string enum through [fields.labels], then escape the label. Optional missing values leave the field empty.',
+                  ],
                 ]}
               />
               <p>
@@ -324,6 +332,11 @@ export function TemplateDocs() {
 name = "SlovakMeaning1"
 path = "meanings.0.sk"
 format = "text"`}</Code>
+              <p>
+                A <code>label</code> mapping requires <code>[fields.labels]</code> with exactly one
+                label per input enum value, up to 64. Labels live in the pack manifest. The LLM
+                writes enum slugs in its input TOML; the compiler expands them for Anki.
+              </p>
               <p>
                 For a few meanings, use separate <code>text</code> fields, like the Russian
                 template. Keep layout HTML in the card files so notes stay easy to edit.

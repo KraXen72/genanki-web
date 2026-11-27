@@ -20,5 +20,6 @@ export interface ExportPayload {
   notes: {
     id: string;
     fields: string[];
+    tags: string[];
   }[];
 }

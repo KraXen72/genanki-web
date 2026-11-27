@@ -19,8 +19,18 @@ export interface PackManifest {
   fields: {
     name: string;
     path: string;
-    format: 'text' | 'lines' | 'list';
+    format: 'text' | 'lines' | 'list' | 'label';
+    labels?: {
+      [k: string]: string;
+    };
     item_path?: string;
+  }[];
+  /**
+   * @maxItems 64
+   */
+  tags?: {
+    prefix: string;
+    path: string;
   }[];
   /**
    * @minItems 1
@@ -36,7 +46,7 @@ export interface PackManifest {
     deck: string;
   };
   /**
-   * Optional checks that warn about note content. Each check reads only the named fields.
+   * Optional content checks reading raw values of the named fields. Dictionary facts can block export.
    *
    * @maxItems 8
    */

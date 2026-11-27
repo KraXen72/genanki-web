@@ -31,9 +31,9 @@ name = "ru-stress"
 fields = ["Word", "Sentence1"]
 ```
 
-Validators never make a batch invalid. Their warnings appear after **Validate**, and **Generate .apkg** stops until the user chooses **Export anyway**.
+Validators read the raw input values of their declared Anki fields together for each note. Dictionary facts can produce errors that block export; the error panel copies every error for correction in the LLM chat. Review warnings require **Export anyway** before packaging. Notices report unchecked content and allow export immediately.
 
-`ru-stress` compares stress-marked Russian words with a dictionary of about 540,000 word forms. It skips words without a mark and words with ё, and only lists words that the dictionary lacks. A spelling with several valid stresses, such as `за́мок` and `замо́к`, accepts all of them, so it cannot tell which one a sentence needs.
+`ru-stress` compares stress-marked Russian words with a dictionary of about 540,000 word forms. It skips words without a mark and words with ё. Wrong stress produces a review warning with accepted spellings; missing words produce a notice. A spelling with several valid stresses, such as `за́мок` and `замо́к`, accepts all of them.
 
 To add a word or a valid variant, edit `src/validators/ru-stress/supplement.txt` and run `pnpm ru-stress:generate`. To add a validator, add a module in `src/validators/`, register it in `src/validators/index.ts`, and add its name to `schemas/manifest.schema.json`.
 
@@ -46,8 +46,33 @@ Each ordered `[[fields]]` definition has `name`, `path`, and `format`:
 | `text` | Read an object/array path, HTML-escape a scalar, and use an empty string for a missing optional value. |
 | `lines` | Apply text mapping and convert newlines to `<br>`. |
 | `list` | Read an array and its `item_path`, creating escaped grid items with the field name as their CSS class and a one-based `grid-row`. |
+| `label` | Map a string enum through `[fields.labels]`, then HTML-escape the display label. Missing optional values leave the field empty. |
 
 Paths such as `meanings.0.sentence` support own object properties and array indices. Required content is enforced in the schema. Mappings do not evaluate Anki expressions; card HTML is passed unchanged as `qfmt`/`afmt`. No card templates or styles are rendered in the application DOM. A card front must reference populated fields; an export whose generated card count differs from the manifest is rejected.
+
+`label` requires a `labels` table with exactly one entry per value in the input property's string enum (maximum 64). Other formats cannot declare `labels`. The pack author owns this table in `template.toml`. The LLM receives the input enum and writes its slugs; the compiler expands them into card labels.
+
+```toml
+[[fields]]
+name = "Kind"
+path = "kind"
+format = "label"
+[fields.labels]
+slov = "sloveso"
+"pod.m:ž" = "podst. meno, ženský rod"
+```
+
+## Tags
+
+Each `[[tags]]` maps a raw input string into `<prefix>::<value>`:
+
+```toml
+[[tags]]
+prefix = "genanki"
+path = "kind"
+```
+
+For `kind = "pod.m:ž"`, the stored tag is `genanki::pod.m:ž`. Missing optional values produce no tag. Prefixes and values must contain no whitespace; values must be nonempty strings. Current Anki versions update tags on reimport, including tags the user added by hand.
 
 ## Identity and destination
 

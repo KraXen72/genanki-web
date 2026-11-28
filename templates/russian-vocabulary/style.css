@@ -11,12 +11,13 @@
   color: #777;
 }
 .grammar {
+  display: flow-root;
   font-size: 18px;
   margin-bottom: 12px;
 }
 .partner {
-  font-size: 19px;
-  margin: -12px 0 20px;
+  float: right;
+  margin-left: 16px;
 }
 .word {
   font-size: 32px;

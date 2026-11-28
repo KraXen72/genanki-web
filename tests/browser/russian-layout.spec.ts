@@ -128,8 +128,13 @@ for (const side of ['forward', 'reverse', 'answer']) {
       /sloveso\s*·\s*impf\.\s*·\s*multidir\.\s*·\s*hovorové/,
     );
     await expect(page.locator('.partner')).toHaveCount(side === 'answer' ? 1 : 0);
-    if (side === 'answer') await expect(page.locator('.partner')).toHaveText('pár: сходи́ть');
-    else await expect(page.locator('body')).not.toContainText('сходи́ть');
+    if (side === 'answer') {
+      await expect(page.locator('.partner')).toHaveText('pár: сходи́ть');
+      const grammar = await page.locator('.grammar').boundingBox();
+      const partner = await page.locator('.partner').boundingBox();
+      expect(partner!.y).toBeLessThan(grammar!.y + grammar!.height / 2);
+      expect(partner!.x + partner!.width).toBeCloseTo(grammar!.x + grammar!.width, 0);
+    } else await expect(page.locator('body')).not.toContainText('сходи́ть');
     if (side === 'reverse') await expect(page.locator('body')).not.toContainText('ходи́ть');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(360);
     await page.screenshot({ path: testInfo.outputPath(`${side}-grammar.png`) });

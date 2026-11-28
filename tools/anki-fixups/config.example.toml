@@ -1,0 +1,76 @@
+reviewed_notes_file = "reviewed-notes.toml"
+
+# Verified layouts from the desktop collection inspected on 2026-11-27.
+# Review a fresh inspect.md before copying this file to config.toml.
+[inspection]
+# Relative to this config file, or an absolute path.
+report = "../../_artifacts/anki-fixups/inspect/inspect.json"
+
+[core5000]
+model_id = 1702894622102
+name = "Russian Core 5000"
+word = "Word"
+gloss = "Translation"
+reverse_template = "Card 2"
+
+# v4 field name = old field name. Same-named fields map automatically.
+# Combined legacy meanings are preserved verbatim in the first meaning field.
+[[genanki]]
+model_id = 1730000000001
+name = "Nex Russian Vocabulary v1"
+category = "Category"
+[genanki.fields]
+SlovakMeaning1 = "SlovakMeanings"
+EnglishGloss1 = "EnglishGlosses"
+
+[[genanki]]
+model_id = 1455129969
+name = "Russian Vocabulary RU-SK (2 directions)"
+category = "Category"
+[genanki.fields]
+SlovakMeaning1 = "SlovakMeanings"
+EnglishGloss1 = "EnglishGlosses"
+
+[[genanki]]
+model_id = 1759797711
+name = "Russian vocabulary v1"
+category = "Category"
+[genanki.fields]
+SlovakMeaning1 = "SlovakMeanings"
+EnglishGloss1 = "EnglishGlosses"
+
+[[genanki]]
+model_id = 1759797712
+name = "Russian vocabulary v2"
+category = "Category"
+
+[[genanki]]
+model_id = 1759797713
+name = "Russian vocabulary v3"
+category = "Category"
+
+[[genanki]]
+model_id = 6887797364293765650
+name = "Russian → Slovak ⇄ (Nex Vocabulary v1)"
+category = "Category"
+[genanki.fields]
+SlovakMeaning1 = "SlovakMeanings"
+EnglishGloss1 = "EnglishGlosses"
+
+# Token aliases for additional Category spellings discovered by inspect.
+# Use lowercase tokens accepted by anki_fixups.categories.
+[category_aliases]
+# "podst. meno" = "podstatné meno"
+
+# Whole Category values containing English punctuation or older POS names.
+[category_values]
+"adjective" = "prídavné meno"
+"adverb (colloquial)" = "príslovka; colloquial"
+"expression" = "výraz"
+"noun (f.)" = "podstatné meno; ženský rod"
+"noun (m., affectionate)" = "podstatné meno; mužský rod; affectionate"
+"noun (n.)" = "podstatné meno; stredný rod"
+"noun phrase (f.)" = "podstatné meno; ženský rod; slovné spojenie"
+"slovesné spojenie; nedokonavý vid" = "sloveso; nedokonavý vid; slovné spojenie"
+"slangový výraz" = "výraz; slangový"
+"krátky tvar prídavného mena; mužský rod" = "prídavné meno; mužský rod; krátky tvar"

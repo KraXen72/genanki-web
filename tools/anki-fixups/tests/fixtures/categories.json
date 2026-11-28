@@ -1,0 +1,875 @@
+[
+  {
+    "model_id": 1730000000001,
+    "category": "podstatné meno, mužský rod",
+    "count": 5,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1730000000001,
+    "category": "podstatné meno, pomnožné",
+    "count": 1,
+    "kind": "pod.m:pomn",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1730000000001,
+    "category": "podstatné meno, slovné spojenie",
+    "count": 1,
+    "kind": "",
+    "aspect": "",
+    "usage": "slovné spojenie",
+    "status": "needs-review"
+  },
+  {
+    "model_id": 1730000000001,
+    "category": "podstatné meno, stredný rod",
+    "count": 2,
+    "kind": "pod.m:s",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1730000000001,
+    "category": "podstatné meno, ženský rod",
+    "count": 4,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1730000000001,
+    "category": "prídavné meno",
+    "count": 1,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1730000000001,
+    "category": "príslovka",
+    "count": 3,
+    "kind": "prís",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1730000000001,
+    "category": "sloveso, nedokonavý vid",
+    "count": 4,
+    "kind": "slov",
+    "aspect": "impf",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1730000000001,
+    "category": "ustálené spojenie",
+    "count": 1,
+    "kind": "fráza",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1455129969,
+    "category": "podstatné meno · mužský rod",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1455129969,
+    "category": "podstatné meno · ženský rod",
+    "count": 1,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1455129969,
+    "category": "prídavné meno",
+    "count": 2,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1455129969,
+    "category": "prídavné meno · superlatív",
+    "count": 1,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "superlatív",
+    "status": ""
+  },
+  {
+    "model_id": 1455129969,
+    "category": "príslovka",
+    "count": 1,
+    "kind": "prís",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797711,
+    "category": "podstatné meno; množné číslo",
+    "count": 2,
+    "kind": "",
+    "aspect": "",
+    "usage": "množné číslo",
+    "status": "needs-review"
+  },
+  {
+    "model_id": 1759797711,
+    "category": "podstatné meno; ženský rod",
+    "count": 6,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797711,
+    "category": "prídavné meno",
+    "count": 1,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797711,
+    "category": "prídavné meno; hovorové, slangové",
+    "count": 1,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "hovorové; slangové",
+    "status": ""
+  },
+  {
+    "model_id": 1759797711,
+    "category": "slovesné spojenie; nedokonavý vid",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "impf",
+    "usage": "slovné spojenie",
+    "status": ""
+  },
+  {
+    "model_id": 1759797711,
+    "category": "sloveso; hovorové, hrubšie",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "",
+    "usage": "hovorové; hrubšie",
+    "status": ""
+  },
+  {
+    "model_id": 1759797711,
+    "category": "sloveso; rozk. spôsob, 2. os. j. č.; od забы́ть,",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "",
+    "usage": "rozk. spôsob; 2. os. j. č.; od забы́ть",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "krátke trpné príčastie; mužský rod",
+    "count": 1,
+    "kind": "",
+    "aspect": "",
+    "usage": "krátke trpné príčastie; mužský rod",
+    "status": "unparsed"
+  },
+  {
+    "model_id": 1759797712,
+    "category": "krátky tvar prídavného mena; mužský rod",
+    "count": 1,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "mužský rod; krátky tvar",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "podstatné meno; mužský rod",
+    "count": 16,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "podstatné meno; mužský rod; vlastné meno",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "vlastné meno",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "podstatné meno; pomnožné",
+    "count": 1,
+    "kind": "pod.m:pomn",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "podstatné meno; stredný rod",
+    "count": 1,
+    "kind": "pod.m:s",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "podstatné meno; ženský rod",
+    "count": 8,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "podstatné meno; ženský rod; mágia, povery",
+    "count": 1,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "mágia; povery",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "podstatné meno; ženský rod; slang (gaming)",
+    "count": 1,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "slang (gaming)",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "podstatné meno; ženský rod; zdrobnenina",
+    "count": 1,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "zdrobnenina",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "prídavné meno",
+    "count": 9,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "prídavné meno; superlatív",
+    "count": 1,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "superlatív",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "príslovka",
+    "count": 6,
+    "kind": "prís",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "príslovka; komparatív",
+    "count": 1,
+    "kind": "prís",
+    "aspect": "",
+    "usage": "komparatív",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "príslovka; uvádzací výraz",
+    "count": 1,
+    "kind": "prís",
+    "aspect": "",
+    "usage": "uvádzací výraz",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "sloveso",
+    "count": 5,
+    "kind": "slov",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "sloveso; dokonavý vid",
+    "count": 5,
+    "kind": "slov",
+    "aspect": "pf",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "sloveso; dokonavý vid; zvratné",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "pf",
+    "usage": "zvratné",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "sloveso; nedokonavý vid",
+    "count": 5,
+    "kind": "slov",
+    "aspect": "impf",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797712,
+    "category": "sloveso; zvratné",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "",
+    "usage": "zvratné",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "citoslovce; hovorovo, mierne expresívne",
+    "count": 1,
+    "kind": "cito",
+    "aspect": "",
+    "usage": "hovorovo; mierne expresívne",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "citoslovce; hovorové",
+    "count": 1,
+    "kind": "cito",
+    "aspect": "",
+    "usage": "hovorové",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "citoslovce; slang",
+    "count": 1,
+    "kind": "cito",
+    "aspect": "",
+    "usage": "slang",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "fráza",
+    "count": 2,
+    "kind": "fráza",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno",
+    "count": 1,
+    "kind": "",
+    "aspect": "",
+    "usage": "",
+    "status": "needs-review"
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; množné číslo",
+    "count": 1,
+    "kind": "",
+    "aspect": "",
+    "usage": "množné číslo",
+    "status": "needs-review"
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod",
+    "count": 69,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod, hovorové",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "hovorové",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod; hovorovo",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "hovorovo",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod; hovorové",
+    "count": 4,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "hovorové",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod; hrubšie",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "hrubšie",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod; slang",
+    "count": 3,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "slang",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod; slangovo",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "slangovo",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod; slangovo, hanlivo",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "slangovo; hanlivo",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod; vlastné meno",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "vlastné meno",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; mužský rod; zdrob. конве́рт",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "zdrob. конве́рт",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; pomnožné",
+    "count": 1,
+    "kind": "pod.m:pomn",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; pomnožné; hovorové",
+    "count": 1,
+    "kind": "pod.m:pomn",
+    "aspect": "",
+    "usage": "hovorové",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; pomnožné; slang",
+    "count": 1,
+    "kind": "pod.m:pomn",
+    "aspect": "",
+    "usage": "slang",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; slovné spojenie",
+    "count": 1,
+    "kind": "",
+    "aspect": "",
+    "usage": "slovné spojenie",
+    "status": "needs-review"
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; spoločný rod",
+    "count": 1,
+    "kind": "pod.m:oboj",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; spoločný rod, hovorové, pejoratívne",
+    "count": 1,
+    "kind": "pod.m:oboj",
+    "aspect": "",
+    "usage": "hovorové; pejoratívne",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; stredný rod",
+    "count": 18,
+    "kind": "pod.m:s",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; ženský rod",
+    "count": 35,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; ženský rod, slang",
+    "count": 1,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "slang",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; ženský rod; hovorovo",
+    "count": 1,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "hovorovo",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; ženský rod; hovorové",
+    "count": 2,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "hovorové",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "podstatné meno; ženský rod; hrubšie",
+    "count": 1,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "hrubšie",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "prídavné meno",
+    "count": 51,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "prídavné meno; hovorové",
+    "count": 2,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "hovorové",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "príslovka",
+    "count": 21,
+    "kind": "prís",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "príslovka, častica",
+    "count": 3,
+    "kind": "",
+    "aspect": "",
+    "usage": "",
+    "status": "needs-review"
+  },
+  {
+    "model_id": 1759797713,
+    "category": "príslovka; hovorové",
+    "count": 2,
+    "kind": "prís",
+    "aspect": "",
+    "usage": "hovorové",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "príslovka; častica",
+    "count": 1,
+    "kind": "",
+    "aspect": "",
+    "usage": "",
+    "status": "needs-review"
+  },
+  {
+    "model_id": 1759797713,
+    "category": "slangový výraz",
+    "count": 1,
+    "kind": "fráza",
+    "aspect": "",
+    "usage": "slangový",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "slovesné spojenie; nedokonavý vid",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "impf",
+    "usage": "slovné spojenie",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso; dokonavý vid",
+    "count": 31,
+    "kind": "slov",
+    "aspect": "pf",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso; dokonavý vid, prenesený význam",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "pf",
+    "usage": "prenesený význam",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso; dokonavý vid; hovorovo",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "pf",
+    "usage": "hovorovo",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso; dokonavý vid; hrubšie",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "pf",
+    "usage": "hrubšie",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso; dokonavý vid; vulgárne",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "pf",
+    "usage": "vulgárne",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso; nedokonavý vid",
+    "count": 21,
+    "kind": "slov",
+    "aspect": "impf",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso; nedokonavý vid; formálne",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "impf",
+    "usage": "formálne",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso; nedokonavý vid; hovorové",
+    "count": 5,
+    "kind": "slov",
+    "aspect": "impf",
+    "usage": "hovorové",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "sloveso; nedokonavý vid; slang",
+    "count": 1,
+    "kind": "slov",
+    "aspect": "impf",
+    "usage": "slang",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "častica, sloveso; dokonavý vid",
+    "count": 1,
+    "kind": "",
+    "aspect": "",
+    "usage": "",
+    "status": "needs-review"
+  },
+  {
+    "model_id": 1759797713,
+    "category": "častica; hovorovo",
+    "count": 1,
+    "kind": "čast",
+    "aspect": "",
+    "usage": "hovorovo",
+    "status": ""
+  },
+  {
+    "model_id": 1759797713,
+    "category": "častica; hovorové",
+    "count": 1,
+    "kind": "čast",
+    "aspect": "",
+    "usage": "hovorové",
+    "status": ""
+  },
+  {
+    "model_id": 6887797364293765650,
+    "category": "adjective",
+    "count": 4,
+    "kind": "príd.m",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 6887797364293765650,
+    "category": "adverb (colloquial)",
+    "count": 1,
+    "kind": "prís",
+    "aspect": "",
+    "usage": "colloquial",
+    "status": ""
+  },
+  {
+    "model_id": 6887797364293765650,
+    "category": "expression",
+    "count": 1,
+    "kind": "fráza",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 6887797364293765650,
+    "category": "noun (f.)",
+    "count": 3,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 6887797364293765650,
+    "category": "noun (m., affectionate)",
+    "count": 1,
+    "kind": "pod.m:m",
+    "aspect": "",
+    "usage": "affectionate",
+    "status": ""
+  },
+  {
+    "model_id": 6887797364293765650,
+    "category": "noun (n.)",
+    "count": 1,
+    "kind": "pod.m:s",
+    "aspect": "",
+    "usage": "",
+    "status": ""
+  },
+  {
+    "model_id": 6887797364293765650,
+    "category": "noun phrase (f.)",
+    "count": 1,
+    "kind": "pod.m:ž",
+    "aspect": "",
+    "usage": "slovné spojenie",
+    "status": ""
+  }
+]

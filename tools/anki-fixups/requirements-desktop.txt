@@ -1,0 +1,2 @@
+# Match Help → About before opening the live collection.
+anki==26.9.4

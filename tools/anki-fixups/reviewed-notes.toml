@@ -1,0 +1,110 @@
+# Reviewed against the meanings and example sentences in the original notes.
+# Noun references:
+# https://ru.wiktionary.org/wiki/кроссовка
+# https://ru.wiktionary.org/wiki/ребята (the collective 'guys' sense)
+# https://gramota.ru/meta/molodets_2774.h2 (молоде́ц)
+
+[[reviewed_notes]]
+model_id = 1730000000001
+id = "катание на санках|expression"
+word = "ката́ние на са́нках"
+old_category = "podstatné meno, slovné spojenie"
+category = "podstatné meno; stredný rod; slovné spojenie"
+
+[[reviewed_notes]]
+model_id = 1759797711
+id = "ru:наушники:general"
+word = "нау́шники"
+old_category = "podstatné meno; množné číslo"
+category = "podstatné meno; mužský rod; množné číslo; jednotné číslo: нау́шник"
+
+[[reviewed_notes]]
+model_id = 1759797711
+id = "ru:кроссовки:general"
+word = "кроссо́вки"
+old_category = "podstatné meno; množné číslo"
+category = "podstatné meno; ženský rod; množné číslo; jednotné číslo: кроссо́вка"
+
+[[reviewed_notes]]
+model_id = 1759797712
+id = "ru:заложен:blocked"
+word = "зало́жен"
+old_category = "krátke trpné príčastie; mužský rod"
+category = "prídavné meno"
+
+[[reviewed_notes]]
+model_id = 1759797713
+id = "ru:молодец:general"
+word = "молоде́ц"
+old_category = "podstatné meno"
+category = "podstatné meno; mužský rod; pochvala"
+
+[[reviewed_notes]]
+model_id = 1759797713
+id = "ru:ребята:general"
+word = "ребя́та"
+old_category = "podstatné meno; množné číslo"
+category = "podstatné meno; pomnožné; hovorové oslovenie skupiny"
+
+[[reviewed_notes]]
+model_id = 1759797713
+id = "ru:день рождения:general"
+word = "день рожде́ния"
+old_category = "podstatné meno; slovné spojenie"
+category = "podstatné meno; mužský rod; slovné spojenie"
+
+[[reviewed_notes]]
+model_id = 1759797713
+id = "ru:точно:general"
+word = "то́чно"
+old_category = "príslovka; častica"
+category = "príslovka; aj častica"
+
+[[reviewed_notes]]
+model_id = 1759797713
+id = "ru:возможно:general"
+word = "возмо́жно"
+old_category = "príslovka, častica"
+category = "príslovka; aj častica; uvádzacie slovo"
+
+[[reviewed_notes]]
+model_id = 1759797713
+id = "ru:кстати:general"
+word = "кста́ти"
+old_category = "príslovka, častica"
+category = "príslovka; aj častica; uvádzacie slovo"
+
+[[reviewed_notes]]
+model_id = 1759797713
+id = "ru:естественно:general"
+word = "есте́ственно"
+old_category = "príslovka, častica"
+category = "príslovka; aj častica; uvádzacie slovo"
+
+[[reviewed_notes]]
+model_id = 1759797713
+id = "ru:хватит:general"
+word = "хва́тит"
+old_category = "častica, sloveso; dokonavý vid"
+category = "častica"
+
+[[reviewed_notes]]
+model_id = 1759797711
+id = "ru:обрыгаться:general"
+word = "обрыга́ться"
+old_category = "sloveso; hovorové, hrubšie"
+category = "sloveso; dokonavý vid; hovorové, hrubšie"
+
+[[reviewed_notes]]
+model_id = 1759797711
+id = "ru:забудь:general"
+word = "забу́дь"
+old_category = "sloveso; rozk. spôsob, 2. os. j. č.; od забы́ть,"
+category = "sloveso; dokonavý vid; rozk. spôsob, 2. os. j. č.; od забы́ть,"
+
+[[reviewed_notes]]
+model_id = 1759797712
+id = "ru:выглядеть:general"
+word = "вы́глядеть"
+old_category = "sloveso"
+category = "sloveso; nedokonavý vid"

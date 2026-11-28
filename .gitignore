@@ -35,3 +35,12 @@ _artifacts/
 /.playwright-cli/
 /repomix-output.xml
 /genanki*.7z
+
+# Local Anki fixups
+/tools/anki-fixups/.venv/
+/tools/anki-fixups/config.toml
+/tools/anki-fixups/build/
+/tools/anki-fixups/*.egg-info/
+/tools/anki-fixups/.pytest_cache/
+/tools/anki-fixups/.coverage*
+__pycache__/

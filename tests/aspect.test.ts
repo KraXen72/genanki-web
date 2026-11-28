@@ -1,17 +1,11 @@
+import { readFileSync } from 'node:fs';
 import { expect, it } from 'vitest';
 import { checkRussianAspect, MOTION_PAIRS } from '../src/validators/ru-aspect';
 import { AspectDictionary, ASPECT_HEADER } from '../src/validators/ru-aspect/dictionary';
 
-const fixture = [
-  ['делать', 'де́лать', 'impf', 'сде́лать', 'wikt'],
-  ['засыпать', 'засыпа́ть', 'impf', 'засну́ть', 'wikt'],
-  ['засыпать', 'засы́пать', 'pf', 'засыпа́ть', 'wikt'],
-  ['иметь', 'име́ть', 'impf', '', 'wikt'],
-  ['использовать', 'испо́льзовать', 'both', '', 'wikt'],
-  ['прийти', 'прийти́', 'pf', 'приходи́ть', 'or'],
-  ['сделать', 'сде́лать', 'pf', 'де́лать', 'wikt,or'],
-  ['ходить', 'ходи́ть', 'impf', '', 'wikt'],
-];
+const fixture = JSON.parse(
+  readFileSync(new URL('./fixtures/ru-aspect.json', import.meta.url), 'utf8'),
+) as string[][];
 const dictionary = new AspectDictionary(
   `${ASPECT_HEADER}\n${fixture.map((row) => row.join('\t')).join('\n')}\n`,
 );

@@ -78,3 +78,17 @@ TOML and imported packs stay in memory and disappear on reload. An explicit ligh
 ## Device acceptance
 
 Automated checks cover package structure, identity stability, timestamps, and browser behavior. Use an AnkiDroid device to check import/reimport behavior, review-progress preservation, Russian voice playback, and theme inheritance. Anki's import settings, local edits, and note-type compatibility affect updates.
+
+## Desktop Anki fixups
+
+`tools/anki-fixups/` is an independent Python 3.11+ CLI. Follow its [installation and collection workflow](../tools/anki-fixups/README.md) and install `requirements-desktop.txt` to match desktop Anki before opening a collection. Select that virtual environment in VS Code for Python language support.
+
+| Command | Action |
+|---|---|
+| `python -m pip wheel --no-deps tools/anki-fixups -w _artifacts/anki-fixups/wheels` | Build the CLI |
+| `python -m anki_fixups --help` | Run the CLI |
+| `python -m pytest tools/anki-fixups/tests` | Test parser, dictionary lookup, label formatting, and migrations on disposable Anki collections |
+
+Python and TypeScript aspect tests share `tests/fixtures/ru-aspect.json`. The Category fixtures contain all distinct values from the inspected desktop vocabulary types. Integration tests export the repository's v4 templates through `src/runtime/adapter.py`, import the APKG with the official Anki library, review a legacy card, and check identities, fields, tags, scheduling, revlog, and grouped undo after migration.
+
+Collection reports and local configuration contain private information. Keep reports under `_artifacts/`; `tools/anki-fixups/config.toml` is ignored. WSL tests use Linux-local copies; live Windows collections require native Windows Python for compatible file locking.
